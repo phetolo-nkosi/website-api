@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Studies</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Case Studies</h1>
+
+        <p>
+            Discover how we've helped clients achieve measurable results.
+        </p>
+    </header>
+
+    <main>
+
+        <section class="search-bar">
+
+            <input type="text" id="searchInput" placeholder="Search case studies...">
+
+        </section>
+
+        <section id="caseStudies" class="case-grid">
+
+            <!-- Cards appear here -->
+
+        </section>
+
+    </main>
+
+    <script>
+        let caseStudies = [];
+
+        async function loadCaseStudies() {
+            try {
+                const response = await fetch("/api/case-studies");
+
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status}`);
+                }
+
+                const result = await response.json();
+
+                caseStudies = result.data || [];
+
+                displayCaseStudies(caseStudies);
+
+            } catch (err) {
+
+                console.error(err);
+
+                document.getElementById("caseStudies").innerHTML = `
+            <div class="error-message">
+                <h2>Unable to load case studies</h2>
+                <p>Please try again later.</p>
+            </div>
+        `;
+            }
+        }
+
+        function displayCaseStudies(data) {
+
+            const container = document.getElementById("caseStudies");
+
+            container.innerHTML = "";
+
+            if (data.length === 0) {
+
+                container.innerHTML = `
+            <div class="empty-state">
+                <h2>No case studies found</h2>
+            </div>
+        `;
+
+                return;
+            }
+
+            data.forEach(cs => {
+
+                container.innerHTML += `
+
+        <article class="case-card">
+
+            <div class="case-header">
+
+                <span class="industry">
+                    ${cs.Industry || ""}
+                </span>
+
+                <span class="service">
+                    ${cs.Service || ""}
+                </span>
+
+            </div>
+
+            <h2>
+                ${cs.Title}
+            </h2>
+
+            <p class="summary">
+                ${(cs.Summary || "").replace(/\n/g, "<br>")}
+            </p>
+
+            <div class="stats">
+
+                <div class="stat">
+                    <strong>${cs.Stat_1 || ""}</strong>
+                </div>
+
+                <div class="stat">
+                    <strong>${cs.Stat_2 || ""}</strong>
+                </div>
+
+                <div class="stat">
+                    <strong>${cs.Stat_3 || ""}</strong>
+                </div>
+
+            </div>
+
+            <div class="footer">
+
+                <div class="author">
+
+                    ${cs.Author || ""}
+
+                </div>
+
+                <a
+                    href="case-study.html?slug=${cs.Slug}"
+                    class="read-more">
+
+                    View Case Study →
+
+                </a>
+
+            </div>
+
+        </article>
+
+        `;
+
+            });
+
+        }
+
+        document
+            .getElementById("searchInput")
+            .addEventListener("keyup", function () {
+
+                const search = this.value.toLowerCase();
+
+                const filtered = caseStudies.filter(cs => {
+
+                    return (
+
+                        (cs.Title || "").toLowerCase().includes(search) ||
+
+                        (cs.Industry || "").toLowerCase().includes(search) ||
+
+                        (cs.Service || "").toLowerCase().includes(search) ||
+
+                        (cs.Solution || "").toLowerCase().includes(search)
+
+                    );
+
+                });
+
+                displayCaseStudies(filtered);
+
+            });
+
+        loadCaseStudies();
+    </script>
+
+</body>
+
+</html>
