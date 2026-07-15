@@ -2,143 +2,636 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Case Studies</title>
-
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case Studies - Edge Analytics</title>
+  <meta name="description"
+    content="Discover how we've helped clients achieve measurable results with data-led digital transformation, risk management, and managed services across Africa.">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
 
-    <header>
-        <h1>Case Studies</h1>
+  <!-- Navigation Header -->
+  <header>
+    <div class="container header-container">
+      <a href="index.html" class="logo-link">
+        <div class="logo-icon-wrapper">
+          <img src="images/company_logo.png" alt="Edge Analytics Logo" class="logo-image-file">
+        </div>
+        <div class="logo-text">
+          <span class="logo-title">Edge Analytics</span>
+          <span class="logo-subtitle">Risk analytics Redefined</span>
+        </div>
+      </a>
 
-        <p>
-            Discover how we've helped clients achieve measurable results.
-        </p>
-    </header>
+      <!-- Navigation links -->
+      <nav>
+        <ul class="nav-list" id="nav-list">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li class="nav-item-dropdown">
+            <a href="digital-services.html" class="nav-link dropdown-toggle">Our Services <span
+                class="dropdown-chevron">&#9660;</span></a>
+            <ul class="dropdown-menu">
+              <li><a href="digital-services.html" class="dropdown-item">All Services Overview</a></li>
+              <li><a href="service-digital.html" class="dropdown-item">Digital Services</a></li>
+              <li><a href="service-risk.html" class="dropdown-item">Risk Management</a></li>
+              <li><a href="service-advisory.html" class="dropdown-item">Advisory Services</a></li>
+              <li><a href="service-managed.html" class="dropdown-item">Managed Services</a></li>
+            </ul>
+          </li>
+          <li><a href="insights.html" class="nav-link">Our Insights</a></li>
+          <li><a href="about.html" class="nav-link">About Us</a></li>
+        </ul>
+      </nav>
 
-    <main>
+      <!-- Contact button -->
+      <a href="contact.html" class="btn btn-teal header-btn">Contact us</a>
 
+      <!-- Mobile Hamburger button -->
+      <button class="burger-menu" id="burger-menu" aria-label="Toggle navigation menu">
+        <span class="burger-bar"></span>
+        <span class="burger-bar"></span>
+        <span class="burger-bar"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="insights-hero-section">
+    <div class="container">
+      <div class="insights-hero-grid">
+
+        <!-- Left Column: Hero Content -->
+        <div class="insights-hero-content">
+          <div class="insights-hero-badge">Client Success Stories</div>
+          <h1 class="insights-hero-title">Case <span class="accent">Studies</span></h1>
+          <h2 class="insights-hero-subheading">Discover how we've helped clients achieve measurable results.</h2>
+          <p class="insights-hero-description">
+            We partner with organisations across Africa to modernise operations, strengthen resilience, and unlock
+            measurable value through data-led digital transformation.
+          </p>
+          <div class="insights-hero-actions">
+            <a href="#filters" class="btn-insights-hero">
+              Explore Case Studies
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Column: Hero Visual Image -->
+        <div class="insights-hero-visual">
+          <img src="images/istockphoto-1344939844-612x612.jpg" alt="Edge Analytics Team Collaborating"
+            class="insights-hero-image">
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Interactive Filters & Grid Section -->
+  <section class="insights-filter-section" id="filters">
+    <div class="container">
+      <div class="insights-filter-container">
+
+        <!-- Search Bar -->
         <section class="search-bar">
-
+          <div class="search-input-wrapper">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
             <input type="text" id="searchInput" placeholder="Search case studies...">
-
+          </div>
         </section>
 
-        <section id="caseStudies" class="case-grid">
+        <!-- Case Studies Cards Grid -->
+        <div id="caseStudies" class="case-grid">
+          <!-- Cards appear here dynamically -->
+        </div>
 
-            <!-- Cards appear here -->
+      </div>
+    </div>
+  </section>
 
-        </section>
+  <!-- Solve Your Toughest Challenges CTA Section -->
+  <section class="challenges-cta-section">
+    <div class="container challenges-cta-container">
+      <!-- Left Side: Icon & Copy -->
+      <div class="challenges-cta-left">
+        <div class="challenges-cta-icon-wrapper">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </div>
+        <div class="challenges-cta-text">
+          <h2 class="challenges-cta-title">Let's solve your toughest challenges</h2>
+          <p class="challenges-cta-desc">Whether you are modernising, strengthening risk or driving transformation our
+            team is ready to help.</p>
+        </div>
+      </div>
 
-    </main>
+      <!-- Right Side: Actions -->
+      <div class="challenges-cta-actions">
+        <a href="contact.html" class="btn btn-book-call">
+          Book a call
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M23 7l-7 5 7 5V7z"></path>
+            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+          </svg>
+        </a>
+        <a href="contact.html" class="btn btn-callback">
+          Let's call you back
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+            stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
 
-    <script>
-        let caseStudies = [];
+  <!-- Footer Section -->
+  <footer class="main-footer">
+    <!-- Newsletter Form Section -->
+    <div class="footer-newsletter" id="newsletter">
+      <div class="container newsletter-container">
+        <div class="newsletter-content">
+          <h3 class="newsletter-title">Stay Ahead with Data &amp; Digital Insights</h3>
+          <p class="newsletter-text">Subscribe to receive insights, case studies, and innovation updates from Edge
+            Analytics.</p>
+        </div>
+        <!--Zoho Campaigns Web-Optin Form's Header Code Starts Here-->
+        <script type="text/javascript" src="https://zgnp-zngp.maillist-manage.com/js/optin.min.js"
+          onload="setupSF('sf3za4339ba40a74b0d4629ad5e508587b15e4e7900ac33186a089454c11492cc141','ZCFORMVIEW',false,'light',false,'0')"></script>
+        <script type="text/javascript">
+          function runOnFormSubmit_sf3za4339ba40a74b0d4629ad5e508587b15e4e7900ac33186a089454c11492cc141(th) {
+            /*Before submit, if you want to trigger your event, "include your code here"*/
+          };
+        </script>
+        <!--Zoho Campaigns Web-Optin Form's Header Code Ends Here-->
 
-        async function loadCaseStudies() {
-            try {
-                const response = await fetch("/api/case-studies");
+        <!--Zoho Campaigns Web-Optin Form Starts Here-->
+        <div id="sf3za4339ba40a74b0d4629ad5e508587b15e4e7900ac33186a089454c11492cc141" data-type="signupform"
+          style="opacity: 1;">
+          <div id="customForm">
+            <div style="background-color: transparent; width: 100%; z-index: 2; overflow: hidden" name="SIGNUP_BODY">
+              <div>
+                <div style="position:relative;">
+                  <div id="Zc_SignupSuccess"
+                    style="display:none;position:absolute;margin-left:4%;width:90%;background-color: white; padding: 3px; border: 3px solid rgb(194, 225, 154);  margin-top: 10px;margin-bottom:10px;word-break:break-all">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tbody>
+                        <tr>
+                          <td width="10%">
+                            <img class="successicon"
+                              src="https://zgnp-zngp.maillist-manage.com/images/challangeiconenable.jpg"
+                              align="absmiddle">
+                          </td>
+                          <td>
+                            <span id="signupSuccessMsg"
+                              style="color: rgb(73, 140, 132); font-family: sans-serif; font-size: 14px;word-break:break-word">&nbsp;&nbsp;Thank
+                              you for Signing Up</span>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <form method="POST" id="zcampaignOptinForm" class="newsletter-form"
+                  action="https://zgnp-zngp.maillist-manage.com/weboptin.zc" target="_zcSignup">
+                  <div
+                    style="background-color: rgb(255, 235, 232); padding: 10px; color: rgb(210, 0, 0); font-size: 11px; margin: 20px 10px 0px; border: 1px solid rgb(255, 217, 211); opacity: 1; display: none"
+                    id="errorMsgDiv">Please correct the marked field(s) below.</div>
 
-                if (!response.ok) {
-                    throw new Error(`HTTP Error: ${response.status}`);
-                }
+                  <input type="text" placeholder="Enter your email" name="CONTACT_EMAIL" id="EMBED_FORM_EMAIL_LABEL"
+                    class="newsletter-input">
+                  <input type="button" name="SIGNUP_SUBMIT_BUTTON" id="zcWebOptin" value="Subscribe"
+                    class="btn-newsletter">
 
-                const result = await response.json();
+                  <input type="hidden" id="fieldBorder" value="">
+                  <input type="hidden" id="submitType" name="submitType" value="optinCustomView">
+                  <input type="hidden" id="emailReportId" name="emailReportId" value="">
+                  <input type="hidden" id="formType" name="formType" value="QuickForm">
+                  <input type="hidden" name="zx" id="cmpZuid" value="133390f22">
+                  <input type="hidden" name="zcvers" value="3.0">
+                  <input type="hidden" name="oldListIds" id="allCheckedListIds" value="">
+                  <input type="hidden" id="mode" name="mode" value="OptinCreateView">
+                  <input type="hidden" id="zcld" name="zcld" value="116c85657f80a0703">
+                  <input type="hidden" id="zctd" name="zctd" value="116c85657f8094b89">
+                  <input type="hidden" id="document_domain" value="">
+                  <input type="hidden" id="zc_Url" value="zgnp-zngp.maillist-manage.com">
+                  <input type="hidden" id="new_optin_response_in" value="0">
+                  <input type="hidden" id="duplicate_optin_response_in" value="0">
+                  <input type="hidden" name="zc_trackCode" id="zc_trackCode" value="ZCFORMVIEW">
+                  <input type="hidden" id="zc_formIx" name="zc_formIx"
+                    value="3za4339ba40a74b0d4629ad5e508587b15e4e7900ac33186a089454c11492cc141">
+                  <input type="hidden" id="viewFrom" value="URL_ACTION">
+                  <span style="display: none" id="dt_CONTACT_EMAIL">1,true,6,Contact Email,2</span>
+                </form>
+              </div>
+            </div>
+          </div>
+          <img src="https://zgnp-zngp.maillist-manage.com/images/spacer.gif" id="refImage"
+            onload="referenceSetter(this)" style="display:none;">
+        </div>
+        <input type="hidden" id="signupFormType" value="QuickForm_Horizontal">
+        <div id="zcOptinOverLay" oncontextmenu="return false"
+          style="display:none;text-align: center; background-color: rgb(0, 0, 0); opacity: 0.5; z-index: 100; position: fixed; width: 100%; top: 0px; left: 0px; height: 988px;">
+        </div>
+        <div id="zcOptinSuccessPopup"
+          style="display:none;z-index: 9999;width: 800px; height: 40%;top: 84px;position: fixed; left: 26%;background-color: #FFFFFF;border-color: #E6E6E6; border-style: solid; border-width: 1px;  box-shadow: 0 1px 10px #424242;padding: 35px;">
+          <span style="position: absolute;top: -16px;right:-14px;z-index:99999;cursor: pointer;" id="closeSuccess">
+            <img src="https://zgnp-zngp.maillist-manage.com/images/videoclose.png">
+          </span>
+          <div id="zcOptinSuccessPanel"></div>
+        </div>
+        <!--Zoho Campaigns Web-Optin Form Ends Here-->
+      </div>
+    </div>
 
-                caseStudies = result.data || [];
+    <!-- Main Footer Grid and Brand Info -->
+    <div class="footer-bottom">
+      <div class="container footer-grid">
+        <!-- Company Info Column -->
+        <div class="footer-brand">
+          <h2 class="footer-logo">Edge Analytics</h2>
+          <p class="footer-tagline">Delivering intelligent analytics, digital transformation, and risk solutions across
+            Africa.</p>
+          <div class="social-links">
+            <a href="#" class="social-btn" aria-label="LinkedIn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                <rect x="2" y="9" width="4" height="12" />
+                <circle cx="4" cy="4" r="2" />
+              </svg>
+            </a>
+            <a href="#" class="social-btn" aria-label="X (formerly Twitter)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4l11.733 16h4.267l-11.733 -16z" />
+                <path d="M4 20l6.768-6.768m2.46-2.46L20 4" />
+              </svg>
+            </a>
+            <a href="#" class="social-btn" aria-label="YouTube">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25a29 29 0 0 0-.46-5.33z" />
+                <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" />
+              </svg>
+            </a>
+          </div>
+        </div>
 
-                displayCaseStudies(caseStudies);
+        <!-- Links Columns -->
+        <div class="footer-links-column">
+          <h4 class="footer-links-title">Home</h4>
+          <ul class="footer-links-list">
+            <li><a href="index.html" class="footer-link">Proven Impact</a></li>
+            <li><a href="digital-services.html" class="footer-link">Our Services</a></li>
+            <li><a href="index.html#why-us" class="footer-link">Why Edge Analytics</a></li>
+            <li><a href="insights.html" class="footer-link">Our Latest Insights</a></li>
+          </ul>
+        </div>
 
-            } catch (err) {
+        <div class="footer-links-column">
+          <h4 class="footer-links-title">About Us</h4>
+          <ul class="footer-links-list">
+            <li><a href="about.html" class="footer-link">Who We Are</a></li>
+            <li><a href="about.html#what-we-do" class="footer-link">What We Do</a></li>
+            <li><a href="#" class="footer-link">Our Values</a></li>
+            <li><a href="#" class="footer-link">Our African Presence</a></li>
+          </ul>
+        </div>
 
-                console.error(err);
+        <div class="footer-links-column">
+          <h4 class="footer-links-title">Our Services</h4>
+          <ul class="footer-links-list">
+            <li><a href="service-digital.html" class="footer-link">Digital Services</a></li>
+            <li><a href="service-risk.html" class="footer-link">Risk Management</a></li>
+            <li><a href="service-advisory.html" class="footer-link">Advisory Services</a></li>
+            <li><a href="service-managed.html" class="footer-link">Managed Services</a></li>
+          </ul>
+        </div>
 
-                document.getElementById("caseStudies").innerHTML = `
+        <div class="footer-links-column">
+          <h4 class="footer-links-title">Support</h4>
+          <ul class="footer-links-list">
+            <li><a href="#" class="footer-link">Help Center</a></li>
+            <li><a href="#" class="footer-link">FAQ</a></li>
+            <li><a href="#" class="footer-link">Terms</a></li>
+            <li><a href="#" class="footer-link">Privacy</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Copyright Bar -->
+    <div class="footer-copyright-bar">
+      <div class="container copyright-container">
+        <p class="copyright-text">&copy; 2026 Edge Analytics PTY Ltd. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating Chat Widget -->
+  <div class="chat-widget-wrapper">
+    <a href="contact.html#contact-form" class="chat-widget-btn" aria-label="Open chat assistant">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      </svg>
+    </a>
+  </div>
+
+  <!-- Back to Top Button -->
+  <button id="back-to-top" class="back-to-top-btn" aria-label="Back to top">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+      stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+  </button>
+
+  <!-- Glassmorphic Reader Modal overlay -->
+  <div class="insights-reader-modal" id="reader-modal">
+    <div class="modal-backdrop" id="modal-backdrop"></div>
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="modal-header-left">
+          <div class="modal-badge-group">
+            <span class="modal-category" id="modal-category">Category</span>
+            <span class="modal-meta" id="modal-meta">Interactive Document</span>
+          </div>
+          <div class="modal-doc-title-wrapper">
+            <span class="modal-doc-icon" id="modal-doc-icon"></span>
+            <span class="modal-doc-name" id="modal-doc-name">document.pdf</span>
+          </div>
+        </div>
+
+        <!-- View mode switcher tabs -->
+        <div class="modal-view-mode-tabs" id="view-mode-tabs">
+          <button class="view-mode-btn active" data-mode="document">Document View</button>
+          <button class="view-mode-btn" data-mode="text">Text View</button>
+        </div>
+
+        <div class="modal-header-right">
+          <!-- Close button -->
+          <button class="btn-close-modal" id="btn-close-modal" aria-label="Close modal">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Multi-mode content container -->
+      <div class="modal-content-panels">
+
+        <!-- Mode A: Native Document Viewer -->
+        <div class="modal-content-panel" id="document-viewer">
+
+          <!-- Sub-mode 1: PDF Reader -->
+          <div class="doc-viewer-mode-panel active" id="pdf-viewer-mode">
+            <div class="pdf-viewer-toolbar">
+              <div class="pdf-toolbar-group">
+                <button class="toolbar-btn" id="pdf-prev" title="Previous Page">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                  </svg>
+                </button>
+                <span class="pdf-page-display"><span id="pdf-current-page">1</span> / <span
+                    id="pdf-total-pages">1</span></span>
+                <button class="toolbar-btn" id="pdf-next" title="Next Page">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </button>
+              </div>
+              <div class="pdf-toolbar-separator"></div>
+              <div class="pdf-toolbar-group">
+                <button class="toolbar-btn" id="pdf-zoom-out" title="Zoom Out">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                </button>
+                <span class="pdf-zoom-display" id="pdf-zoom-val">100%</span>
+                <button class="toolbar-btn" id="pdf-zoom-in" title="Zoom In">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                </button>
+              </div>
+              <div class="pdf-toolbar-separator"></div>
+              <div class="pdf-toolbar-group">
+                <button class="toolbar-btn btn-text-adjust" id="pdf-fit-width" title="Fit to Width">Fit Width</button>
+                <button class="toolbar-btn btn-text-adjust" id="pdf-fit-page" title="Fit to Page">Fit Page</button>
+              </div>
+            </div>
+            <div class="pdf-canvas-wrapper" id="pdf-canvas-wrapper">
+              <div id="pdf-canvas-container">
+                <!-- Canvases added dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Sub-mode 2: Word (DOCX) Viewer -->
+          <div class="doc-viewer-mode-panel" id="word-viewer-mode" style="display: none;">
+            <div class="word-viewer-toolbar">
+              <div class="word-toolbar-group">
+                <span class="word-icon-lbl">Word Document</span>
+                <span class="word-count-display" id="word-count-val">0 words</span>
+              </div>
+            </div>
+            <div class="word-pages-wrapper" id="word-pages-wrapper">
+              <div class="word-page" id="word-page-container"></div>
+            </div>
+          </div>
+
+          <!-- Sub-mode 3: PowerPoint Presentation Player -->
+          <div class="doc-viewer-mode-panel" id="pptx-viewer-mode" style="display: none;">
+            <div class="pptx-player-container">
+              <div class="pptx-slide-screen" id="pptx-slide-screen"></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Mode B: Original Clean Text View -->
+        <div class="modal-content-panel" id="clean-text-viewer" style="display: none;">
+          <div class="modal-scrollable-content">
+            <h2 class="modal-article-title" id="modal-title">Article Title</h2>
+            <div class="modal-article-banner" id="modal-banner"></div>
+            <div class="modal-article-body" id="modal-body"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Dynamic Parsing Progress Overlay -->
+    <div class="parsing-overlay" id="parsing-overlay">
+      <div class="parsing-card">
+        <div class="parsing-spinner">
+          <svg class="spinner-svg" viewBox="0 0 50 50">
+            <circle class="path" cx="25" cy="25" r="20" fill="none" stroke="#0db39e" stroke-width="4"></circle>
+          </svg>
+        </div>
+        <h3 class="parsing-title">Processing Document</h3>
+        <p class="parsing-status" id="parsing-status">Fetching PDF document...</p>
+        <div class="parsing-progress-bar">
+          <div class="parsing-progress-fill" id="parsing-progress-fill" style="width: 0%;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <!-- External PDF parser -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+
+  <script>
+    let caseStudies = [];
+
+    async function loadCaseStudies() {
+      try {
+        const response = await fetch("https://website-api-wm31.onrender.com/api/case-studies");
+
+        if (!response.ok) {
+          throw new Error(`HTTP Error: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        caseStudies = result.data || [];
+
+        displayCaseStudies(caseStudies);
+
+      } catch (err) {
+
+        console.error(err);
+
+        document.getElementById("caseStudies").innerHTML = `
             <div class="error-message">
                 <h2>Unable to load case studies</h2>
                 <p>Please try again later.</p>
             </div>
         `;
-            }
-        }
+      }
+    }
 
-        function displayCaseStudies(data) {
+    function displayCaseStudies(data) {
 
-            const container = document.getElementById("caseStudies");
+      const container = document.getElementById("caseStudies");
 
-            container.innerHTML = "";
+      container.innerHTML = "";
 
-            if (data.length === 0) {
+      if (data.length === 0) {
 
-                container.innerHTML = `
+        container.innerHTML = `
             <div class="empty-state">
                 <h2>No case studies found</h2>
             </div>
         `;
 
-                return;
-            }
+        return;
+      }
 
-            data.forEach(cs => {
+      const caseStudyImages = [
+        "insight_education.png",
+        "insight_security.png",
+        "istockphoto-1344939844-612x612.jpg",
+        "istockphoto-1347880350-612x612.jpg",
+        "istockphoto-1451866244-612x612.jpg",
+        "istockphoto-2199045704-612x612.jpg"
+      ];
 
-                container.innerHTML += `
+      data.forEach(cs => {
+        // Select a random cover image from the images/casestudies/ folder
+        const randomIndex = Math.floor(Math.random() * caseStudyImages.length);
+        const imgUrl = "images/casestudies/" + caseStudyImages[randomIndex];
+
+        container.innerHTML += `
 
         <article class="case-card">
 
-            <div class="case-header">
-
-                <span class="industry">
-                    ${cs.Industry || ""}
-                </span>
-
-                <span class="service">
-                    ${cs.Service || ""}
-                </span>
-
+            <div class="case-image-wrapper">
+                <img src="${imgUrl}" alt="${cs.Title || 'Case Study'}" class="case-image">
             </div>
 
-            <h2>
-                ${cs.Title}
-            </h2>
+            <div class="case-content">
 
-            <p class="summary">
-                ${(cs.Summary || "").replace(/\n/g, "<br>")}
-            </p>
+                <div class="case-header">
 
-            <div class="stats">
+                    <span class="industry case-tag case-tag-industry">
+                        ${cs.Industry || ""}
+                    </span>
 
-                <div class="stat">
-                    <strong>${cs.Stat_1 || ""}</strong>
-                </div>
-
-                <div class="stat">
-                    <strong>${cs.Stat_2 || ""}</strong>
-                </div>
-
-                <div class="stat">
-                    <strong>${cs.Stat_3 || ""}</strong>
-                </div>
-
-            </div>
-
-            <div class="footer">
-
-                <div class="author">
-
-                    ${cs.Author || ""}
+                    <span class="service case-tag case-tag-service">
+                        ${cs.Service || ""}
+                    </span>
 
                 </div>
 
-                <a
-                    href="case-study.html?slug=${cs.Slug}"
-                    class="read-more">
+                <h2>
+                    ${cs.Title}
+                </h2>
 
-                    View Case Study →
+                <p class="summary">
+                    ${(cs.Summary || "").replace(/\n/g, "<br>")}
+                </p>
 
-                </a>
+                <div class="stats">
+
+                    <div class="stat">
+                        <strong>${cs.Stat_1 || ""}</strong>
+                    </div>
+
+                    <div class="stat">
+                        <strong>${cs.Stat_2 || ""}</strong>
+                    </div>
+
+                    <div class="stat">
+                        <strong>${cs.Stat_3 || ""}</strong>
+                    </div>
+
+                </div>
+
+                <div class="footer">
+
+                    <div class="author">
+
+                        ${cs.Author || ""}
+
+                    </div>
+
+                    <a
+                        href="case-study.html?slug=${cs.Slug}"
+                        data-pdf="${cs.pdf || ''}"
+                        data-title="${cs.Title || 'Case Study'}"
+                        class="read-more view-case-study-btn">
+
+                        View Case Study
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+
+                    </a>
+
+                </div>
 
             </div>
 
@@ -146,38 +639,304 @@
 
         `;
 
-            });
+      });
 
+    }
+
+    // Intercept clicks on the View Case Study button to open the PDF in the reader modal
+    const caseStudiesContainer = document.getElementById("caseStudies");
+    if (caseStudiesContainer) {
+      caseStudiesContainer.addEventListener("click", function(e) {
+        const btn = e.target.closest(".view-case-study-btn");
+        if (btn) {
+          e.preventDefault();
+          const pdfUrl = btn.getAttribute("data-pdf");
+          const title = btn.getAttribute("data-title");
+          if (pdfUrl) {
+            loadAndRenderPDF(pdfUrl, title);
+          } else {
+            alert("No PDF document linked to this case study.");
+          }
+        }
+      });
+    }
+
+    // PDF.js rendering logic
+    async function loadAndRenderPDF(pdfUrl, title) {
+      const overlay = document.getElementById('parsing-overlay');
+      const status = document.getElementById('parsing-status');
+      const progressFill = document.getElementById('parsing-progress-fill');
+      
+      if (overlay) {
+        overlay.classList.add('active');
+        if (status) status.textContent = "Fetching PDF document...";
+        if (progressFill) progressFill.style.width = "30%";
+      }
+
+      try {
+        const targetUrl = pdfUrl.startsWith('http') ? pdfUrl : "https://website-api-wm31.onrender.com" + pdfUrl;
+        
+        const response = await fetch(targetUrl);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        document
-            .getElementById("searchInput")
-            .addEventListener("keyup", function () {
+        if (progressFill) progressFill.style.width = "60%";
+        if (status) status.textContent = "Loading pages...";
 
-                const search = this.value.toLowerCase();
+        const arrayBuffer = await response.arrayBuffer();
+        const typedarray = new Uint8Array(arrayBuffer);
 
-                const filtered = caseStudies.filter(cs => {
+        if (window.pdfjsLib) {
+          const pdf = await window.pdfjsLib.getDocument(typedarray).promise;
+          
+          const container = document.getElementById('pdf-canvas-container');
+          container.innerHTML = '';
 
-                    return (
+          const totalPages = pdf.numPages;
+          document.getElementById('pdf-total-pages').textContent = totalPages;
+          document.getElementById('pdf-current-page').textContent = 1;
 
-                        (cs.Title || "").toLowerCase().includes(search) ||
+          if (progressFill) progressFill.style.width = "80%";
+          if (status) status.textContent = "Rendering PDF pages...";
 
-                        (cs.Industry || "").toLowerCase().includes(search) ||
+          for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+            const page = await pdf.getPage(pageNum);
+            const scale = 1.35;
+            const viewport = page.getViewport({ scale: scale });
 
-                        (cs.Service || "").toLowerCase().includes(search) ||
+            const canvas = document.createElement('canvas');
+            canvas.className = 'pdf-page-canvas';
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+            container.appendChild(canvas);
 
-                        (cs.Solution || "").toLowerCase().includes(search)
+            const context = canvas.getContext('2d');
+            const renderContext = {
+              canvasContext: context,
+              viewport: viewport
+            };
+            await page.render(renderContext).promise;
+          }
 
-                    );
+          if (overlay) overlay.classList.remove('active');
 
-                });
+          const fileName = pdfUrl.split('/').pop().split('?')[0].replace(/^\d+_/,'');
+          const articleData = {
+            category: "Case Study PDF",
+            date: "Interactive Document",
+            readTime: `${totalPages} page(s)`,
+            title: title,
+            docName: fileName,
+            type: 'pdf',
+            content: `
+              <h2>${title}</h2>
+              <p>Document <strong>${fileName}</strong> has been fetched and rendered successfully.</p>
+              <p>Total pages: <strong>${totalPages}</strong>.</p>
+            `
+          };
+          
+          openReaderModal(articleData);
+        } else {
+          throw new Error("pdfjsLib is not loaded");
+        }
+      } catch (error) {
+        console.error("Error loading PDF:", error);
+        if (status) status.textContent = "Error rendering PDF. Opening fallback...";
+        setTimeout(() => {
+          if (overlay) overlay.classList.remove('active');
+          alert("Failed to load PDF: " + error.message);
+        }, 1500);
+      }
+    }
 
-                displayCaseStudies(filtered);
+    // ==========================================================================
+    // Reader Modal Controls
+    // ==========================================================================
+    const modal = document.getElementById('reader-modal');
+    const modalCloseBtn = document.getElementById('btn-close-modal');
+    const modalBackdrop = document.getElementById('modal-backdrop');
 
-            });
+    const modalCategory = document.getElementById('modal-category');
+    const modalMeta = document.getElementById('modal-meta');
+    const modalDocIcon = document.getElementById('modal-doc-icon');
+    const modalDocName = document.getElementById('modal-doc-name');
 
-        loadCaseStudies();
-    </script>
+    const viewModeBtns = document.querySelectorAll('.view-mode-btn');
+    const documentViewer = document.getElementById('document-viewer');
+    const cleanTextViewer = document.getElementById('clean-text-viewer');
+
+    const pdfViewerMode = document.getElementById('pdf-viewer-mode');
+    const wordViewerMode = document.getElementById('word-viewer-mode');
+    const pptxViewerMode = document.getElementById('pptx-viewer-mode');
+
+    const textTitle = document.querySelector('#clean-text-viewer #modal-title');
+    const textBanner = document.querySelector('#clean-text-viewer #modal-banner');
+    const textBody = document.querySelector('#clean-text-viewer #modal-body');
+
+    let pdfZoomScale = 1.0;
+
+    if (window.pdfjsLib) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+    }
+
+    function getDocIconSvg(type) {
+      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`;
+    }
+
+    function openReaderModal(article) {
+      viewModeBtns.forEach(btn => btn.classList.remove('active'));
+      const docViewTab = document.querySelector('.view-mode-btn[data-mode="document"]');
+      if (docViewTab) docViewTab.classList.add('active');
+      if (documentViewer) documentViewer.style.display = 'flex';
+      if (cleanTextViewer) cleanTextViewer.style.display = 'none';
+
+      if (modalCategory) modalCategory.textContent = article.category;
+      if (modalMeta) modalMeta.textContent = article.readTime;
+      if (modalDocName) modalDocName.textContent = article.docName;
+
+      if (modalDocIcon) {
+        modalDocIcon.className = `modal-doc-icon pdf-icon`;
+        modalDocIcon.innerHTML = getDocIconSvg('pdf');
+      }
+
+      if (pdfViewerMode) pdfViewerMode.style.display = 'flex';
+      if (wordViewerMode) wordViewerMode.style.display = 'none';
+      if (pptxViewerMode) pptxViewerMode.style.display = 'none';
+
+      if (textTitle) textTitle.textContent = article.title;
+      if (textBanner) textBanner.style.display = 'none';
+      if (textBody) textBody.innerHTML = article.content;
+
+      if (modal) modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeReaderModal() {
+      if (modal) modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeReaderModal);
+    if (modalBackdrop) modalBackdrop.addEventListener('click', closeReaderModal);
+
+    viewModeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        viewModeBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const mode = btn.getAttribute('data-mode');
+
+        if (mode === 'document') {
+          if (documentViewer) documentViewer.style.display = 'flex';
+          if (cleanTextViewer) cleanTextViewer.style.display = 'none';
+        } else {
+          if (documentViewer) documentViewer.style.display = 'none';
+          if (cleanTextViewer) cleanTextViewer.style.display = 'block';
+        }
+      });
+    });
+
+    const pdfCanvasContainer = document.getElementById('pdf-canvas-container');
+    const pdfZoomVal = document.getElementById('pdf-zoom-val');
+
+    function updatePDFZoom(scaleChange = null, absolute = null) {
+      if (absolute !== null) {
+        pdfZoomScale = absolute;
+      } else if (scaleChange !== null) {
+        pdfZoomScale = Math.max(0.5, Math.min(2.0, pdfZoomScale + scaleChange));
+      }
+      if (pdfZoomVal) pdfZoomVal.textContent = Math.round(pdfZoomScale * 100) + '%';
+      if (pdfCanvasContainer) {
+        pdfCanvasContainer.style.transform = `scale(${pdfZoomScale})`;
+      }
+    }
+
+    const zoomInBtn = document.getElementById('pdf-zoom-in');
+    const zoomOutBtn = document.getElementById('pdf-zoom-out');
+    const fitWidthBtn = document.getElementById('pdf-fit-width');
+    const fitPageBtn = document.getElementById('pdf-fit-page');
+
+    if (zoomInBtn) zoomInBtn.addEventListener('click', () => updatePDFZoom(0.1));
+    if (zoomOutBtn) zoomOutBtn.addEventListener('click', () => updatePDFZoom(-0.1));
+    if (fitWidthBtn) fitWidthBtn.addEventListener('click', () => updatePDFZoom(null, 1.15));
+    if (fitPageBtn) fitPageBtn.addEventListener('click', () => updatePDFZoom(null, 0.9));
+
+    const pdfCanvasWrapper = document.getElementById('pdf-canvas-wrapper');
+    if (pdfCanvasWrapper) {
+      pdfCanvasWrapper.addEventListener('scroll', () => {
+        const scrollY = pdfCanvasWrapper.scrollTop;
+        const pages = pdfCanvasContainer.children;
+        if (!pages.length) return;
+
+        let activePage = 1;
+        let minDiff = Infinity;
+
+        for (let i = 0; i < pages.length; i++) {
+          const pageTop = pages[i].offsetTop;
+          const diff = Math.abs(pageTop - scrollY - 20);
+          if (diff < minDiff) {
+            minDiff = diff;
+            activePage = i + 1;
+          }
+        }
+        const currPageSpan = document.getElementById('pdf-current-page');
+        if (currPageSpan) currPageSpan.textContent = activePage;
+      });
+    }
+
+    const prevBtn = document.getElementById('pdf-prev');
+    const nextBtn = document.getElementById('pdf-next');
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        const pages = pdfCanvasContainer.children;
+        const currPageSpan = document.getElementById('pdf-current-page');
+        const curr = parseInt(currPageSpan ? currPageSpan.textContent : '1') || 1;
+        if (curr > 1 && pages[curr - 2]) {
+          pages[curr - 2].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        const pages = pdfCanvasContainer.children;
+        const currPageSpan = document.getElementById('pdf-current-page');
+        const curr = parseInt(currPageSpan ? currPageSpan.textContent : '1') || 1;
+        if (curr < pages.length && pages[curr]) {
+          pages[curr].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+
+    document
+      .getElementById("searchInput")
+      .addEventListener("keyup", function () {
+
+        const search = this.value.toLowerCase();
+
+        const filtered = caseStudies.filter(cs => {
+
+          return (
+
+            (cs.Title || "").toLowerCase().includes(search) ||
+
+            (cs.Industry || "").toLowerCase().includes(search) ||
+
+            (cs.Service || "").toLowerCase().includes(search) ||
+
+            (cs.Solution || "").toLowerCase().includes(search)
+
+          );
+
+        });
+
+        displayCaseStudies(filtered);
+
+      });
+
+    loadCaseStudies();
+  </script>
 
 </body>
 
