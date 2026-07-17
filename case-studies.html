@@ -98,8 +98,8 @@
     <div class="container">
       <div class="insights-filter-container">
 
-        <!-- Search Bar -->
-        <section class="search-bar">
+        <!-- Interactive Horizontal Filters -->
+        <div class="filter-controls">
           <div class="search-input-wrapper">
             <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
               stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -108,7 +108,36 @@
             </svg>
             <input type="text" id="searchInput" placeholder="Search case studies...">
           </div>
-        </section>
+
+          <div class="select-filters-grid">
+            <div class="select-wrapper">
+              <select id="filterIndustry">
+                <option value="all">All Industries</option>
+              </select>
+            </div>
+
+            <div class="select-wrapper">
+              <select id="filterService">
+                <option value="all">All Services</option>
+              </select>
+            </div>
+
+            <div class="select-wrapper">
+              <select id="filterSolution">
+                <option value="all">All Solutions</option>
+              </select>
+            </div>
+
+            <button id="btnResetFilters" class="btn-reset-filters">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 4v6h-6"></path>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+              </svg>
+              Reset
+            </button>
+          </div>
+        </div>
 
         <!-- Case Studies Cards Grid -->
         <div id="caseStudies" class="case-grid">
@@ -362,141 +391,7 @@
     </svg>
   </button>
 
-  <!-- Glassmorphic Reader Modal overlay -->
-  <div class="insights-reader-modal" id="reader-modal">
-    <div class="modal-backdrop" id="modal-backdrop"></div>
-    <div class="modal-container">
-      <div class="modal-header">
-        <div class="modal-header-left">
-          <div class="modal-badge-group">
-            <span class="modal-category" id="modal-category">Category</span>
-            <span class="modal-meta" id="modal-meta">Interactive Document</span>
-          </div>
-          <div class="modal-doc-title-wrapper">
-            <span class="modal-doc-icon" id="modal-doc-icon"></span>
-            <span class="modal-doc-name" id="modal-doc-name">document.pdf</span>
-          </div>
-        </div>
 
-        <!-- View mode switcher tabs -->
-        <div class="modal-view-mode-tabs" id="view-mode-tabs">
-          <button class="view-mode-btn active" data-mode="document">Document View</button>
-          <button class="view-mode-btn" data-mode="text">Text View</button>
-        </div>
-
-        <div class="modal-header-right">
-          <!-- Close button -->
-          <button class="btn-close-modal" id="btn-close-modal" aria-label="Close modal">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-              stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Multi-mode content container -->
-      <div class="modal-content-panels">
-
-        <!-- Mode A: Native Document Viewer -->
-        <div class="modal-content-panel" id="document-viewer">
-
-          <!-- Sub-mode 1: PDF Reader -->
-          <div class="doc-viewer-mode-panel active" id="pdf-viewer-mode">
-            <div class="pdf-viewer-toolbar">
-              <div class="pdf-toolbar-group">
-                <button class="toolbar-btn" id="pdf-prev" title="Previous Page">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="15 18 9 12 15 6"></polyline>
-                  </svg>
-                </button>
-                <span class="pdf-page-display"><span id="pdf-current-page">1</span> / <span
-                    id="pdf-total-pages">1</span></span>
-                <button class="toolbar-btn" id="pdf-next" title="Next Page">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                  </svg>
-                </button>
-              </div>
-              <div class="pdf-toolbar-separator"></div>
-              <div class="pdf-toolbar-group">
-                <button class="toolbar-btn" id="pdf-zoom-out" title="Zoom Out">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                  </svg>
-                </button>
-                <span class="pdf-zoom-display" id="pdf-zoom-val">100%</span>
-                <button class="toolbar-btn" id="pdf-zoom-in" title="Zoom In">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="12" y1="5" x2="12" y2="19"></line>
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                  </svg>
-                </button>
-              </div>
-              <div class="pdf-toolbar-separator"></div>
-              <div class="pdf-toolbar-group">
-                <button class="toolbar-btn btn-text-adjust" id="pdf-fit-width" title="Fit to Width">Fit Width</button>
-                <button class="toolbar-btn btn-text-adjust" id="pdf-fit-page" title="Fit to Page">Fit Page</button>
-              </div>
-            </div>
-            <div class="pdf-canvas-wrapper" id="pdf-canvas-wrapper">
-              <div id="pdf-canvas-container">
-                <!-- Canvases added dynamically -->
-              </div>
-            </div>
-          </div>
-
-          <!-- Sub-mode 2: Word (DOCX) Viewer -->
-          <div class="doc-viewer-mode-panel" id="word-viewer-mode" style="display: none;">
-            <div class="word-viewer-toolbar">
-              <div class="word-toolbar-group">
-                <span class="word-icon-lbl">Word Document</span>
-                <span class="word-count-display" id="word-count-val">0 words</span>
-              </div>
-            </div>
-            <div class="word-pages-wrapper" id="word-pages-wrapper">
-              <div class="word-page" id="word-page-container"></div>
-            </div>
-          </div>
-
-          <!-- Sub-mode 3: PowerPoint Presentation Player -->
-          <div class="doc-viewer-mode-panel" id="pptx-viewer-mode" style="display: none;">
-            <div class="pptx-player-container">
-              <div class="pptx-slide-screen" id="pptx-slide-screen"></div>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Mode B: Original Clean Text View -->
-        <div class="modal-content-panel" id="clean-text-viewer" style="display: none;">
-          <div class="modal-scrollable-content">
-            <h2 class="modal-article-title" id="modal-title">Article Title</h2>
-            <div class="modal-article-banner" id="modal-banner"></div>
-            <div class="modal-article-body" id="modal-body"></div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- Dynamic Parsing Progress Overlay -->
-    <div class="parsing-overlay" id="parsing-overlay">
-      <div class="parsing-card">
-        <div class="parsing-spinner">
-          <svg class="spinner-svg" viewBox="0 0 50 50">
-            <circle class="path" cx="25" cy="25" r="20" fill="none" stroke="#0db39e" stroke-width="4"></circle>
-          </svg>
-        </div>
-        <h3 class="parsing-title">Processing Document</h3>
-        <p class="parsing-status" id="parsing-status">Fetching PDF document...</p>
-        <div class="parsing-progress-bar">
-          <div class="parsing-progress-fill" id="parsing-progress-fill" style="width: 0%;"></div>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <script src="js/main.js"></script>
   <!-- External PDF parser -->
@@ -517,6 +412,7 @@
 
         caseStudies = result.data || [];
 
+        populateFilters();
         displayCaseStudies(caseStudies);
 
       } catch (err) {
@@ -617,19 +513,17 @@
 
                     </div>
 
-                    <a
-                        href="case-study.html?slug=${cs.Slug}"
-                        data-pdf="${cs.pdf || ''}"
-                        data-title="${cs.Title || 'Case Study'}"
-                        class="read-more view-case-study-btn">
-
-                        View Case Study
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-
-                    </a>
+                   <button
+    class="read-more view-case-study-btn"
+    data-id="${cs.ID}">
+    View Case Study
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2.5"
+        stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+        <polyline points="12 5 19 12 12 19"></polyline>
+    </svg>
+</button>
 
                 </div>
 
@@ -643,301 +537,371 @@
 
     }
 
-    // Intercept clicks on the View Case Study button to open the PDF in the reader modal
-    const caseStudiesContainer = document.getElementById("caseStudies");
-    if (caseStudiesContainer) {
-      caseStudiesContainer.addEventListener("click", function(e) {
-        const btn = e.target.closest(".view-case-study-btn");
-        if (btn) {
-          e.preventDefault();
-          const pdfUrl = btn.getAttribute("data-pdf");
-          const title = btn.getAttribute("data-title");
-          if (pdfUrl) {
-            loadAndRenderPDF(pdfUrl, title);
-          } else {
-            alert("No PDF document linked to this case study.");
-          }
-        }
-      });
-    }
-
-    // PDF.js rendering logic
-    async function loadAndRenderPDF(pdfUrl, title) {
-      const overlay = document.getElementById('parsing-overlay');
-      const status = document.getElementById('parsing-status');
-      const progressFill = document.getElementById('parsing-progress-fill');
-      
-      if (overlay) {
-        overlay.classList.add('active');
-        if (status) status.textContent = "Fetching PDF document...";
-        if (progressFill) progressFill.style.width = "30%";
-      }
-
-      try {
-        const targetUrl = pdfUrl.startsWith('http') ? pdfUrl : "https://website-api-wm31.onrender.com" + pdfUrl;
-        
-        const response = await fetch(targetUrl);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        if (progressFill) progressFill.style.width = "60%";
-        if (status) status.textContent = "Loading pages...";
-
-        const arrayBuffer = await response.arrayBuffer();
-        const typedarray = new Uint8Array(arrayBuffer);
-
-        if (window.pdfjsLib) {
-          const pdf = await window.pdfjsLib.getDocument(typedarray).promise;
-          
-          const container = document.getElementById('pdf-canvas-container');
-          container.innerHTML = '';
-
-          const totalPages = pdf.numPages;
-          document.getElementById('pdf-total-pages').textContent = totalPages;
-          document.getElementById('pdf-current-page').textContent = 1;
-
-          if (progressFill) progressFill.style.width = "80%";
-          if (status) status.textContent = "Rendering PDF pages...";
-
-          for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
-            const page = await pdf.getPage(pageNum);
-            const scale = 1.35;
-            const viewport = page.getViewport({ scale: scale });
-
-            const canvas = document.createElement('canvas');
-            canvas.className = 'pdf-page-canvas';
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-            container.appendChild(canvas);
-
-            const context = canvas.getContext('2d');
-            const renderContext = {
-              canvasContext: context,
-              viewport: viewport
-            };
-            await page.render(renderContext).promise;
-          }
-
-          if (overlay) overlay.classList.remove('active');
-
-          const fileName = pdfUrl.split('/').pop().split('?')[0].replace(/^\d+_/,'');
-          const articleData = {
-            category: "Case Study PDF",
-            date: "Interactive Document",
-            readTime: `${totalPages} page(s)`,
-            title: title,
-            docName: fileName,
-            type: 'pdf',
-            content: `
-              <h2>${title}</h2>
-              <p>Document <strong>${fileName}</strong> has been fetched and rendered successfully.</p>
-              <p>Total pages: <strong>${totalPages}</strong>.</p>
-            `
-          };
-          
-          openReaderModal(articleData);
-        } else {
-          throw new Error("pdfjsLib is not loaded");
-        }
-      } catch (error) {
-        console.error("Error loading PDF:", error);
-        if (status) status.textContent = "Error rendering PDF. Opening fallback...";
-        setTimeout(() => {
-          if (overlay) overlay.classList.remove('active');
-          alert("Failed to load PDF: " + error.message);
-        }, 1500);
-      }
-    }
-
-    // ==========================================================================
-    // Reader Modal Controls
-    // ==========================================================================
-    const modal = document.getElementById('reader-modal');
-    const modalCloseBtn = document.getElementById('btn-close-modal');
-    const modalBackdrop = document.getElementById('modal-backdrop');
-
-    const modalCategory = document.getElementById('modal-category');
-    const modalMeta = document.getElementById('modal-meta');
-    const modalDocIcon = document.getElementById('modal-doc-icon');
-    const modalDocName = document.getElementById('modal-doc-name');
-
-    const viewModeBtns = document.querySelectorAll('.view-mode-btn');
-    const documentViewer = document.getElementById('document-viewer');
-    const cleanTextViewer = document.getElementById('clean-text-viewer');
-
-    const pdfViewerMode = document.getElementById('pdf-viewer-mode');
-    const wordViewerMode = document.getElementById('word-viewer-mode');
-    const pptxViewerMode = document.getElementById('pptx-viewer-mode');
-
-    const textTitle = document.querySelector('#clean-text-viewer #modal-title');
-    const textBanner = document.querySelector('#clean-text-viewer #modal-banner');
-    const textBody = document.querySelector('#clean-text-viewer #modal-body');
-
-    let pdfZoomScale = 1.0;
-
-    if (window.pdfjsLib) {
-      window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
-    }
-
-    function getDocIconSvg(type) {
-      return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`;
-    }
-
-    function openReaderModal(article) {
-      viewModeBtns.forEach(btn => btn.classList.remove('active'));
-      const docViewTab = document.querySelector('.view-mode-btn[data-mode="document"]');
-      if (docViewTab) docViewTab.classList.add('active');
-      if (documentViewer) documentViewer.style.display = 'flex';
-      if (cleanTextViewer) cleanTextViewer.style.display = 'none';
-
-      if (modalCategory) modalCategory.textContent = article.category;
-      if (modalMeta) modalMeta.textContent = article.readTime;
-      if (modalDocName) modalDocName.textContent = article.docName;
-
-      if (modalDocIcon) {
-        modalDocIcon.className = `modal-doc-icon pdf-icon`;
-        modalDocIcon.innerHTML = getDocIconSvg('pdf');
-      }
-
-      if (pdfViewerMode) pdfViewerMode.style.display = 'flex';
-      if (wordViewerMode) wordViewerMode.style.display = 'none';
-      if (pptxViewerMode) pptxViewerMode.style.display = 'none';
-
-      if (textTitle) textTitle.textContent = article.title;
-      if (textBanner) textBanner.style.display = 'none';
-      if (textBody) textBody.innerHTML = article.content;
-
-      if (modal) modal.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeReaderModal() {
-      if (modal) modal.classList.remove('active');
-      document.body.style.overflow = '';
-    }
-
-    if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeReaderModal);
-    if (modalBackdrop) modalBackdrop.addEventListener('click', closeReaderModal);
-
-    viewModeBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        viewModeBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const mode = btn.getAttribute('data-mode');
-
-        if (mode === 'document') {
-          if (documentViewer) documentViewer.style.display = 'flex';
-          if (cleanTextViewer) cleanTextViewer.style.display = 'none';
-        } else {
-          if (documentViewer) documentViewer.style.display = 'none';
-          if (cleanTextViewer) cleanTextViewer.style.display = 'block';
-        }
-      });
+    // Use event delegation so clicks work even after the list is re-rendered
+    document.getElementById("caseStudies").addEventListener("click", function (e) {
+      const btn = e.target.closest(".view-case-study-btn");
+      if (!btn) return;
+      const id = btn.dataset.id;
+      const cs = caseStudies.find(c => String(c.ID) === String(id));
+      if (!cs) return;
+      openReport(cs);
     });
 
-    const pdfCanvasContainer = document.getElementById('pdf-canvas-container');
-    const pdfZoomVal = document.getElementById('pdf-zoom-val');
+    function populateFilters() {
+      const industries = new Set();
+      const services = new Set();
+      const solutions = new Set();
 
-    function updatePDFZoom(scaleChange = null, absolute = null) {
-      if (absolute !== null) {
-        pdfZoomScale = absolute;
-      } else if (scaleChange !== null) {
-        pdfZoomScale = Math.max(0.5, Math.min(2.0, pdfZoomScale + scaleChange));
-      }
-      if (pdfZoomVal) pdfZoomVal.textContent = Math.round(pdfZoomScale * 100) + '%';
-      if (pdfCanvasContainer) {
-        pdfCanvasContainer.style.transform = `scale(${pdfZoomScale})`;
-      }
-    }
+      caseStudies.forEach(cs => {
+        if (cs.Industry) industries.add(cs.Industry.trim());
+        if (cs.Service) services.add(cs.Service.trim());
+        if (cs.Solution) solutions.add(cs.Solution.trim());
+      });
 
-    const zoomInBtn = document.getElementById('pdf-zoom-in');
-    const zoomOutBtn = document.getElementById('pdf-zoom-out');
-    const fitWidthBtn = document.getElementById('pdf-fit-width');
-    const fitPageBtn = document.getElementById('pdf-fit-page');
+      // Populate Industry select
+      const selectIndustry = document.getElementById("filterIndustry");
+      [...industries].sort().forEach(ind => {
+        const opt = document.createElement("option");
+        opt.value = ind;
+        opt.textContent = ind;
+        selectIndustry.appendChild(opt);
+      });
 
-    if (zoomInBtn) zoomInBtn.addEventListener('click', () => updatePDFZoom(0.1));
-    if (zoomOutBtn) zoomOutBtn.addEventListener('click', () => updatePDFZoom(-0.1));
-    if (fitWidthBtn) fitWidthBtn.addEventListener('click', () => updatePDFZoom(null, 1.15));
-    if (fitPageBtn) fitPageBtn.addEventListener('click', () => updatePDFZoom(null, 0.9));
+      // Populate Service select
+      const selectService = document.getElementById("filterService");
+      [...services].sort().forEach(srv => {
+        const opt = document.createElement("option");
+        opt.value = srv;
+        opt.textContent = srv;
+        selectService.appendChild(opt);
+      });
 
-    const pdfCanvasWrapper = document.getElementById('pdf-canvas-wrapper');
-    if (pdfCanvasWrapper) {
-      pdfCanvasWrapper.addEventListener('scroll', () => {
-        const scrollY = pdfCanvasWrapper.scrollTop;
-        const pages = pdfCanvasContainer.children;
-        if (!pages.length) return;
-
-        let activePage = 1;
-        let minDiff = Infinity;
-
-        for (let i = 0; i < pages.length; i++) {
-          const pageTop = pages[i].offsetTop;
-          const diff = Math.abs(pageTop - scrollY - 20);
-          if (diff < minDiff) {
-            minDiff = diff;
-            activePage = i + 1;
-          }
-        }
-        const currPageSpan = document.getElementById('pdf-current-page');
-        if (currPageSpan) currPageSpan.textContent = activePage;
+      // Populate Solution select
+      const selectSolution = document.getElementById("filterSolution");
+      [...solutions].sort().forEach(sol => {
+        const opt = document.createElement("option");
+        opt.value = sol;
+        opt.textContent = sol;
+        selectSolution.appendChild(opt);
       });
     }
 
-    const prevBtn = document.getElementById('pdf-prev');
-    const nextBtn = document.getElementById('pdf-next');
+    function applyFilters() {
+      const search = document.getElementById("searchInput").value.toLowerCase();
+      const industry = document.getElementById("filterIndustry").value;
+      const service = document.getElementById("filterService").value;
+      const solution = document.getElementById("filterSolution").value;
 
-    if (prevBtn) {
-      prevBtn.addEventListener('click', () => {
-        const pages = pdfCanvasContainer.children;
-        const currPageSpan = document.getElementById('pdf-current-page');
-        const curr = parseInt(currPageSpan ? currPageSpan.textContent : '1') || 1;
-        if (curr > 1 && pages[curr - 2]) {
-          pages[curr - 2].scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+      const filtered = caseStudies.filter(cs => {
+        // Search text matching
+        const matchesSearch = !search || (
+          (cs.Title || "").toLowerCase().includes(search) ||
+          (cs.Industry || "").toLowerCase().includes(search) ||
+          (cs.Service || "").toLowerCase().includes(search) ||
+          (cs.Solution || "").toLowerCase().includes(search) ||
+          (cs.Summary || "").toLowerCase().includes(search)
+        );
+
+        // Dropdown matching
+        const matchesIndustry = industry === "all" || String(cs.Industry) === industry;
+        const matchesService = service === "all" || String(cs.Service) === service;
+        const matchesSolution = solution === "all" || String(cs.Solution) === solution;
+
+        return matchesSearch && matchesIndustry && matchesService && matchesSolution;
       });
+
+      displayCaseStudies(filtered);
     }
 
-    if (nextBtn) {
-      nextBtn.addEventListener('click', () => {
-        const pages = pdfCanvasContainer.children;
-        const currPageSpan = document.getElementById('pdf-current-page');
-        const curr = parseInt(currPageSpan ? currPageSpan.textContent : '1') || 1;
-        if (curr < pages.length && pages[curr]) {
-          pages[curr].scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      });
-    }
-
-    document
-      .getElementById("searchInput")
-      .addEventListener("keyup", function () {
-
-        const search = this.value.toLowerCase();
-
-        const filtered = caseStudies.filter(cs => {
-
-          return (
-
-            (cs.Title || "").toLowerCase().includes(search) ||
-
-            (cs.Industry || "").toLowerCase().includes(search) ||
-
-            (cs.Service || "").toLowerCase().includes(search) ||
-
-            (cs.Solution || "").toLowerCase().includes(search)
-
-          );
-
-        });
-
-        displayCaseStudies(filtered);
-
-      });
+    // Add filter event listeners
+    document.getElementById("searchInput").addEventListener("keyup", applyFilters);
+    document.getElementById("searchInput").addEventListener("change", applyFilters);
+    document.getElementById("filterIndustry").addEventListener("change", applyFilters);
+    document.getElementById("filterService").addEventListener("change", applyFilters);
+    document.getElementById("filterSolution").addEventListener("change", applyFilters);
+    document.getElementById("btnResetFilters").addEventListener("click", function () {
+      document.getElementById("searchInput").value = "";
+      document.getElementById("filterIndustry").value = "all";
+      document.getElementById("filterService").value = "all";
+      document.getElementById("filterSolution").value = "all";
+      applyFilters();
+    });
 
     loadCaseStudies();
-  </script>
 
+    function openReport(cs) {
+      // ── Meta bar ──────────────────────────────────────────
+      document.getElementById("rptIndustryPill").textContent = cs.Industry || "";
+      const pdfLink = document.getElementById("rptPdfLink");
+      if (pdfLink) {
+        if (cs.pdf) {
+          pdfLink.href = "/api/case-studies/file?path=" + encodeURIComponent(cs.pdf);
+          pdfLink.style.display = "inline-flex";
+        } else {
+          pdfLink.style.display = "none";
+        }
+      }
+
+      // ── Hero banner ───────────────────────────────────────
+      const hero = document.getElementById("rptHero");
+
+      // Always pick a random image from the local casestudies folder
+      const csHeroImages = [
+        "images/casestudies/insight_education.png",
+        "images/casestudies/insight_security.png",
+        "images/casestudies/istockphoto-1344939844-612x612.jpg",
+        "images/casestudies/istockphoto-1347880350-612x612.jpg",
+        "images/casestudies/istockphoto-1451866244-612x612.jpg",
+        "images/casestudies/istockphoto-2199045704-612x612.jpg"
+      ];
+      const randomHero = csHeroImages[Math.floor(Math.random() * csHeroImages.length)];
+      hero.style.backgroundImage = "url('" + randomHero + "')";
+      function formatContent(text) {
+        if (!text) return "";
+        return text
+          .trim()
+          .split(/\n\s*\n/)
+          .map(para => `<p>${para.replace(/\n/g, "<br>")}</p>`)
+          .join("");
+      }
+
+      document.getElementById("reportTitle").textContent = cs.Title || "";
+      document.getElementById("reportSummary").innerHTML = formatContent(cs.Summary || "");
+
+      // ── Stat chips ────────────────────────────────────────
+      const stats = [cs.Stat_1, cs.Stat_2, cs.Stat_3];
+      ["rptStat1", "rptStat2", "rptStat3"].forEach((id, i) => {
+        const chip = document.getElementById(id + "Chip");
+        const val = stats[i] ? stats[i].trim() : "";
+        chip.style.display = val ? "flex" : "none";
+        if (val) {
+          // Split on first space: e.g. "95 % data accuracy" → val = "95 %", lbl = "data accuracy"
+          const spaceIdx = val.indexOf(" ", val.indexOf(" ") + 1);
+          const numPart = spaceIdx > -1 ? val.slice(0, spaceIdx) : val;
+          const txtPart = spaceIdx > -1 ? val.slice(spaceIdx + 1) : "Key Metric";
+          document.getElementById(id + "Val").textContent = numPart;
+          chip.querySelector(".rpt-stat-lbl").textContent = txtPart;
+        }
+      });
+
+      // ── Sidebar profile ───────────────────────────────────
+      document.getElementById("profileIndustry").textContent = cs.Industry || "—";
+      document.getElementById("profileService").textContent = cs.Service || "—";
+      document.getElementById("profileSolution").textContent = cs.Solution || "—";
+      document.getElementById("profileRegion").textContent = cs.Region || "—";
+      document.getElementById("profileLocation").textContent = cs.Location || "—";
+      document.getElementById("profileAbout").innerHTML = formatContent(cs.About_the_Client || "") || "—";
+
+      // ── Main sections ─────────────────────────────────────
+      document.getElementById("businessChallenge").innerHTML = formatContent(cs.Business_Challenge || "");
+      document.getElementById("proposedSolution").innerHTML = formatContent(cs.Proposed_Solution || "");
+      document.getElementById("resultsAchieved").innerHTML = formatContent(cs.Results_Achieved || "");
+      document.getElementById("businessImpact").innerHTML = formatContent(cs.Business_Impact || "");
+
+      // ── Quote block (show/hide) ───────────────────────────
+      const quoteBlock = document.getElementById("rptQuoteBlock");
+      const quoteText = (cs.Customer_Quotes || "").trim();
+      document.getElementById("customerQuotes").innerHTML = formatContent(quoteText);
+      quoteBlock.style.display = quoteText ? "flex" : "none";
+
+      // ── Open modal ────────────────────────────────────────
+      document.getElementById("reportViewer").style.display = "flex";
+      document.body.style.overflow = "hidden";
+    }
+
+    // Delegate close-button clicks — the modal HTML lives after this script tag
+    document.addEventListener("click", function (e) {
+      if (e.target.closest(".close-report")) {
+        document.getElementById("reportViewer").style.display = "none";
+        document.body.style.overflow = "";
+      }
+    });
+
+    window.addEventListener("click", function (e) {
+      const modal = document.getElementById("reportViewer");
+      if (e.target === modal) {
+        modal.style.display = "none";
+        document.body.style.overflow = "";
+      }
+    });
+  </script>
+  <!-- =====================================================
+       Report Viewer Modal
+  ===================================================== -->
+  <div id="reportViewer" class="report-modal" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
+    <div class="report-backdrop"></div>
+
+    <div class="report-sheet">
+
+      <!-- ── Sticky header bar ── -->
+      <header class="rpt-bar">
+        <div class="rpt-bar-left">
+          <span class="rpt-eyebrow" id="rptCategory">Case Study</span>
+          <span class="rpt-bar-sep">·</span>
+          <span class="rpt-industry-pill" id="rptIndustryPill"></span>
+        </div>
+        <div class="rpt-bar-right">
+
+          <button class="close-report" aria-label="Close">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- ── Scrollable body ── -->
+      <div class="report-body">
+
+        <!-- Hero Banner -->
+        <div class="rpt-hero" id="rptHero">
+          <div class="rpt-hero-overlay"></div>
+          <div class="rpt-hero-text">
+            <h1 class="rpt-title" id="reportTitle"></h1>
+            <p class="rpt-summary" id="reportSummary"></p>
+          </div>
+        </div>
+
+        <!-- Stat pills row -->
+        <div class="rpt-stats-row">
+          <div class="rpt-stat-chip" id="rptStat1Chip">
+            <span class="rpt-stat-val" id="rptStat1Val"></span>
+            <span class="rpt-stat-lbl">Key Metric</span>
+          </div>
+          <div class="rpt-stat-chip" id="rptStat2Chip">
+            <span class="rpt-stat-val" id="rptStat2Val"></span>
+            <span class="rpt-stat-lbl">Key Metric</span>
+          </div>
+          <div class="rpt-stat-chip" id="rptStat3Chip">
+            <span class="rpt-stat-val" id="rptStat3Val"></span>
+            <span class="rpt-stat-lbl">Key Metric</span>
+          </div>
+        </div>
+
+        <!-- Two-column layout: profile + main body -->
+        <div class="rpt-layout">
+
+          <!-- LEFT: Customer Profile sidebar -->
+          <aside class="rpt-sidebar">
+            <div class="rpt-sidebar-card">
+              <h3 class="rpt-sidebar-heading">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                Customer Profile
+              </h3>
+              <dl class="rpt-profile-dl">
+                <div class="rpt-profile-row">
+                  <dt>Industry</dt>
+                  <dd id="profileIndustry"></dd>
+                </div>
+                <div class="rpt-profile-row">
+                  <dt>Service</dt>
+                  <dd id="profileService"></dd>
+                </div>
+                <div class="rpt-profile-row">
+                  <dt>Solution</dt>
+                  <dd id="profileSolution"></dd>
+                </div>
+                <div class="rpt-profile-row">
+                  <dt>Region</dt>
+                  <dd id="profileRegion"></dd>
+                </div>
+                <div class="rpt-profile-row">
+                  <dt>Location</dt>
+                  <dd id="profileLocation"></dd>
+                </div>
+                <div class="rpt-profile-row rpt-about-row">
+                  <dt>About Client</dt>
+                  <dd id="profileAbout"></dd>
+                </div>
+              </dl>
+            </div>
+          </aside>
+
+          <!-- RIGHT: Main sections -->
+          <main class="rpt-main">
+
+            <section class="rpt-section" id="secChallenge">
+              <div class="rpt-section-icon rpt-icon-challenge">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                  <line x1="12" y1="9" x2="12" y2="13" />
+                  <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+              </div>
+              <div class="rpt-section-body">
+                <h2 class="rpt-section-title">Business Challenge</h2>
+                <div id="businessChallenge" class="rpt-section-text"></div>
+              </div>
+            </section>
+
+            <section class="rpt-section" id="secSolution">
+              <div class="rpt-section-icon rpt-icon-solution">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 11 12 14 22 4" />
+                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                </svg>
+              </div>
+              <div class="rpt-section-body">
+                <h2 class="rpt-section-title">Proposed Solution</h2>
+                <div id="proposedSolution" class="rpt-section-text"></div>
+              </div>
+            </section>
+
+            <section class="rpt-section" id="secResults">
+              <div class="rpt-section-icon rpt-icon-results">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10" />
+                  <line x1="12" y1="20" x2="12" y2="4" />
+                  <line x1="6" y1="20" x2="6" y2="14" />
+                  <line x1="2" y1="20" x2="22" y2="20" />
+                </svg>
+              </div>
+              <div class="rpt-section-body">
+                <h2 class="rpt-section-title">Results Achieved</h2>
+                <div id="resultsAchieved" class="rpt-section-text"></div>
+              </div>
+            </section>
+
+            <section class="rpt-section" id="secImpact">
+              <div class="rpt-section-icon rpt-icon-impact">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+              </div>
+              <div class="rpt-section-body">
+                <h2 class="rpt-section-title">Business Impact</h2>
+                <div id="businessImpact" class="rpt-section-text"></div>
+              </div>
+            </section>
+
+            <!-- Quote callout -->
+            <div class="rpt-quote-block" id="rptQuoteBlock">
+              <svg class="rpt-quote-mark" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2
+                  1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z" />
+                <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75
+                  c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z" />
+              </svg>
+              <blockquote id="customerQuotes"></blockquote>
+            </div>
+
+          </main>
+        </div><!-- /.rpt-layout -->
+      </div><!-- /.report-body -->
+    </div><!-- /.report-sheet -->
+  </div>
 </body>
 
 </html>
