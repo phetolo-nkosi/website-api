@@ -993,113 +993,17 @@
   <script src="js/main.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      const caseStudies = {
-        education: [
-          {
-            title: "Turning Data into Decisions: Driving Impact in Higher Education",
-            desc: "Empowering the institution to achieve 95% data accuracy while reducing the reporting timeframe by up to 50% through a unified data and analytics solution.",
-            image: "images/insight_education.png",
-            stats: [
-              { num: "95", text: "95% accurate, single source of truth" },
-              { num: "50", text: "50% more efficient report generation" },
-              { num: "50", text: "50% better decision-making" }
-            ]
-          },
-          {
-            title: "Empowering Student Success: Predictive Analytics in TVET Colleges",
-            desc: "Deploying machine learning models to identify at-risk student cohorts early, improving retention rates by 25% and course completion rates across campuses.",
-            image: "images/insight_cloud.png",
-            stats: [
-              { num: "25", text: "25% increase in retention" },
-              { num: "92", text: "92% prediction accuracy" },
-              { num: "15k+", text: "15k+ students supported" }
-            ]
-          },
-          {
-            title: "Digital Campus Modernisation: Scaling Cloud Infrastructure",
-            desc: "Transitioning legacy physical servers to a secure, resilient cloud architecture, enabling remote learning and reducing IT infrastructure costs by 40%.",
-            image: "images/insight_compliance.png",
-            stats: [
-              { num: "40", text: "40% reduction in IT costs" },
-              { num: "99", text: "99.99% uptime during exams" },
-              { num: "100", text: "100% remote accessibility" }
-            ]
-          }
-        ],
-        nonprofit: [
-          {
-            title: "Strengthening Community Impact: Streamlining Operations for a Regional NGO",
-            desc: "Helping a leading African non-profit optimize resource allocation and donor reporting through automated reporting solutions.",
-            image: "images/insight_compliance.png",
-            stats: [
-              { num: "40", text: "40% faster reporting cycle" },
-              { num: "100", text: "100% data visibility for stakeholders" },
-              { num: "30", text: "30% reduction in admin overhead" }
-            ]
-          },
-          {
-            title: "Donor Fund Transparency: Blockchain-Enabled Audits",
-            desc: "Integrating distributed ledger technology to trace donor funding allocations down to individual community projects, achieving zero audit discrepancies.",
-            image: "images/insight_education.png",
-            stats: [
-              { num: "0", text: "0 audit discrepancies" },
-              { num: "100", text: "100% real-time tracking" },
-              { num: "5", text: "5x faster audit processes" }
-            ]
-          },
-          {
-            title: "Agile Resource Deployment: Mobile Relief Mapping",
-            desc: "Building real-time geospatial dashboards to coordinate medical supply deliveries and humanitarian aid distribution in response to regional crises.",
-            image: "images/insight_security.png",
-            stats: [
-              { num: "60", text: "60% faster emergency response" },
-              { num: "250k+", text: "250k+ beneficiaries reached" },
-              { num: "100", text: "100% live inventory tracking" }
-            ]
-          }
-        ],
-        banking: [
-          {
-            title: "Modernizing Core Infrastructure: AI-Powered Risk Analytics in Retail Banking",
-            desc: "Enabling a top-tier retail bank to identify and mitigate operational risks in real-time, preventing fraud and reducing losses.",
-            image: "images/insight_security.png",
-            stats: [
-              { num: "90", text: "90% reduction in fraudulent transaction attempts" },
-              { num: "25", text: "25% lower risk exposure across portfolios" },
-              { num: "15", text: "15x faster transaction validation" }
-            ]
-          },
-          {
-            title: "Hyper-Personalised Banking: Delivering Real-Time Client Insights",
-            desc: "Harnessing real-time streaming analytics and recommendation engines to offer tailor-made financial products, boosting conversion by 35%.",
-            image: "images/insight_cloud.png",
-            stats: [
-              { num: "35", text: "35% higher campaign conversion" },
-              { num: "4M+", text: "4M+ active customer profiles" },
-              { num: "50", text: "<50ms recommendation latency" }
-            ]
-          },
-          {
-            title: "AML Compliance Automation: Strengthening Financial Crime Detection",
-            desc: "Upgrading anti-money laundering pipelines with graph-database models to trace illicit transaction networks, saving millions in regulatory fines.",
-            image: "images/insight_compliance.png",
-            stats: [
-              { num: "45M+", text: "R45M+ saved in potential fines" },
-              { num: "85", text: "85% reduction in false positives" },
-              { num: "100", text: "100% compliance audit score" }
-            ]
-          }
-        ]
-      };
+      let caseStudies = {};
 
-      const tabs = document.querySelectorAll('.success-tab');
+      const tabsContainer = document.querySelector('.success-tabs');
       const titleEl = document.querySelector('.case-study-title');
       const descEl = document.querySelector('.case-study-desc');
       const imgEl = document.querySelector('.case-study-img');
       const statsContainer = document.querySelector('.case-study-stats-overlay');
-      const dots = document.querySelectorAll('.pagination-dot');
+      const sliderControls = document.querySelector('.slider-controls');
+      const paginationContainer = document.querySelector('.slider-pagination');
 
-      let currentTab = 'education';
+      let currentTab = '';
       let currentIndex = 0;
 
       function updateCaseStudy(tabKey, index) {
@@ -1121,23 +1025,48 @@
           // Render stats
           statsContainer.innerHTML = '';
           data.stats.forEach(stat => {
-            const pill = document.createElement('div');
-            pill.className = 'stat-pill';
-            pill.innerHTML = `
-              <div class="stat-pill-num">${stat.num}</div>
-              <div class="stat-pill-text">${stat.text}</div>
-            `;
-            statsContainer.appendChild(pill);
+            if (stat.num || stat.text) {
+              const pill = document.createElement('div');
+              pill.className = 'stat-pill';
+              pill.innerHTML = `
+                <div class="stat-pill-num">${stat.num}</div>
+                <div class="stat-pill-text">${stat.text}</div>
+              `;
+              statsContainer.appendChild(pill);
+            }
           });
 
-          // Update active classes for tabs
-          tabs.forEach(t => t.classList.remove('active'));
-          const activeTab = document.querySelector(`[data-tab="${tabKey}"]`);
-          if (activeTab) activeTab.classList.add('active');
+          // Update link to Case Studies page with filters applied
+          const link = card.querySelector('.btn-case-study');
+          if (link) {
+            link.setAttribute('href', `case-studies.html?search=${encodeURIComponent(data.title)}`);
+          }
 
-          // Update active classes for dots
-          dots.forEach(d => d.classList.remove('active'));
-          if (dots[index]) dots[index].classList.add('active');
+          // Update active classes for tabs
+          const allTabs = tabsContainer.querySelectorAll('.success-tab');
+          allTabs.forEach(t => {
+            if (t.getAttribute('data-tab') === tabKey) {
+              t.classList.add('active');
+            } else {
+              t.classList.remove('active');
+            }
+          });
+
+          // Handle slider controls visibility and pagination dots
+          if (slides.length <= 1) {
+            sliderControls.style.display = 'none';
+          } else {
+            sliderControls.style.display = 'flex';
+            paginationContainer.innerHTML = '';
+            slides.forEach((_, idx) => {
+              const dot = document.createElement('span');
+              dot.className = `pagination-dot ${idx === index ? 'active' : ''}`;
+              dot.addEventListener('click', () => {
+                updateCaseStudy(tabKey, idx);
+              });
+              paginationContainer.appendChild(dot);
+            });
+          }
 
           card.style.opacity = '1';
           currentTab = tabKey;
@@ -1145,18 +1074,205 @@
         }, 250);
       }
 
-      tabs.forEach((tab) => {
-        tab.addEventListener('click', () => {
-          const key = tab.getAttribute('data-tab');
-          updateCaseStudy(key, 0);
-        });
-      });
+      function parseStat(statStr) {
+        if (!statStr) return { num: "", text: "" };
+        const match = statStr.match(/^([\d%\+\-><\s]+(?:%|\b))(.+)$/) || statStr.match(/^([^\s]+)\s+(.+)$/);
+        if (match) {
+          return {
+            num: match[1].trim(),
+            text: match[2].trim()
+          };
+        }
+        return { num: "", text: statStr };
+      }
 
-      dots.forEach((dot, index) => {
-        dot.addEventListener('click', () => {
-          updateCaseStudy(currentTab, index);
+      async function init() {
+        try {
+          const response = await fetch("https://website-api-wm31.onrender.com/api/case-studies");
+          if (!response.ok) throw new Error("API failed");
+          
+          const result = await response.json();
+          const apiData = result.data || [];
+
+          if (apiData.length === 0) throw new Error("No data returned");
+
+          const imagePool = [
+            "images/insight_education.png",
+            "images/insight_cloud.png",
+            "images/insight_compliance.png",
+            "images/insight_security.png"
+          ];
+
+          // Group dynamically by Industry
+          const grouped = {};
+          apiData.forEach((cs, idx) => {
+            const ind = cs.Industry || "General";
+            if (!grouped[ind]) {
+              grouped[ind] = [];
+            }
+            
+            const img = imagePool[idx % imagePool.length];
+            grouped[ind].push({
+              title: cs.Title,
+              desc: cs.Summary || "",
+              image: img,
+              stats: [
+                cs.Stat_1 ? parseStat(cs.Stat_1) : null,
+                cs.Stat_2 ? parseStat(cs.Stat_2) : null,
+                cs.Stat_3 ? parseStat(cs.Stat_3) : null
+              ].filter(Boolean)
+            });
+          });
+
+          caseStudies = grouped;
+          const industries = Object.keys(caseStudies);
+
+          // Render tab selectors if there's more than one industry
+          if (industries.length <= 1) {
+            tabsContainer.style.display = 'none';
+          } else {
+            tabsContainer.style.display = 'flex';
+            tabsContainer.innerHTML = '';
+            industries.forEach((ind, index) => {
+              const btn = document.createElement('button');
+              btn.className = `success-tab ${index === 0 ? 'active' : ''}`;
+              btn.setAttribute('data-tab', ind);
+              btn.textContent = ind;
+              btn.addEventListener('click', () => {
+                updateCaseStudy(ind, 0);
+              });
+              tabsContainer.appendChild(btn);
+            });
+          }
+
+          // Load first category
+          updateCaseStudy(industries[0], 0);
+
+        } catch (e) {
+          console.warn("Could not load backend case studies, displaying default stories:", e);
+          // Load default static mock data if API request fails
+          loadDefaultData();
+        }
+      }
+
+      function loadDefaultData() {
+        caseStudies = {
+          education: [
+            {
+              title: "Turning Data into Decisions: Driving Impact in Higher Education",
+              desc: "Empowering the institution to achieve 95% data accuracy while reducing the reporting timeframe by up to 50% through a unified data and analytics solution.",
+              image: "images/insight_education.png",
+              stats: [
+                { num: "95", text: "95% accurate, single source of truth" },
+                { num: "50", text: "50% more efficient report generation" },
+                { num: "50", text: "50% better decision-making" }
+              ]
+            },
+            {
+              title: "Empowering Student Success: Predictive Analytics in TVET Colleges",
+              desc: "Deploying machine learning models to identify at-risk student cohorts early, improving retention rates by 25% and course completion rates across campuses.",
+              image: "images/insight_cloud.png",
+              stats: [
+                { num: "25", text: "25% increase in retention" },
+                { num: "92", text: "92% prediction accuracy" },
+                { num: "15k+", text: "15k+ students supported" }
+              ]
+            },
+            {
+              title: "Digital Campus Modernisation: Scaling Cloud Infrastructure",
+              desc: "Transitioning legacy physical servers to a secure, resilient cloud architecture, enabling remote learning and reducing IT infrastructure costs by 40%.",
+              image: "images/insight_compliance.png",
+              stats: [
+                { num: "40", text: "40% reduction in IT costs" },
+                { num: "99", text: "99.99% uptime during exams" },
+                { num: "100", text: "100% remote accessibility" }
+              ]
+            }
+          ],
+          nonprofit: [
+            {
+              title: "Strengthening Community Impact: Streamlining Operations for a Regional NGO",
+              desc: "Helping a leading African non-profit optimize resource allocation and donor reporting through automated reporting solutions.",
+              image: "images/insight_compliance.png",
+              stats: [
+                { num: "40", text: "40% faster reporting cycle" },
+                { num: "100", text: "100% data visibility for stakeholders" },
+                { num: "30", text: "30% reduction in admin overhead" }
+              ]
+            },
+            {
+              title: "Donor Fund Transparency: Blockchain-Enabled Audits",
+              desc: "Integrating distributed ledger technology to trace donor funding allocations down to individual community projects, achieving zero audit discrepancies.",
+              image: "images/insight_education.png",
+              stats: [
+                { num: "0", text: "0 audit discrepancies" },
+                { num: "100", text: "100% real-time tracking" },
+                { num: "5", text: "5x faster audit processes" }
+              ]
+            },
+            {
+              title: "Agile Resource Deployment: Mobile Relief Mapping",
+              desc: "Building real-time geospatial dashboards to coordinate medical supply deliveries and humanitarian aid distribution in response to regional crises.",
+              image: "images/insight_security.png",
+              stats: [
+                { num: "60", text: "60% faster emergency response" },
+                { num: "250k+", text: "250k+ beneficiaries reached" },
+                { num: "100", text: "100% live inventory tracking" }
+              ]
+            }
+          ],
+          banking: [
+            {
+              title: "Modernizing Core Infrastructure: AI-Powered Risk Analytics in Retail Banking",
+              desc: "Enabling a top-tier retail bank to identify and mitigate operational risks in real-time, preventing fraud and reducing losses.",
+              image: "images/insight_security.png",
+              stats: [
+                { num: "90", text: "90% reduction in fraudulent transaction attempts" },
+                { num: "25", text: "25% lower risk exposure across portfolios" },
+                { num: "15", text: "15x faster transaction validation" }
+              ]
+            },
+            {
+              title: "Hyper-Personalised Banking: Delivering Real-Time Client Insights",
+              desc: "Harnessing real-time streaming analytics and recommendation engines to offer tailor-made financial products, boosting conversion by 35%.",
+              image: "images/insight_cloud.png",
+              stats: [
+                { num: "35", text: "35% higher campaign conversion" },
+                { num: "4M+", text: "4M+ active customer profiles" },
+                { num: "50", text: "<50ms recommendation latency" }
+              ]
+            },
+            {
+              title: "AML Compliance Automation: Strengthening Financial Crime Detection",
+              desc: "Upgrading anti-money laundering pipelines with graph-database models to trace illicit transaction networks, saving millions in regulatory fines.",
+              image: "images/insight_compliance.png",
+              stats: [
+                { num: "45M+", text: "R45M+ saved in potential fines" },
+                { num: "85", text: "85% reduction in false positives" },
+                { num: "100", text: "100% compliance audit score" }
+              ]
+            }
+          ]
+        };
+
+        // Render default tabs
+        tabsContainer.style.display = 'flex';
+        tabsContainer.innerHTML = `
+          <button class="success-tab active" data-tab="education">Education</button>
+          <button class="success-tab" data-tab="nonprofit">Non-profit</button>
+          <button class="success-tab" data-tab="banking">Banking</button>
+        `;
+
+        // Re-bind click event to default tabs
+        tabsContainer.querySelectorAll('.success-tab').forEach((tab) => {
+          tab.addEventListener('click', () => {
+            const key = tab.getAttribute('data-tab');
+            updateCaseStudy(key, 0);
+          });
         });
-      });
+
+        updateCaseStudy('education', 0);
+      }
 
       const leftArrow = document.querySelector('.slider-arrow.left');
       const rightArrow = document.querySelector('.slider-arrow.right');
@@ -1176,6 +1292,8 @@
           updateCaseStudy(currentTab, index);
         });
       }
+
+      init();
     });
   </script>
 

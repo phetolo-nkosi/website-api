@@ -12,9 +12,20 @@ app.use(express.json());
 // Serve your existing website
 app.use(express.static(path.join(__dirname)));
 
-// API routes
+// =========================
+// API Routes
+// =========================
+
 const caseStudies = require("./routes/caseStudies");
 app.use("/api/case-studies", caseStudies);
+
+const imageProxy = require("./routes/imageProxy");
+app.use("/api/image-proxy", imageProxy);
+
+const pdfProxy = require("./routes/pdfProxy");
+app.use("/api/pdf-proxy", pdfProxy);
+
+// =========================
 
 const PORT = process.env.PORT || 3000;
 

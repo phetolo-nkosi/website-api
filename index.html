@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -496,127 +496,12 @@
         </p>
       </div>
 
-      <div class="insights-grid">
-        <!-- Card 1: Data Strategy in Education -->
-        <div class="insight-card">
-          <div class="insight-image-wrapper">
-            <img src="images/insight_education.png" alt="Data Strategy for African Higher Education"
-              class="insight-image">
-          </div>
-          <div class="insight-content">
-            <div>
-              <div class="insight-card-tags">
-                <span class="insight-tag insight-tag-service">Digital Services</span>
-
-              </div>
-              <h3 class="insight-card-title">Unlocking Institutional Potential: A Data Strategy for an African Higher
-                Education Institution</h3>
-              <p class="insight-card-text">
-                Discover how a tailored data strategy empowered an African higher education institution to unify its
-                data, enhance decision-making, and drive measurable academic and operational impact.
-              </p>
-            </div>
-            <a href="insights.html#education" class="insight-link">
-              Read full insight
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                stroke-linecap="round" stroke-linejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </a>
-          </div>
-        </div>
-
-        <!-- Card 2: Cybersecurity in Financial Services -->
-        <div class="insight-card">
-          <div class="insight-image-wrapper">
-            <img src="images/insight_security.png" alt="Cyber Resilience in Financial Services" class="insight-image">
-          </div>
-          <div class="insight-content">
-            <div>
-              <div class="insight-card-tags">
-                <span class="insight-tag insight-tag-service">Risk Management</span>
-
-              </div>
-              <h3 class="insight-card-title">Securing the Future: Cyber Resilience and Fraud Detection in Financial
-                Services</h3>
-              <p class="insight-card-text">
-                Learn how modern cybersecurity frameworks and AI-powered fraud detection protect financial institutions
-                against evolving digital risks in Africa.
-              </p>
-            </div>
-            <a href="insights.html#security" class="insight-link">
-              Read full insight
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                stroke-linecap="round" stroke-linejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </a>
-          </div>
-        </div>
-
-        <!-- Card 3: AML and Compliance Blueprint -->
-        <div class="insight-card">
-          <div class="insight-image-wrapper">
-            <img src="images/insight_compliance.png" alt="AML and Compliance Blueprint" class="insight-image">
-          </div>
-          <div class="insight-content">
-            <div>
-              <div class="insight-card-tags">
-                <span class="insight-tag insight-tag-service">Risk Management</span>
-
-              </div>
-              <h3 class="insight-card-title">Navigating AML and Compliance: A Blueprint for Modern Enterprise Risk</h3>
-              <p class="insight-card-text">
-                Explore the critical regulatory changes and compliance strategies required to strengthen enterprise risk
-                governance and prevent financial crimes.
-              </p>
-            </div>
-            <a href="insights.html#compliance" class="insight-link">
-              Read full insight
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                stroke-linecap="round" stroke-linejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </a>
-          </div>
-        </div>
-
-        <!-- Card 4: Cloud Transformation -->
-        <div class="insight-card">
-          <div class="insight-image-wrapper">
-            <img src="images/insight_cloud.png" alt="Cloud Transformation in Complex Environments"
-              class="insight-image">
-          </div>
-          <div class="insight-content">
-            <div>
-              <div class="insight-card-tags">
-                <span class="insight-tag insight-tag-service">Digital Services</span>
-
-              </div>
-              <h3 class="insight-card-title">Accelerating Cloud Transformation: Driving Value in Complex Environments
-              </h3>
-              <p class="insight-card-text">
-                A comprehensive guide on transitioning legacy infrastructure to secure cloud environments, optimizing
-                operations, and scaling digital services.
-              </p>
-            </div>
-            <a href="insights.html#cloud" class="insight-link">
-              Read full insight
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                stroke-linecap="round" stroke-linejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </a>
-          </div>
-        </div>
+      <div class="insights-grid" id="home-insights-grid">
+        <!-- Dynamic case studies will be rendered here via JS -->
       </div>
 
       <div class="insights-footer">
-        <a href="insights.html" class="btn btn-insights-explore">
+        <a href="case-studies.html" class="btn btn-insights-explore">
           View all insights
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
             stroke-linecap="round" stroke-linejoin="round">
@@ -858,6 +743,11 @@
   </button>
 
   <script src="js/main.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      renderDynamicCaseStudies("home-insights-grid", "all", 4);
+    });
+  </script>
 </body>
 
 </html>

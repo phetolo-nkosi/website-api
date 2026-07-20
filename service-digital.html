@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -295,6 +295,29 @@
       </div>
     </div>
   </section>
+  <!-- Dynamic Insights Section -->
+  <section class="insights-section" style="padding: 5rem 0; background-color: #f8fafc;">
+    <div class="container insights-container">
+      <div class="insights-header" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; gap: 1rem;">
+        <div>
+          <h2 class="insights-title" style="font-size: 2.25rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Latest Insights & Case Studies</h2>
+          <p style="color: #64748b; font-size: 1.1rem; max-width: 600px;">Explore how we've helped organisations transform their operations.</p>
+        </div>
+        <a href="case-studies.html?service=Digital%20Services" class="btn-sidebar-outline" style="white-space: nowrap; padding: 0.75rem 1.5rem; text-decoration: none; display: inline-block;">
+          View all insights
+        </a>
+      </div>
+      <div class="insights-grid" id="service-digital-insights-grid">
+        <!-- Dynamic case studies rendered here -->
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        renderDynamicCaseStudies("service-digital-insights-grid", "Digital Services", 3);
+      });
+    </script>
+  </section>
+
   <!-- Solve Your Toughest Challenges CTA Section -->
   <section class="challenges-cta-section">
     <div class="container challenges-cta-container">

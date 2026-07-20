@@ -599,7 +599,81 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// 10. Dynamic Case Studies Renderer
+async function renderDynamicCaseStudies(containerId, serviceFilter, limit = 4) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
 
+  try {
+    const response = await fetch("https://website-api-wm31.onrender.com/api/case-studies");
+    if (!response.ok) throw new Error("Failed to fetch case studies");
+    
+    const result = await response.json();
+    let caseStudies = result.data || [];
+    
+    // Filter by service if provided
+    if (serviceFilter && serviceFilter.toLowerCase() !== "all") {
+      caseStudies = caseStudies.filter(cs => String(cs.Service).toLowerCase() === serviceFilter.toLowerCase());
+    }
+    
+    // Sort by Published_Date descending (newest first)
+    caseStudies.sort((a, b) => {
+      const dateA = new Date(a.Published_Date || 0);
+      const dateB = new Date(b.Published_Date || 0);
+      return dateB - dateA;
+    });
+
+    const serviceImageMap = {
+      "digital services": "images/service-digital.png",
+      "risk management": "images/service-risk.png",
+      "advisory services": "images/service-advisory.png",
+      "managed services": "images/service-managed.png"
+    };
+
+    const toRender = caseStudies.slice(0, limit);
+    
+    if (toRender.length === 0) {
+      container.innerHTML = "<p>No insights found for this category at the moment.</p>";
+      return;
+    }
+
+    container.innerHTML = toRender.map((cs, idx) => {
+      const serviceName = (cs.Service || "").toLowerCase();
+      const imageUrl = serviceImageMap[serviceName] || "images/OurServices.jpg";
+      const encodedTitle = encodeURIComponent(cs.Title);
+      
+      return `
+        <div class="insight-card">
+          <div class="insight-image-wrapper">
+            <img src="${imageUrl}" alt="${cs.Title}" class="insight-image">
+          </div>
+          <div class="insight-content">
+            <div>
+              <div class="insight-card-tags">
+                <span class="insight-tag insight-tag-service">${cs.Service || "Strategy"}</span>
+              </div>
+              <h3 class="insight-card-title">${cs.Title}</h3>
+              <p class="insight-card-text">
+                ${(cs.Summary || "").substring(0, 150)}...
+              </p>
+            </div>
+            <a href="case-studies.html?search=${encodedTitle}" class="insight-link">
+              Read full insight
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+  } catch (error) {
+    console.error("Error rendering dynamic case studies:", error);
+  }
+}
 
 
 // Duplicate Solutions Tabs Dropdown Logic block removed to avoid redundancy

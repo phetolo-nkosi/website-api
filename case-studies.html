@@ -413,7 +413,32 @@
         caseStudies = result.data || [];
 
         populateFilters();
-        displayCaseStudies(caseStudies);
+        
+        // Check URL parameters for initial filters
+        const params = new URLSearchParams(window.location.search);
+        let hasFilter = false;
+        
+        if (params.has('service')) {
+          const srv = params.get('service');
+          const select = document.getElementById("filterService");
+          Array.from(select.options).forEach(opt => {
+            if (opt.value.toLowerCase() === srv.toLowerCase()) {
+              select.value = opt.value;
+              hasFilter = true;
+            }
+          });
+        }
+        
+        if (params.has('search')) {
+          document.getElementById("searchInput").value = params.get('search');
+          hasFilter = true;
+        }
+
+        if (hasFilter) {
+          applyFilters();
+        } else {
+          displayCaseStudies(caseStudies);
+        }
 
       } catch (err) {
 
@@ -445,19 +470,16 @@
         return;
       }
 
-      const caseStudyImages = [
-        "insight_education.png",
-        "insight_security.png",
-        "istockphoto-1344939844-612x612.jpg",
-        "istockphoto-1347880350-612x612.jpg",
-        "istockphoto-1451866244-612x612.jpg",
-        "istockphoto-2199045704-612x612.jpg"
-      ];
+      const serviceImageMap = {
+        "digital services": "images/service-digital.png",
+        "risk management": "images/service-risk.png",
+        "advisory services": "images/service-advisory.png",
+        "managed services": "images/service-managed.png"
+      };
 
       data.forEach(cs => {
-        // Select a random cover image from the images/casestudies/ folder
-        const randomIndex = Math.floor(Math.random() * caseStudyImages.length);
-        const imgUrl = "images/casestudies/" + caseStudyImages[randomIndex];
+        const serviceName = (cs.Service || "").toLowerCase();
+        const imgUrl = serviceImageMap[serviceName] || "images/OurServices.jpg";
 
         container.innerHTML += `
 
@@ -489,21 +511,6 @@
                     ${(cs.Summary || "").replace(/\n/g, "<br>")}
                 </p>
 
-                <div class="stats">
-
-                    <div class="stat">
-                        <strong>${cs.Stat_1 || ""}</strong>
-                    </div>
-
-                    <div class="stat">
-                        <strong>${cs.Stat_2 || ""}</strong>
-                    </div>
-
-                    <div class="stat">
-                        <strong>${cs.Stat_3 || ""}</strong>
-                    </div>
-
-                </div>
 
                 <div class="footer">
 
@@ -513,9 +520,9 @@
 
                     </div>
 
-                   <button
-    class="read-more view-case-study-btn"
-    data-id="${cs.ID}">
+                   <a
+    href="case-study.html?id=${cs.ID}"
+    class="read-more">
     View Case Study
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" stroke-width="2.5"
@@ -523,7 +530,7 @@
         <line x1="5" y1="12" x2="19" y2="12"></line>
         <polyline points="12 5 19 12 12 19"></polyline>
     </svg>
-</button>
+</a>
 
                 </div>
 
@@ -536,16 +543,6 @@
       });
 
     }
-
-    // Use event delegation so clicks work even after the list is re-rendered
-    document.getElementById("caseStudies").addEventListener("click", function (e) {
-      const btn = e.target.closest(".view-case-study-btn");
-      if (!btn) return;
-      const id = btn.dataset.id;
-      const cs = caseStudies.find(c => String(c.ID) === String(id));
-      if (!cs) return;
-      openReport(cs);
-    });
 
     function populateFilters() {
       const industries = new Set();
@@ -628,280 +625,7 @@
     });
 
     loadCaseStudies();
-
-    function openReport(cs) {
-      // ── Meta bar ──────────────────────────────────────────
-      document.getElementById("rptIndustryPill").textContent = cs.Industry || "";
-      const pdfLink = document.getElementById("rptPdfLink");
-      if (pdfLink) {
-        if (cs.pdf) {
-          pdfLink.href = "/api/case-studies/file?path=" + encodeURIComponent(cs.pdf);
-          pdfLink.style.display = "inline-flex";
-        } else {
-          pdfLink.style.display = "none";
-        }
-      }
-
-      // ── Hero banner ───────────────────────────────────────
-      const hero = document.getElementById("rptHero");
-
-      // Always pick a random image from the local casestudies folder
-      const csHeroImages = [
-        "images/casestudies/insight_education.png",
-        "images/casestudies/insight_security.png",
-        "images/casestudies/istockphoto-1344939844-612x612.jpg",
-        "images/casestudies/istockphoto-1347880350-612x612.jpg",
-        "images/casestudies/istockphoto-1451866244-612x612.jpg",
-        "images/casestudies/istockphoto-2199045704-612x612.jpg"
-      ];
-      const randomHero = csHeroImages[Math.floor(Math.random() * csHeroImages.length)];
-      hero.style.backgroundImage = "url('" + randomHero + "')";
-      function formatContent(text) {
-        if (!text) return "";
-        return text
-          .trim()
-          .split(/\n\s*\n/)
-          .map(para => `<p>${para.replace(/\n/g, "<br>")}</p>`)
-          .join("");
-      }
-
-      document.getElementById("reportTitle").textContent = cs.Title || "";
-      document.getElementById("reportSummary").innerHTML = formatContent(cs.Summary || "");
-
-      // ── Stat chips ────────────────────────────────────────
-      const stats = [cs.Stat_1, cs.Stat_2, cs.Stat_3];
-      ["rptStat1", "rptStat2", "rptStat3"].forEach((id, i) => {
-        const chip = document.getElementById(id + "Chip");
-        const val = stats[i] ? stats[i].trim() : "";
-        chip.style.display = val ? "flex" : "none";
-        if (val) {
-          // Split on first space: e.g. "95 % data accuracy" → val = "95 %", lbl = "data accuracy"
-          const spaceIdx = val.indexOf(" ", val.indexOf(" ") + 1);
-          const numPart = spaceIdx > -1 ? val.slice(0, spaceIdx) : val;
-          const txtPart = spaceIdx > -1 ? val.slice(spaceIdx + 1) : "Key Metric";
-          document.getElementById(id + "Val").textContent = numPart;
-          chip.querySelector(".rpt-stat-lbl").textContent = txtPart;
-        }
-      });
-
-      // ── Sidebar profile ───────────────────────────────────
-      document.getElementById("profileIndustry").textContent = cs.Industry || "—";
-      document.getElementById("profileService").textContent = cs.Service || "—";
-      document.getElementById("profileSolution").textContent = cs.Solution || "—";
-      document.getElementById("profileRegion").textContent = cs.Region || "—";
-      document.getElementById("profileLocation").textContent = cs.Location || "—";
-      document.getElementById("profileAbout").innerHTML = formatContent(cs.About_the_Client || "") || "—";
-
-      // ── Main sections ─────────────────────────────────────
-      document.getElementById("businessChallenge").innerHTML = formatContent(cs.Business_Challenge || "");
-      document.getElementById("proposedSolution").innerHTML = formatContent(cs.Proposed_Solution || "");
-      document.getElementById("resultsAchieved").innerHTML = formatContent(cs.Results_Achieved || "");
-      document.getElementById("businessImpact").innerHTML = formatContent(cs.Business_Impact || "");
-
-      // ── Quote block (show/hide) ───────────────────────────
-      const quoteBlock = document.getElementById("rptQuoteBlock");
-      const quoteText = (cs.Customer_Quotes || "").trim();
-      document.getElementById("customerQuotes").innerHTML = formatContent(quoteText);
-      quoteBlock.style.display = quoteText ? "flex" : "none";
-
-      // ── Open modal ────────────────────────────────────────
-      document.getElementById("reportViewer").style.display = "flex";
-      document.body.style.overflow = "hidden";
-    }
-
-    // Delegate close-button clicks — the modal HTML lives after this script tag
-    document.addEventListener("click", function (e) {
-      if (e.target.closest(".close-report")) {
-        document.getElementById("reportViewer").style.display = "none";
-        document.body.style.overflow = "";
-      }
-    });
-
-    window.addEventListener("click", function (e) {
-      const modal = document.getElementById("reportViewer");
-      if (e.target === modal) {
-        modal.style.display = "none";
-        document.body.style.overflow = "";
-      }
-    });
   </script>
-  <!-- =====================================================
-       Report Viewer Modal
-  ===================================================== -->
-  <div id="reportViewer" class="report-modal" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
-    <div class="report-backdrop"></div>
-
-    <div class="report-sheet">
-
-      <!-- ── Sticky header bar ── -->
-      <header class="rpt-bar">
-        <div class="rpt-bar-left">
-          <span class="rpt-eyebrow" id="rptCategory">Case Study</span>
-          <span class="rpt-bar-sep">·</span>
-          <span class="rpt-industry-pill" id="rptIndustryPill"></span>
-        </div>
-        <div class="rpt-bar-right">
-
-          <button class="close-report" aria-label="Close">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-              stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-        </div>
-      </header>
-
-      <!-- ── Scrollable body ── -->
-      <div class="report-body">
-
-        <!-- Hero Banner -->
-        <div class="rpt-hero" id="rptHero">
-          <div class="rpt-hero-overlay"></div>
-          <div class="rpt-hero-text">
-            <h1 class="rpt-title" id="reportTitle"></h1>
-            <p class="rpt-summary" id="reportSummary"></p>
-          </div>
-        </div>
-
-        <!-- Stat pills row -->
-        <div class="rpt-stats-row">
-          <div class="rpt-stat-chip" id="rptStat1Chip">
-            <span class="rpt-stat-val" id="rptStat1Val"></span>
-            <span class="rpt-stat-lbl">Key Metric</span>
-          </div>
-          <div class="rpt-stat-chip" id="rptStat2Chip">
-            <span class="rpt-stat-val" id="rptStat2Val"></span>
-            <span class="rpt-stat-lbl">Key Metric</span>
-          </div>
-          <div class="rpt-stat-chip" id="rptStat3Chip">
-            <span class="rpt-stat-val" id="rptStat3Val"></span>
-            <span class="rpt-stat-lbl">Key Metric</span>
-          </div>
-        </div>
-
-        <!-- Two-column layout: profile + main body -->
-        <div class="rpt-layout">
-
-          <!-- LEFT: Customer Profile sidebar -->
-          <aside class="rpt-sidebar">
-            <div class="rpt-sidebar-card">
-              <h3 class="rpt-sidebar-heading">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-                Customer Profile
-              </h3>
-              <dl class="rpt-profile-dl">
-                <div class="rpt-profile-row">
-                  <dt>Industry</dt>
-                  <dd id="profileIndustry"></dd>
-                </div>
-                <div class="rpt-profile-row">
-                  <dt>Service</dt>
-                  <dd id="profileService"></dd>
-                </div>
-                <div class="rpt-profile-row">
-                  <dt>Solution</dt>
-                  <dd id="profileSolution"></dd>
-                </div>
-                <div class="rpt-profile-row">
-                  <dt>Region</dt>
-                  <dd id="profileRegion"></dd>
-                </div>
-                <div class="rpt-profile-row">
-                  <dt>Location</dt>
-                  <dd id="profileLocation"></dd>
-                </div>
-                <div class="rpt-profile-row rpt-about-row">
-                  <dt>About Client</dt>
-                  <dd id="profileAbout"></dd>
-                </div>
-              </dl>
-            </div>
-          </aside>
-
-          <!-- RIGHT: Main sections -->
-          <main class="rpt-main">
-
-            <section class="rpt-section" id="secChallenge">
-              <div class="rpt-section-icon rpt-icon-challenge">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                  <line x1="12" y1="9" x2="12" y2="13" />
-                  <line x1="12" y1="17" x2="12.01" y2="17" />
-                </svg>
-              </div>
-              <div class="rpt-section-body">
-                <h2 class="rpt-section-title">Business Challenge</h2>
-                <div id="businessChallenge" class="rpt-section-text"></div>
-              </div>
-            </section>
-
-            <section class="rpt-section" id="secSolution">
-              <div class="rpt-section-icon rpt-icon-solution">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="9 11 12 14 22 4" />
-                  <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-                </svg>
-              </div>
-              <div class="rpt-section-body">
-                <h2 class="rpt-section-title">Proposed Solution</h2>
-                <div id="proposedSolution" class="rpt-section-text"></div>
-              </div>
-            </section>
-
-            <section class="rpt-section" id="secResults">
-              <div class="rpt-section-icon rpt-icon-results">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="18" y1="20" x2="18" y2="10" />
-                  <line x1="12" y1="20" x2="12" y2="4" />
-                  <line x1="6" y1="20" x2="6" y2="14" />
-                  <line x1="2" y1="20" x2="22" y2="20" />
-                </svg>
-              </div>
-              <div class="rpt-section-body">
-                <h2 class="rpt-section-title">Results Achieved</h2>
-                <div id="resultsAchieved" class="rpt-section-text"></div>
-              </div>
-            </section>
-
-            <section class="rpt-section" id="secImpact">
-              <div class="rpt-section-icon rpt-icon-impact">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="8" x2="12" y2="12" />
-                  <line x1="12" y1="16" x2="12.01" y2="16" />
-                </svg>
-              </div>
-              <div class="rpt-section-body">
-                <h2 class="rpt-section-title">Business Impact</h2>
-                <div id="businessImpact" class="rpt-section-text"></div>
-              </div>
-            </section>
-
-            <!-- Quote callout -->
-            <div class="rpt-quote-block" id="rptQuoteBlock">
-              <svg class="rpt-quote-mark" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2
-                  1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z" />
-                <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75
-                  c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z" />
-              </svg>
-              <blockquote id="customerQuotes"></blockquote>
-            </div>
-
-          </main>
-        </div><!-- /.rpt-layout -->
-      </div><!-- /.report-body -->
-    </div><!-- /.report-sheet -->
-  </div>
 </body>
 
 </html>
