@@ -9,23 +9,17 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// TEST ROUTE
+app.get("/hello", (req, res) => {
+    res.send("Hello World");
+});
+
 // Serve your existing website
 app.use(express.static(path.join(__dirname)));
-
-// =========================
-// API Routes
-// =========================
 
 const caseStudies = require("./routes/caseStudies");
 app.use("/api/case-studies", caseStudies);
 
-const imageProxy = require("./routes/imageProxy");
-app.use("/api/image-proxy", imageProxy);
-
-const pdfProxy = require("./routes/pdfProxy");
-app.use("/api/pdf-proxy", pdfProxy);
-
-// =========================
 
 const PORT = process.env.PORT || 3000;
 

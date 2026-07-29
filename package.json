@@ -1,20 +1,32 @@
 {
-  "name": "website-api",
+  "name": "new",
   "version": "1.0.0",
-  "description": "Node.js API for Zoho Creator case studies",
-  "main": "server.js",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phetolo-nkosi/website-api.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/phetolo-nkosi/website-api/issues"
+  },
+  "homepage": "https://github.com/phetolo-nkosi/website-api#readme",
   "dependencies": {
     "axios": "^1.18.1",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "node-cache": "^5.1.2",
+    "p-queue": "^9.3.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
   }
 }

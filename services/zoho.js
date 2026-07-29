@@ -29,6 +29,31 @@ async function getAccessToken() {
 
 }
 
+async function downloadFile(recordId, fieldName) {
+
+    const token = await getAccessToken();
+
+    const url =
+        `https://www.zohoapis.com/creator/v2.1/data/` +
+        `${(process.env.ZOHO_OWNER || '').trim()}/` +
+        `${(process.env.ZOHO_APP || '').trim()}/` +
+        `report/${(process.env.ZOHO_REPORT || '').trim()}/` +
+        `${(recordId || '').toString().trim()}/` +
+        `${(fieldName || '').trim()}/download`;
+
+    console.log(url);
+
+    return axios.get(url, {
+        headers: {
+            Authorization: `Zoho-oauthtoken ${token}`
+        },
+        responseType: "stream"
+    });
+
+}
+
+
 module.exports = {
-    getAccessToken
+    getAccessToken,
+    downloadFile
 };
