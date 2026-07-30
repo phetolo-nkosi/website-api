@@ -13,7 +13,7 @@ async function loadCaseStudy() {
   try {
     let response = await fetch(`${API_BASE}/${id}`);
     if (!response.ok) {
-      response = await fetch(`http://localhost:3000/api/case-studies/${id}`);
+      response = await fetch(`https://edgeanalytics-website.onrender.com/api/case-studies/${id}`);
     }
 
     const study = await response.json();

@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       console.error("Failed to load case studies from Zoho:", err);
       try {
-        const fallbackRes = await fetch("http://localhost:3000/api/case-studies");
+        const fallbackRes = await fetch("https://edgeanalytics-website.onrender.com/api/case-studies");
         allStudies = await fallbackRes.json();
         updateStatsStrip(allStudies);
         displayStudies(allStudies);
