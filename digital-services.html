@@ -672,33 +672,93 @@
   <!-- Success Stories Section -->
   <section class="success-stories-section">
     <div class="container">
-      <div class="success-container">
-        <span class="success-badge">Proven impact</span>
-        <h2 class="success-title">Success stories that speak for themselves</h2>
+      <div class="success-stories-header" style="text-align: center; margin-bottom: 3.5rem;">
+        <span class="insights-badge">Proven impact</span>
+        <h2 class="insights-title">Success stories that speak for themselves</h2>
+        <p class="insights-description" style="max-width: 800px; margin: 0 auto;">
+          Discover how we've helped organisations across Africa overcome complex challenges and achieve measurable
+          outcomes. Explore our real-world transformations tailored by industry.
+        </p>
+      </div>
+      
+      <div class="industry-carousel-wrapper">
+        <button class="carousel-btn left" id="ind-slider-prev" aria-label="Previous slide">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
 
-        <!-- Industry Tabs (built dynamically) -->
-        <div class="success-tabs" id="ds-industry-tabs"></div>
-
-        <!-- Carousel wrapper -->
-        <div class="carousel-container">
-          <button class="carousel-btn left" id="ds-carousel-left" aria-label="Previous">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
-          </button>
-
-          <div class="ds-case-carousel-track" id="ds-case-grid">
-            <!-- Cards rendered here by JS -->
+        <div class="industry-success-grid" id="industry-slider">
+          
+          <!-- Banking -->
+          <div class="industry-success-card pos-left">
+            <div class="industry-success-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+              </svg>
+            </div>
+            <h3 class="industry-success-title">Banking</h3>
+            <p class="industry-success-text">
+              See how we've empowered financial institutions to modernize core systems, strengthen risk frameworks, and leverage predictive data analytics.
+            </p>
+            <a href="zoho-case-studies.html?industry=Banking#filters" class="btn btn-industry-cta">
+              View Banking Cases
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
           </div>
 
-          <button class="carousel-btn right" id="ds-carousel-right" aria-label="Next">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
-          </button>
+          <!-- Non-profit -->
+          <div class="industry-success-card pos-center">
+            <div class="industry-success-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+              </svg>
+            </div>
+            <h3 class="industry-success-title">Non-profit</h3>
+            <p class="industry-success-text">
+              Learn how non-profits use our tailored digital solutions to optimize operations, engage donors, and maximize their social impact.
+            </p>
+            <a href="zoho-case-studies.html?industry=Non-profit#filters" class="btn btn-industry-cta">
+              View Non-profit Cases
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </div>
+
+          <!-- Education -->
+          <div class="industry-success-card pos-right">
+            <div class="industry-success-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+              </svg>
+            </div>
+            <h3 class="industry-success-title">Education</h3>
+            <p class="industry-success-text">
+              Discover how educational institutions are transforming student experiences and administrative efficiency with our scalable cloud platforms.
+            </p>
+            <a href="zoho-case-studies.html?industry=Education#filters" class="btn btn-industry-cta">
+              View Education Cases
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </div>
+
         </div>
+
+        <button class="carousel-btn right" id="ind-slider-next" aria-label="Next slide">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
       </div>
     </div>
   </section>
@@ -940,164 +1000,7 @@
   </button>
 
   <script src="js/main.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', async function () {
-      const tabsContainer = document.getElementById('ds-industry-tabs');
-      const grid = document.getElementById('ds-case-grid');
 
-      function escapeHtml(str) {
-        if (!str) return '';
-        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-      }
-
-      function truncate(str, len) {
-        if (!str) return '';
-        return str.length > len ? str.slice(0, len) + '...' : str;
-      }
-
-      function renderIndustryGroup(industryKey, studies) {
-        grid.innerHTML = studies.map(cs => {
-          const industryDisplay = Array.isArray(cs.industry) ? cs.industry.join(', ') : (cs.industry || '');
-          const pubDate = cs.date ? new Date(cs.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Recent';
-          const encodedInd = encodeURIComponent(industryKey);
-          const href = cs.id
-            ? `zoho-case-studies.html?openId=${encodeURIComponent(cs.id)}&industry=${encodedInd}#filters`
-            : `zoho-case-studies.html?industry=${encodedInd}#filters`;
-
-          return `
-            <div class="case-card">
-              <div class="case-image-wrapper">
-                <img src="${escapeHtml(cs.image || 'images/insight_education.png')}" alt="${escapeHtml(cs.title)}" class="case-image" onerror="this.src='images/insight_education.png'">
-              </div>
-              <div class="case-content">
-                <div>
-                  <div class="case-header">
-                    ${industryDisplay ? `<span class="case-tag case-tag-industry">${escapeHtml(industryDisplay)}</span>` : ''}
-                    <span class="case-tag case-tag-service">${escapeHtml(cs.service || 'Case Study')}</span>
-                  </div>
-                  <h2>${escapeHtml(cs.title)}</h2>
-                  <p class="summary">${escapeHtml(truncate(cs.description, 160))}</p>
-                </div>
-                <div class="footer">
-                  <span class="author">${escapeHtml(pubDate)}</span>
-                  <a href="${href}" class="read-more">
-                    Go to the Case Study
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                  </a>
-                </div>
-              </div>
-            </div>
-          `;
-        }).join('');
-      }
-
-      try {
-        const response = await fetch('/api/case-studies');
-        if (!response.ok) throw new Error('API failed');
-        let apiData = await response.json();
-        if (!Array.isArray(apiData)) apiData = [];
-        if (apiData.length === 0) throw new Error('No data');
-
-        // Sort all studies newest first
-        apiData.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
-
-        // Group by industry
-        const grouped = {};
-        apiData.forEach(cs => {
-          let industries = [];
-          if (Array.isArray(cs.industry) && cs.industry.length > 0) {
-            industries = cs.industry.map(i => String(i).trim()).filter(Boolean);
-          } else if (cs.industry && typeof cs.industry === 'string') {
-            industries = [cs.industry.trim()];
-          }
-          if (industries.length === 0) industries = ['General'];
-          industries.forEach(ind => {
-            if (!grouped[ind]) grouped[ind] = [];
-            grouped[ind].push(cs);
-          });
-        });
-
-        const industryKeys = Object.keys(grouped);
-        let activeKey = industryKeys[0];
-
-        // Build tabs
-        tabsContainer.innerHTML = industryKeys.map((ind, i) =>
-          `<button class="success-tab ${i === 0 ? 'active' : ''}" data-tab="${escapeHtml(ind)}">${escapeHtml(ind)}</button>`
-        ).join('');
-
-        tabsContainer.querySelectorAll('.success-tab').forEach(btn => {
-          btn.addEventListener('click', () => {
-            tabsContainer.querySelectorAll('.success-tab').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            activeKey = btn.getAttribute('data-tab');
-            renderIndustryGroup(activeKey, grouped[activeKey]);
-            grid.scrollTo({ left: 0, behavior: 'instant' });
-            setTimeout(updateCarouselButtons, 100);
-          });
-        });
-
-        // Setup Carousel navigation
-        const leftBtn = document.getElementById('ds-carousel-left');
-        const rightBtn = document.getElementById('ds-carousel-right');
-
-        function updateCarouselButtons() {
-          if (!grid || !leftBtn || !rightBtn) return;
-
-          const cardCount = grid.querySelectorAll('.case-card').length;
-          const useCarousel = cardCount > 2 || (window.innerWidth <= 900 && cardCount > 1);
-
-          if (useCarousel) {
-            grid.classList.add('ds-case-carousel-track');
-            grid.classList.remove('ds-case-grid');
-          } else {
-            grid.classList.add('ds-case-grid');
-            grid.classList.remove('ds-case-carousel-track');
-          }
-
-          const isScrollable = grid.scrollWidth > grid.clientWidth;
-
-          if (!isScrollable) {
-            leftBtn.classList.add('hidden');
-            rightBtn.classList.add('hidden');
-          } else {
-            leftBtn.classList.remove('hidden');
-            rightBtn.classList.remove('hidden');
-
-            leftBtn.disabled = grid.scrollLeft <= 0;
-            rightBtn.disabled = Math.ceil(grid.scrollLeft + grid.clientWidth) >= grid.scrollWidth - 2;
-          }
-        }
-
-        if (leftBtn && rightBtn && grid) {
-          leftBtn.addEventListener('click', () => {
-            const cardWidth = grid.querySelector('.case-card')?.offsetWidth || 0;
-            const gap = 40; // 2.5rem
-            grid.scrollBy({ left: -(cardWidth + gap), behavior: 'smooth' });
-          });
-
-          rightBtn.addEventListener('click', () => {
-            const cardWidth = grid.querySelector('.case-card')?.offsetWidth || 0;
-            const gap = 40;
-            grid.scrollBy({ left: (cardWidth + gap), behavior: 'smooth' });
-          });
-
-          grid.addEventListener('scroll', updateCarouselButtons);
-          window.addEventListener('resize', updateCarouselButtons);
-        }
-
-        // Render first industry
-        renderIndustryGroup(activeKey, grouped[activeKey]);
-        setTimeout(updateCarouselButtons, 100);
-
-      } catch (e) {
-        console.warn('Could not load case studies from Zoho:', e);
-        if (grid) grid.innerHTML = '<p style="color:#94a3b8; padding: 2rem;">Case studies are currently unavailable. Please visit the <a href="zoho-case-studies.html" style="color:#0db39e;">Case Studies page</a> directly.</p>';
-      }
-    });
-  </script>
 
   <!-- Sticky nav + burger + dropdown -->
 
@@ -1215,6 +1118,33 @@
       });
     });
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const slider = document.getElementById('industry-slider');
+      const prevBtn = document.getElementById('ind-slider-prev');
+      const nextBtn = document.getElementById('ind-slider-next');
+      if (!slider || !prevBtn || !nextBtn) return;
+      
+      const cards = Array.from(slider.querySelectorAll('.industry-success-card'));
+      let positions = ['pos-left', 'pos-center', 'pos-right'];
+      
+      function applyPositions() {
+        cards.forEach((card, index) => {
+          card.classList.remove('pos-left', 'pos-center', 'pos-right');
+          card.classList.add(positions[index]);
+        });
+      }
+      
+      nextBtn.addEventListener('click', () => {
+        positions.unshift(positions.pop());
+        applyPositions();
+      });
+      
+      prevBtn.addEventListener('click', () => {
+        positions.push(positions.shift());
+        applyPositions();
+      });
+    });
+  </script>
 </body>
-
 </html>

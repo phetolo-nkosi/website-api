@@ -239,9 +239,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (filtered.length === 0) {
+      let emptyMsg = "No case studies found matching your criteria.";
+      if (industryVal !== "all") {
+        const displayInd = filterIndustry && filterIndustry.options[filterIndustry.selectedIndex] ? filterIndustry.options[filterIndustry.selectedIndex].text : industryVal;
+        emptyMsg = `No case studies found for the <strong>${escapeHtml(displayInd)}</strong> industry. We are constantly updating our portfolio, please check back soon.`;
+      }
       grid.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #94a3b8;">
-          <p>No case studies found matching your criteria.</p>
+        <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; background: #ffffff; border-radius: 16px; border: 1px dashed #cbd5e1; color: #64748b; margin-top: 2rem;">
+          <svg style="margin: 0 auto 1.5rem; color: #94a3b8;" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <p style="font-size: 1.15rem; max-width: 600px; margin: 0 auto; line-height: 1.6;">${emptyMsg}</p>
+          <button onclick="document.getElementById('btnResetFilters').click()" style="margin-top: 1.5rem; background: #0db39e; color: #ffffff; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem; transition: background 0.2s;">View All Case Studies</button>
         </div>
       `;
       return;
