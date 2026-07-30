@@ -9,6 +9,21 @@ const router = express.Router();
 
 const BASE_URL = `https://www.zohoapis.com/creator/v2.1/data/${process.env.ZOHO_OWNER}/${process.env.ZOHO_APP}/report/${process.env.ZOHO_REPORT}`;
 
+// Local images served statically from images/casestudies/
+const LOCAL_IMAGES = [
+  "images/casestudies/insight_education.png",
+  "images/casestudies/insight_security.png",
+  "images/casestudies/istockphoto-1344939844-612x612.jpg",
+  "images/casestudies/istockphoto-1347880350-612x612.jpg",
+  "images/casestudies/istockphoto-1451866244-612x612.jpg",
+  "images/casestudies/istockphoto-2199045704-612x612.jpg",
+];
+
+// Deterministic pick so the same record always gets the same image
+function pickImage(id) {
+  const hash = String(id).split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
+  return LOCAL_IMAGES[hash % LOCAL_IMAGES.length];
+}
 
 /**
  * GET ALL CASE STUDIES
@@ -52,7 +67,7 @@ router.get("/", async (req, res) => {
             stat1: record.Stat_1,
             stat2: record.Stat_2,
             stat3: record.Stat_3,
-            image: `/api/case-studies/${record.ID}/image`,
+            image: pickImage(record.ID),
             pdf: `/api/case-studies/${record.ID}/pdf`
         }));
 
@@ -113,7 +128,7 @@ router.get("/:id", async (req, res) => {
                 stat1: record.Stat_1,
                 stat2: record.Stat_2,
                 stat3: record.Stat_3,
-                image: `/api/case-studies/${record.ID}/image`,
+                image: pickImage(record.ID),
                 pdf: `/api/case-studies/${record.ID}/pdf`
             }));
 
