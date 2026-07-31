@@ -12,11 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const serviceParam = urlParams.get('service');
   if (serviceParam) {
     const serviceSelect = document.getElementById('contact-service');
-    if (serviceSelect && serviceSelect.options) {
+    if (serviceSelect) {
       for (let i = 0; i < serviceSelect.options.length; i++) {
         if (serviceSelect.options[i].value === serviceParam.toLowerCase()) {
           serviceSelect.selectedIndex = i;
-          // Trigger style adjustments if browser needs to update display
           serviceSelect.dispatchEvent(new Event('change'));
           break;
         }
@@ -64,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 3. Form Submission Validation and Simulation
-  if(contactForm) { contactForm.addEventListener('submit', (e) => {
+  if(contactForm) { if(contactForm && submitBtn) { contactForm.addEventListener('submit', (e) => {
     e.preventDefault();
     
     let isValid = true;
@@ -143,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1500); // 1.5s simulated connection delay
   });
 
-  } // 4. Back button return routing
+  } }\n  // 4. Back button return routing
   const backBtn = document.getElementById('btn-success-back');
   if (backBtn) {
     backBtn.addEventListener('click', () => {

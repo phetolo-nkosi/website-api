@@ -175,28 +175,6 @@ document.addEventListener("DOMContentLoaded", () => {
           const getDisplayVal = (val) => Array.isArray(val) ? val.join(", ") : val;
           const industryDisplay = study.industry ? escapeHtml(getDisplayVal(study.industry)) : "";
 
-          const parsedStats = [
-            study.stat1 ? parseStat(study.stat1) : null,
-            study.stat2 ? parseStat(study.stat2) : null,
-            study.stat3 ? parseStat(study.stat3) : null
-          ].filter(Boolean);
-
-          let statsHtml = "";
-          if (parsedStats.length > 0) {
-            statsHtml = '<div class="stats">';
-            parsedStats.forEach(stat => {
-              if (stat.num || stat.text) {
-                statsHtml += `
-                  <div class="stat">
-                    <strong>${escapeHtml(stat.num)}</strong>
-                    ${escapeHtml(stat.text)}
-                  </div>
-                `;
-              }
-            });
-            statsHtml += '</div>';
-          }
-
           return `
             <div class="case-card">
               <div class="case-image-wrapper">
@@ -210,7 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   </div>
                   <h2>${escapeHtml(study.title)}</h2>
                   <p class="summary">${escapeHtml(truncate(study.description, 160))}</p>
-                  ${statsHtml}
+                  ${study.date ? `<p style="color:#94a3b8; font-size:0.82rem; margin-top:0.4rem;">${escapeHtml(study.date)}</p>` : ''}
                 </div>
                 <div class="footer">
                   <span class="author">${escapeHtml(study.author || 'Edge Analytics')}</span>
@@ -258,28 +236,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const getDisplayVal = (val) => Array.isArray(val) ? val.join(", ") : val;
       const industryDisplay = study.industry ? escapeHtml(getDisplayVal(study.industry)) : "";
 
-      const parsedStats = [
-        study.stat1 ? parseStat(study.stat1) : null,
-        study.stat2 ? parseStat(study.stat2) : null,
-        study.stat3 ? parseStat(study.stat3) : null
-      ].filter(Boolean);
-
-      let statsHtml = "";
-      if (parsedStats.length > 0) {
-        statsHtml = '<div class="stats">';
-        parsedStats.forEach(stat => {
-          if (stat.num || stat.text) {
-            statsHtml += `
-              <div class="stat">
-                <strong>${escapeHtml(stat.num)}</strong>
-                ${escapeHtml(stat.text)}
-              </div>
-            `;
-          }
-        });
-        statsHtml += '</div>';
-      }
-
       return `
         <div class="case-card">
           <div class="case-image-wrapper">
@@ -293,7 +249,7 @@ document.addEventListener("DOMContentLoaded", () => {
               </div>
               <h2>${escapeHtml(study.title)}</h2>
               <p class="summary">${escapeHtml(truncate(study.description, 160))}</p>
-              ${statsHtml}
+              ${study.date ? `<p style="color:#94a3b8; font-size:0.82rem; margin-top:0.4rem;">${escapeHtml(study.date)}</p>` : ''}
             </div>
             <div class="footer">
               <span class="author">${escapeHtml(study.author || 'Edge Analytics')}</span>

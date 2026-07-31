@@ -2,7 +2,7 @@ const fs = require('fs');
 let content = fs.readFileSync('js/contact.js', 'utf-8');
 const index = content.indexOf('// 2. Input Field Focus Effects');
 if (index !== -1) {
-  const newHeader = \document.addEventListener('DOMContentLoaded', () => {
+  const newHeader = `document.addEventListener('DOMContentLoaded', () => {
   const contactForm = document.getElementById('contact-form');
   const contactCardContainer = document.getElementById('contact-card-container');
   const successPanel = document.getElementById('contact-success-panel');
@@ -27,12 +27,12 @@ if (index !== -1) {
     }
   }
 
-  \;
+  `;
   content = newHeader + content.substring(index);
   
   // Also wrap section 3 with if(submitBtn)
-  content = content.replace(\contactForm.addEventListener('submit', (e) => {\, \if(contactForm && submitBtn) { contactForm.addEventListener('submit', (e) => {\);
-  content = content.replace(\// 4. Back button return routing\, \}\\n  // 4. Back button return routing\);
+  content = content.replace("contactForm.addEventListener('submit', (e) => {", "if(contactForm && submitBtn) { contactForm.addEventListener('submit', (e) => {");
+  content = content.replace("// 4. Back button return routing", "}\\n  // 4. Back button return routing");
 
   fs.writeFileSync('js/contact.js', content, 'utf-8');
   console.log('Fixed contact.js');
