@@ -9,20 +9,23 @@ const router = express.Router();
 
 const BASE_URL = `https://www.zohoapis.com/creator/v2.1/data/${process.env.ZOHO_OWNER}/${process.env.ZOHO_APP}/report/${process.env.ZOHO_REPORT}`;
 
-// Local images served statically from images/casestudies/
-const LOCAL_IMAGES = [
-  "images/casestudies/insight_education.png",
-  "images/casestudies/insight_security.png",
-  "images/casestudies/istockphoto-1344939844-612x612.jpg",
-  "images/casestudies/istockphoto-1347880350-612x612.jpg",
-  "images/casestudies/istockphoto-1451866244-612x612.jpg",
-  "images/casestudies/istockphoto-2199045704-612x612.jpg",
-];
+const fs = require("fs");
+const path = require("path");
 
-// Deterministic pick so the same record always gets the same image
-function pickImage(id) {
-  const hash = String(id).split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
-  return LOCAL_IMAGES[hash % LOCAL_IMAGES.length];
+// Load local images from the casestudies directory
+const imageDir = path.join(__dirname, "../images/casestudies");
+let availableImages = [];
+try {
+    availableImages = fs.readdirSync(imageDir)
+        .filter(file => /\.(png|jpe?g|gif|webp|svg)$/i.test(file))
+        .map(file => `images/casestudies/${file}`);
+} catch (err) {
+    console.error("Could not read images directory:", err);
+}
+
+function pickRandomImage() {
+    if (availableImages.length === 0) return "";
+    return availableImages[Math.floor(Math.random() * availableImages.length)];
 }
 
 /**
@@ -67,7 +70,7 @@ router.get("/", async (req, res) => {
             stat1: record.Stat_1,
             stat2: record.Stat_2,
             stat3: record.Stat_3,
-            image: pickImage(record.ID),
+            image: pickRandomImage(),
             pdf: `/api/case-studies/${record.ID}/pdf`
         }));
 
@@ -128,7 +131,7 @@ router.get("/:id", async (req, res) => {
                 stat1: record.Stat_1,
                 stat2: record.Stat_2,
                 stat3: record.Stat_3,
-                image: pickImage(record.ID),
+                image: pickRandomImage(),
                 pdf: `/api/case-studies/${record.ID}/pdf`
             }));
 
@@ -162,79 +165,6 @@ router.get("/:id", async (req, res) => {
 
 });
 
-/**
- * GET CASE STUDY IMAGE
- */
-router.get("/:id/image", async (req, res) => {
-
-    try {
-
-        const cacheKey = `image-${req.params.id}`;
-
-        // Check if image is already cached
-        const cachedImage = cache.get(cacheKey);
-
-        if (cachedImage) {
-
-            console.log(`Serving image ${req.params.id} from cache`);
-
-            res.setHeader("Content-Type", cachedImage.contentType);
-
-            return res.send(cachedImage.buffer);
-
-        }
-
-        console.log(`Downloading image ${req.params.id} from Zoho`);
-
-        const response = await zohoRequest(() =>
-            downloadFile(
-                req.params.id,
-                "Image"
-            )
-        );
-
-        // Convert stream to a buffer
-        const chunks = [];
-
-        response.data.on("data", chunk => chunks.push(chunk));
-
-        response.data.on("end", () => {
-
-            const buffer = Buffer.concat(chunks);
-
-            // Store in cache
-            cache.set(cacheKey, {
-                buffer,
-                contentType: response.headers["content-type"] || "image/jpeg"
-            });
-
-            res.setHeader(
-                "Content-Type",
-                response.headers["content-type"] || "image/jpeg"
-            );
-
-            res.send(buffer);
-
-        });
-
-        response.data.on("error", err => {
-            throw err;
-        });
-
-    } catch (err) {
-
-        console.error("IMAGE ERROR");
-        console.error(err.response?.status);
-        console.error(err.response?.data || err.message);
-
-        res.status(err.response?.status || 500).json({
-            success: false,
-            message: err.message
-        });
-
-    }
-
-});
 
 /**
  * GET CASE STUDY PDF
