@@ -1,387 +1,56 @@
-const API_URL = "/api/case-studies";
+/**
+ * ============================================================
+ * INSIGHTS PAGE — case-studies.js
+ * ============================================================
+ *
+ * Retrieves case studies from the Express/Zoho backend and
+ * renders the full Insights page:
+ *   1. Latest Highlights  — 2 most-recent case studies
+ *   2. Filter Bar         — Industry / Service / Solution
+ *   3. All Case Studies   — filterable card grid
+ *   4. PDF Viewer Modal   — full-screen PDF.js canvas viewer
+ */
 
+const API_URL = "/api/case-studies";
+const FALLBACK_URL = "http://localhost:3000/api/case-studies";
+
+/** Shared state */
 let allStudies = [];
 
+/* ============================================================
+   DOM-READY ENTRY POINT
+   ============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
+
+  // ── Filter controls ──────────────────────────────────────
   const filterIndustry = document.getElementById("filterIndustry");
   const filterService = document.getElementById("filterService");
   const filterSolution = document.getElementById("filterSolution");
   const btnResetFilters = document.getElementById("btnResetFilters");
+  const activeFilterBanner = document.getElementById("active-filter-banner");
+  const activeFilterText = document.getElementById("active-filter-text");
+  const btnClearFilter = document.getElementById("btn-clear-active-filter");
 
-  // Set up PDF.js worker
+  // ── PDF Modal elements ────────────────────────────────────
+  const pdfModal = document.getElementById("pdfViewerModal");
+  const closePdfBtn = document.getElementById("closePdfModal");
+  const pdfModalBody = document.getElementById("pdfModalBody");
+  const pdfModalTitle = document.getElementById("pdfModalTitle");
+
+  // ── Initialise PDF.js worker ──────────────────────────────
   if (window.pdfjsLib) {
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
   }
 
-  // Populate filter dropdowns dynamically based on available data
-  function populateFilters(studies) {
-    if (!filterIndustry || !filterService || !filterSolution) return;
+  /* ----------------------------------------------------------
+     UTILITY HELPERS
+  ---------------------------------------------------------- */
 
-    // Use Sets to keep unique values, ignoring empty or null
-    const industries = new Set();
-    const services = new Set();
-    const solutions = new Set();
-    // Helper to safely add values (handles strings or arrays of strings)
-    const addValues = (set, val) => {
-      if (!val) return;
-      if (Array.isArray(val)) {
-        val.forEach(v => {
-          if (typeof v === 'string' && v.trim() !== "") set.add(v.trim());
-        });
-      } else if (typeof val === 'string' && val.trim() !== "") {
-        set.add(val.trim());
-      }
-    };
-
-    studies.forEach(s => {
-      addValues(industries, s.industry);
-      addValues(services, s.service);
-      addValues(solutions, s.solution);
-    });
-    // Helper to generate options
-    const generateOptions = (set, defaultText) => {
-      const options = [`<option value="all">${defaultText}</option>`];
-      Array.from(set).sort().forEach(val => {
-        // use the exact original case for display, but lower-case for value matching
-        options.push(`<option value="${val}">${escapeHtml(val)}</option>`);
-      });
-      return options.join("");
-    };
-
-    // Remember current selected values so they don't reset if already selected
-    const currIndustry = filterIndustry.value;
-    const currService = filterService.value;
-    const currSolution = filterSolution.value;
-
-    filterIndustry.innerHTML = generateOptions(industries, "All Industries");
-    filterService.innerHTML = generateOptions(services, "All Services");
-    filterSolution.innerHTML = generateOptions(solutions, "All Solutions");
-
-    // Restore selections if they still exist in the new options (comparing by exact string)
-    if (industries.has(currIndustry)) filterIndustry.value = currIndustry;
-    if (services.has(currService)) filterService.value = currService;
-    if (solutions.has(currSolution)) filterSolution.value = currSolution;
-  }
-
-  // Fetch case studies from Zoho API
-  async function loadStudies() {
-    const grid = document.getElementById("caseStudies");
-    try {
-      const response = await fetch(API_URL);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      allStudies = await response.json();
-      updateStatsStrip(allStudies);
-      populateFilters(allStudies);
-      displayStudies(allStudies);
-    } catch (err) {
-      console.error("Failed to load case studies from Zoho:", err);
-      try {
-        const fallbackRes = await fetch("https://edgeanalytics-website.onrender.com/api/case-studies");
-        allStudies = await fallbackRes.json();
-        updateStatsStrip(allStudies);
-        displayStudies(allStudies);
-      } catch (fallbackErr) {
-        console.error("Fallback API fetch also failed:", fallbackErr);
-        if (grid) {
-          grid.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #ef4444;">
-              <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">Unable to load case studies at this moment.</p>
-              <p style="font-size: 0.85rem; color: #94a3b8;">Please ensure the backend server is running and Zoho credentials are configured.</p>
-            </div>
-          `;
-        }
-      }
-    }
-  }
-
-  // Populate stats strip with real counts
-  function updateStatsStrip(studies) {
-    const totalEl = document.getElementById('cs-total-count');
-    const industryEl = document.getElementById('cs-industry-count');
-    const serviceEl = document.getElementById('cs-service-count');
-
-    if (totalEl) totalEl.textContent = studies.length;
-
-    const industries = new Set();
-    const services = new Set();
-    studies.forEach(s => {
-      const addToSet = (set, val) => {
-        if (!val) return;
-        if (Array.isArray(val)) val.forEach(v => v && set.add(v.trim()));
-        else if (typeof val === 'string') set.add(val.trim());
-      };
-      addToSet(industries, s.industry);
-      addToSet(services, s.service);
-    });
-
-    if (industryEl) industryEl.textContent = industries.size || '—';
-    if (serviceEl) serviceEl.textContent = services.size || '—';
-  }
-
-  // Display case studies in the grid matching insights.html design
-  function displayStudies(studies) {
-    const grid = document.getElementById("caseStudies");
-    const featuredSection = document.getElementById("featured-section");
-    const highlightsGrid = document.getElementById("highlights-grid");
-
-    if (!grid) return;
-
-    // Filter by active select filters
-    let filtered = studies;
-
-    const industryVal = filterIndustry ? filterIndustry.value.toLowerCase() : "all";
-    const serviceVal = filterService ? filterService.value.toLowerCase() : "all";
-    const solutionVal = filterSolution ? filterSolution.value.toLowerCase() : "all";
-
-    // Helper to check if a field contains the filter value
-    const matchesFilter = (fieldValue, filterVal) => {
-      if (!fieldValue) return false;
-      if (Array.isArray(fieldValue)) {
-        return fieldValue.some(v => typeof v === 'string' && v.toLowerCase().includes(filterVal));
-      }
-      return typeof fieldValue === 'string' && fieldValue.toLowerCase().includes(filterVal);
-    };
-
-    if (industryVal !== "all") {
-      filtered = filtered.filter(s => matchesFilter(s.industry, industryVal));
-    }
-
-    if (serviceVal !== "all") {
-      filtered = filtered.filter(s => matchesFilter(s.service, serviceVal));
-    }
-
-    if (solutionVal !== "all") {
-      filtered = filtered.filter(s => matchesFilter(s.solution, solutionVal));
-    }
-
-    const isAnyFilterActive = (industryVal !== "all" || serviceVal !== "all" || solutionVal !== "all");
-
-    // Populate Featured Section (always display latest 2 based on date)
-    if (highlightsGrid && featuredSection) {
-      if (studies.length > 0) {
-        // Sort all studies by date (newest first)
-        const sortedStudies = [...studies].sort((a, b) => {
-          const dateA = new Date(a.date || 0);
-          const dateB = new Date(b.date || 0);
-          return dateB - dateA;
-        });
-
-        const featuredStudies = sortedStudies.slice(0, 2);
-        featuredSection.style.display = "block";
-
-        highlightsGrid.innerHTML = featuredStudies.map(study => {
-          const getDisplayVal = (val) => Array.isArray(val) ? val.join(", ") : val;
-          const industryDisplay = study.industry ? escapeHtml(getDisplayVal(study.industry)) : "";
-
-          return `
-            <div class="case-card">
-              <div class="case-image-wrapper">
-                <img src="${study.image || 'images/insight_education.png'}" alt="${escapeHtml(study.title)}" class="case-image" onerror="this.src='images/insight_education.png'">
-              </div>
-              <div class="case-content">
-                <div>
-                  <div class="case-header">
-                    ${industryDisplay ? `<span class="case-tag case-tag-industry">${industryDisplay}</span>` : ''}
-                    <span class="case-tag case-tag-service">${escapeHtml(study.service || 'Case Study')}</span>
-                  </div>
-                  <h2>${escapeHtml(study.title)}</h2>
-                  <p class="summary">${escapeHtml(truncate(study.description, 160))}</p>
-                  ${study.date ? `<p style="color:#94a3b8; font-size:0.82rem; margin-top:0.4rem;">${escapeHtml(study.date)}</p>` : ''}
-                </div>
-                <div class="footer">
-                  <span class="author">${escapeHtml(study.author || 'Edge Analytics')}</span>
-                  <a href="#" class="read-more open-pdf-modal" data-id="${study.id}">
-                    View case study
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                  </a>
-                </div>
-              </div>
-            </div>
-          `;
-        }).join('');
-      } else {
-        featuredSection.style.display = "none";
-      }
-    }
-
-    // Populate Main Cards Grid
-    // Update count badge
-    const countBadge = document.getElementById('cs-grid-count');
-    if (countBadge) {
-      countBadge.textContent = `${filtered.length} ${filtered.length === 1 ? 'result' : 'results'}`;
-    }
-
-    if (filtered.length === 0) {
-      let emptyMsg = "No case studies found matching your criteria.";
-      if (industryVal !== "all") {
-        const displayInd = filterIndustry && filterIndustry.options[filterIndustry.selectedIndex] ? filterIndustry.options[filterIndustry.selectedIndex].text : industryVal;
-        emptyMsg = `No case studies found for the <strong>${escapeHtml(displayInd)}</strong> industry. We are constantly updating our portfolio, please check back soon.`;
-      }
-      grid.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 2rem; background: #ffffff; border-radius: 16px; border: 1px dashed #cbd5e1; color: #64748b; margin-top: 2rem;">
-          <svg style="margin: 0 auto 1.5rem; color: #94a3b8;" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <p style="font-size: 1.15rem; max-width: 600px; margin: 0 auto; line-height: 1.6;">${emptyMsg}</p>
-          <button onclick="document.getElementById('btnResetFilters').click()" style="margin-top: 1.5rem; background: #0db39e; color: #ffffff; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.95rem; transition: background 0.2s;">View All Case Studies</button>
-        </div>
-      `;
-      return;
-    }
-
-    grid.innerHTML = filtered.map(study => {
-      const getDisplayVal = (val) => Array.isArray(val) ? val.join(", ") : val;
-      const industryDisplay = study.industry ? escapeHtml(getDisplayVal(study.industry)) : "";
-
-      return `
-        <div class="case-card">
-          <div class="case-image-wrapper">
-            <img src="${study.image || 'images/insight_education.png'}" alt="${escapeHtml(study.title)}" class="case-image" onerror="this.src='images/insight_education.png'">
-          </div>
-          <div class="case-content">
-            <div>
-              <div class="case-header">
-                ${industryDisplay ? `<span class="case-tag case-tag-industry">${industryDisplay}</span>` : ''}
-                <span class="case-tag case-tag-service">${escapeHtml(study.service || 'Case Study')}</span>
-              </div>
-              <h2>${escapeHtml(study.title)}</h2>
-              <p class="summary">${escapeHtml(truncate(study.description, 160))}</p>
-              ${study.date ? `<p style="color:#94a3b8; font-size:0.82rem; margin-top:0.4rem;">${escapeHtml(study.date)}</p>` : ''}
-            </div>
-            <div class="footer">
-              <span class="author">${escapeHtml(study.author || 'Edge Analytics')}</span>
-              <a href="#" class="read-more open-pdf-modal" data-id="${study.id}">
-                View case study
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </a>
-            </div>
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
-
-  // Modal logic removed, directly uses href in HTML.
-
-  // Modal Logic
-  const pdfModal = document.getElementById('pdfViewerModal');
-  const closePdfModal = document.getElementById('closePdfModal');
-  const pdfModalBody = document.getElementById('pdfModalBody');
-
-  if (pdfModal && closePdfModal && pdfModalBody) {
-    // Open Modal via event delegation
-    document.addEventListener('click', async (e) => {
-      const link = e.target.closest('.open-pdf-modal');
-      if (link) {
-        e.preventDefault();
-        const id = link.getAttribute('data-id');
-        if (id) {
-          pdfModal.classList.add('active');
-          pdfModalBody.innerHTML = '<div style="color:#94a3b8; font-size:1.2rem;">Loading Document...</div>';
-
-          try {
-            const pdfUrl = `/api/case-studies/${id}/pdf`;
-            const loadingTask = pdfjsLib.getDocument(pdfUrl);
-            const pdf = await loadingTask.promise;
-
-            pdfModalBody.innerHTML = ''; // clear loading
-
-            // Render all pages
-            for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-              const page = await pdf.getPage(pageNum);
-              const scale = 1.5; // Good balance for readability
-              const viewport = page.getViewport({ scale });
-
-              const canvas = document.createElement('canvas');
-              canvas.className = 'pdf-page-canvas';
-              const context = canvas.getContext('2d');
-              canvas.height = viewport.height;
-              canvas.width = viewport.width;
-
-              const renderContext = {
-                canvasContext: context,
-                viewport: viewport
-              };
-
-              await page.render(renderContext).promise;
-              pdfModalBody.appendChild(canvas);
-            }
-          } catch (error) {
-            console.error("Error loading PDF:", error);
-            pdfModalBody.innerHTML = '<div style="color:#ef4444; font-size:1.2rem;">Error loading document.</div>';
-          }
-        }
-      }
-    });
-
-    // Close Modal
-    const closeModal = () => {
-      pdfModal.classList.remove('active');
-      setTimeout(() => {
-        pdfModalBody.innerHTML = ''; // Clear canvases
-      }, 300);
-    };
-
-    closePdfModal.addEventListener('click', closeModal);
-
-    // Close on overlay click
-    pdfModal.addEventListener('click', (e) => {
-      if (e.target === pdfModal) {
-        closeModal();
-      }
-    });
-
-    // Close on Escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && pdfModal.classList.contains('active')) {
-        closeModal();
-      }
-    });
-  }
-
-  // Advanced Filter change handlers
-  const applyFilters = () => displayStudies(allStudies);
-
-  if (filterIndustry) filterIndustry.addEventListener("change", applyFilters);
-  if (filterService) filterService.addEventListener("change", applyFilters);
-  if (filterSolution) filterSolution.addEventListener("change", applyFilters);
-  if (btnResetFilters) {
-    btnResetFilters.addEventListener("click", () => {
-      if (filterIndustry) filterIndustry.value = "all";
-      if (filterService) filterService.value = "all";
-      if (filterSolution) filterSolution.value = "all";
-      applyFilters();
-    });
-  }
-
-  // Helper functions
-  function parseStat(statStr) {
-    if (!statStr) return { num: "", text: "" };
-    const match = statStr.match(/^([\d%\+\-><\s]+(?:%|\b))(.+)$/) || statStr.match(/^([^\s]+)\s+(.+)$/);
-    if (match) {
-      return {
-        num: match[1].trim(),
-        text: match[2].trim()
-      };
-    }
-    return { num: "", text: statStr };
-  }
-
-  function truncate(str, maxLength) {
+  /** Safely escape HTML to prevent XSS */
+  function escapeHtml(str) {
     if (!str) return "";
-    if (str.length <= maxLength) return str;
-    return str.substring(0, maxLength) + "...";
-  }
-
-  function escapeHtml(unsafe) {
-    if (!unsafe) return "";
-    return String(unsafe)
+    return String(str)
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
@@ -389,102 +58,565 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/'/g, "&#039;");
   }
 
-  // Helper to show active filter banner
-  const activeFilterBanner = document.getElementById('active-filter-banner');
-  const activeFilterText = document.getElementById('active-filter-text');
-  const btnClearActiveFilter = document.getElementById('btn-clear-active-filter');
-
-  function showActiveFilterBanner(filterName, value) {
-    if (activeFilterBanner && activeFilterText) {
-      activeFilterText.textContent = `Showing results filtered by ${filterName}: ${value}`;
-      activeFilterBanner.style.display = 'flex';
-    }
+  /** Truncate text to maxLength and append ellipsis */
+  function truncate(str, maxLen) {
+    if (!str) return "";
+    return str.length <= maxLen ? str : str.substring(0, maxLen) + "…";
   }
 
-  if (btnClearActiveFilter) {
-    btnClearActiveFilter.addEventListener('click', () => {
-      if (filterIndustry) filterIndustry.value = "all";
-      if (filterService) filterService.value = "all";
-      if (filterSolution) filterSolution.value = "all";
-      applyFilters();
-      activeFilterBanner.style.display = 'none';
+  /** Return first value from string-or-array field */
+  function getFirstVal(val) {
+    if (!val) return null;
+    if (Array.isArray(val)) return val.length > 0 ? String(val[0]).trim() : null;
+    return String(val).trim();
+  }
 
-      // Clean up the URL without refreshing
-      if (window.history && window.history.replaceState) {
-        const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-        window.history.replaceState({ path: newUrl }, '', newUrl);
+  /** Return display string from string-or-array field */
+  function getDisplayVal(val) {
+    if (!val) return "";
+    return Array.isArray(val) ? val.join(", ") : String(val);
+  }
+
+  /** Add value(s) to a Set, handles string or array */
+  function addToSet(set, val) {
+    if (!val) return;
+    if (Array.isArray(val)) val.forEach(v => { if (v && String(v).trim()) set.add(String(v).trim()); });
+    else if (String(val).trim()) set.add(String(val).trim());
+  }
+
+  /* ----------------------------------------------------------
+     LOADING SKELETON
+  ---------------------------------------------------------- */
+  function showLoadingSkeleton(containerId, count = 4) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    el.innerHTML = Array(count).fill(`
+      <div class="cs-skeleton-card">
+        <div class="cs-skeleton-img skeleton-pulse"></div>
+        <div class="cs-skeleton-body">
+          <div class="cs-skeleton-tag skeleton-pulse"></div>
+          <div class="cs-skeleton-title skeleton-pulse"></div>
+          <div class="cs-skeleton-line skeleton-pulse"></div>
+          <div class="cs-skeleton-line cs-skeleton-line--short skeleton-pulse"></div>
+          <div class="cs-skeleton-btn skeleton-pulse"></div>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  /* ----------------------------------------------------------
+     FETCH CASE STUDIES
+  ---------------------------------------------------------- */
+  async function loadStudies() {
+    showLoadingSkeleton("caseStudies", 4);
+
+    try {
+      const res = await fetch(API_URL);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      allStudies = await res.json();
+    } catch (primaryErr) {
+      console.warn("Primary API failed, trying fallback:", primaryErr.message);
+      try {
+        const res = await fetch(FALLBACK_URL);
+        allStudies = await res.json();
+      } catch (fallbackErr) {
+        console.error("Both APIs failed:", fallbackErr);
+        renderError();
+        return;
       }
+    }
+
+    updateStatsStrip(allStudies);
+    populateFilters(allStudies);
+    renderHighlights(allStudies);
+    renderGrid(allStudies);
+  }
+
+  /* ----------------------------------------------------------
+     STATS STRIP
+  ---------------------------------------------------------- */
+  function updateStatsStrip(studies) {
+    const totalEl = document.getElementById("cs-total-count");
+    const industryEl = document.getElementById("cs-industry-count");
+    const serviceEl = document.getElementById("cs-service-count");
+
+    const industries = new Set();
+    const services = new Set();
+    studies.forEach(s => {
+      addToSet(industries, s.industry);
+      addToSet(services, s.service);
     });
+
+    animateCounter(totalEl, studies.length);
+    animateCounter(industryEl, industries.size);
+    animateCounter(serviceEl, services.size);
   }
 
-  // Initial load call
-  loadStudies().then(() => {
-    // Check URL parameters to see if a specific case study should be highlighted or filtered
-    const urlParams = new URLSearchParams(window.location.search);
-    const openId = urlParams.get('openId');
-    const paramIndustry = urlParams.get('industry');
+  function animateCounter(el, target) {
+    if (!el) return;
+    let current = 0;
+    const step = Math.max(1, Math.ceil(target / 30));
+    const timer = setInterval(() => {
+      current = Math.min(current + step, target);
+      el.textContent = current;
+      if (current >= target) clearInterval(timer);
+    }, 40);
+  }
 
-    let filtersApplied = false;
+  /* ----------------------------------------------------------
+     POPULATE FILTER DROPDOWNS
+  ---------------------------------------------------------- */
+  function populateFilters(studies) {
+    if (!filterIndustry && !filterService && !filterSolution) return;
 
-    if (openId) {
-      // Find the specific case study to get its filters
-      const study = allStudies.find(s => String(s.id) === String(openId));
-      if (study) {
-        // Set the filters to match this case study
-        const getFirstVal = (val) => {
-          if (!val) return null;
-          if (Array.isArray(val)) return val.length > 0 ? String(val[0]).trim() : null;
-          return String(val).trim();
-        };
+    const industries = new Set();
+    const services = new Set();
+    const solutions = new Set();
 
-        // If industry param is explicitly provided in URL, prioritize that, otherwise use study's industry
-        let indVal = paramIndustry ? paramIndustry : getFirstVal(study.industry);
+    studies.forEach(s => {
+      addToSet(industries, s.industry);
+      addToSet(services, s.service);
+      addToSet(solutions, s.solution);
+    });
 
-        // Find matching option in dropdown (case-insensitive)
-        if (filterIndustry && indVal) {
-          const options = Array.from(filterIndustry.options);
-          const match = options.find(opt => opt.value.toLowerCase() === indVal.toLowerCase() || opt.textContent.toLowerCase() === indVal.toLowerCase());
-          if (match) {
-            filterIndustry.value = match.value;
-            showActiveFilterBanner("Industry", match.textContent);
-            filtersApplied = true;
-          } else {
-            // Fallback if not found, just use exact string
-            filterIndustry.value = indVal;
-          }
-        }
+    const buildOptions = (set, defaultLabel) => {
+      const opts = [`<option value="all">${defaultLabel}</option>`];
+      Array.from(set).sort().forEach(v => {
+        opts.push(`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`);
+      });
+      return opts.join("");
+    };
 
-        const srvVal = getFirstVal(study.service);
-        if (filterService && srvVal && !paramIndustry) filterService.value = srvVal; // only auto-filter service if we aren't explicitly linking from an industry page
+    // Save current selections before rebuilding
+    const curInd = filterIndustry ? filterIndustry.value : "all";
+    const curSrv = filterService ? filterService.value : "all";
+    const curSol = filterSolution ? filterSolution.value : "all";
 
-        const solVal = getFirstVal(study.solution);
-        if (filterSolution && solVal && !paramIndustry) filterSolution.value = solVal;
-
-        // Apply the filters to the background grid
-        displayStudies(allStudies);
-
-        // Scroll to the matching card and highlight it
-        setTimeout(() => {
-          const card = document.querySelector(`.highlight-card a[data-id="${openId}"]`)?.closest('.highlight-card');
-          if (card) {
-            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            card.classList.add('highlight-target');
-            setTimeout(() => card.classList.remove('highlight-target'), 2500);
-          }
-        }, 200);
-      }
-    } else if (paramIndustry) {
-      // Just industry filter applied (from Digital Services tabs)
-      if (filterIndustry) {
-        const options = Array.from(filterIndustry.options);
-        const match = options.find(opt => opt.value.toLowerCase() === paramIndustry.toLowerCase() || opt.textContent.toLowerCase() === paramIndustry.toLowerCase());
-        if (match) {
-          filterIndustry.value = match.value;
-          showActiveFilterBanner("Industry", match.textContent);
-          filtersApplied = true;
-        }
-      }
-      displayStudies(allStudies);
+    if (filterIndustry) {
+      filterIndustry.innerHTML = buildOptions(industries, "All Industries");
+      if (industries.has(curInd)) filterIndustry.value = curInd;
     }
+    if (filterService) {
+      filterService.innerHTML = buildOptions(services, "All Services");
+      if (services.has(curSrv)) filterService.value = curSrv;
+    }
+    if (filterSolution) {
+      filterSolution.innerHTML = buildOptions(solutions, "All Solutions");
+      if (solutions.has(curSol)) filterSolution.value = curSol;
+    }
+  }
+
+  /* ----------------------------------------------------------
+     LATEST HIGHLIGHTS  (top 2 by date)
+  ---------------------------------------------------------- */
+  function renderHighlights(studies) {
+    const section = document.getElementById("featured-section");
+    const grid = document.getElementById("highlights-grid");
+    if (!section || !grid) return;
+
+    if (!studies.length) {
+      section.style.display = "none";
+      return;
+    }
+
+    const sorted = [...studies].sort((a, b) => {
+      return new Date(b.date || 0) - new Date(a.date || 0);
+    });
+
+    const top2 = sorted.slice(0, 2);
+    section.style.display = "block";
+
+    grid.innerHTML = top2.map((study, idx) => {
+      const industry = escapeHtml(getDisplayVal(study.industry));
+      const service = escapeHtml(getDisplayVal(study.service));
+      const solution = escapeHtml(getDisplayVal(study.solution));
+
+      return `
+        <article class="case-card" id="highlight-cs-card-${study.id}">
+          <div class="case-image-wrapper">
+            <img
+              src="/api/case-studies/${study.id}/image"
+              alt="${escapeHtml(study.title)}"
+              class="case-image"
+              onerror="this.src='images/insight_education.png'"
+              loading="lazy"
+            >
+          </div>
+          <div class="case-content">
+            <div>
+              <div class="case-header">
+                ${industry ? `<span class="case-tag case-tag-industry">${industry}</span>` : ""}
+                ${service ? `<span class="case-tag case-tag-service">${service}</span>` : ""}
+                ${solution ? `<span class="case-tag cs-tag--solution-light">${solution}</span>` : ""}
+              </div>
+              <h2>${escapeHtml(study.title)}</h2>
+              <p class="summary">${escapeHtml(truncate(study.description, 160))}</p>
+              ${study.date ? `<p class="cs-card-date">${escapeHtml(study.date)}</p>` : ""}
+            </div>
+            <div class="footer">
+              <span class="author">${escapeHtml(study.author || "Edge Analytics")}</span>
+              <button
+                onclick="openPdfModal('${study.id}', '${escapeHtml(study.title).replace(/'/g, "\\'")}')"
+                class="read-more"
+                id="view-highlight-${study.id}"
+                aria-label="View case study: ${escapeHtml(study.title)}"
+              >
+                View Case Study
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join("");
+  }
+
+  /* ----------------------------------------------------------
+     CASE STUDIES GRID
+  ---------------------------------------------------------- */
+  function renderGrid(studies) {
+    const grid = document.getElementById("caseStudies");
+    const countBadge = document.getElementById("cs-grid-count");
+    if (!grid) return;
+
+    // Apply active filters
+    const indVal = filterIndustry ? filterIndustry.value : "all";
+    const srvVal = filterService ? filterService.value : "all";
+    const solVal = filterSolution ? filterSolution.value : "all";
+
+    const matchField = (fieldVal, filterVal) => {
+      if (!fieldVal) return false;
+      const lower = filterVal.toLowerCase();
+      if (Array.isArray(fieldVal)) return fieldVal.some(v => String(v).toLowerCase().includes(lower));
+      return String(fieldVal).toLowerCase().includes(lower);
+    };
+
+    let filtered = studies;
+    if (indVal !== "all") filtered = filtered.filter(s => matchField(s.industry, indVal));
+    if (srvVal !== "all") filtered = filtered.filter(s => matchField(s.service, srvVal));
+    if (solVal !== "all") filtered = filtered.filter(s => matchField(s.solution, solVal));
+
+    if (countBadge) {
+      countBadge.textContent = `${filtered.length} ${filtered.length === 1 ? "result" : "results"}`;
+    }
+
+    // Empty state
+    if (filtered.length === 0) {
+      const label = indVal !== "all" && filterIndustry
+        ? filterIndustry.options[filterIndustry.selectedIndex]?.text || indVal
+        : srvVal !== "all" && filterService
+          ? filterService.options[filterService.selectedIndex]?.text || srvVal
+          : "your criteria";
+
+      grid.innerHTML = `
+        <div class="cs-empty-state" style="grid-column: 1 / -1;">
+          <div class="cs-empty-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </div>
+          <h3>No case studies found</h3>
+          <p>No results match <strong>${escapeHtml(label)}</strong>.<br>We are constantly growing our portfolio — please check back soon.</p>
+          <button id="emptyResetBtn" class="cs-btn cs-btn--teal">
+            View All Case Studies
+          </button>
+        </div>
+      `;
+      document.getElementById("emptyResetBtn")?.addEventListener("click", () => {
+        if (filterIndustry) filterIndustry.value = "all";
+        if (filterService) filterService.value = "all";
+        if (filterSolution) filterSolution.value = "all";
+        hideFilterBanner();
+        renderGrid(allStudies);
+      });
+      return;
+    }
+
+    grid.innerHTML = filtered.map(study => {
+      const industry = escapeHtml(getDisplayVal(study.industry));
+      const service = escapeHtml(getDisplayVal(study.service));
+      const solution = escapeHtml(getDisplayVal(study.solution));
+
+      return `
+        <article class="case-card" id="cs-card-${study.id}">
+          <div class="case-image-wrapper">
+            <img
+              src="/api/case-studies/${study.id}/image"
+              alt="${escapeHtml(study.title)}"
+              class="case-image"
+              onerror="this.src='images/insight_education.png'"
+              loading="lazy"
+            >
+          </div>
+          <div class="case-content">
+            <div>
+              <div class="case-header">
+                ${industry ? `<span class="case-tag case-tag-industry">${industry}</span>` : ""}
+                ${service ? `<span class="case-tag case-tag-service">${service}</span>` : ""}
+                ${solution ? `<span class="case-tag cs-tag--solution-light">${solution}</span>` : ""}
+              </div>
+              <h2>${escapeHtml(study.title)}</h2>
+              <p class="summary">${escapeHtml(truncate(study.description, 160))}</p>
+              ${study.date ? `<p class="cs-card-date">${escapeHtml(study.date)}</p>` : ""}
+            </div>
+            <div class="footer">
+              <span class="author">${escapeHtml(study.author || "Edge Analytics")}</span>
+              <button
+                onclick="openPdfModal('${study.id}', '${escapeHtml(study.title).replace(/'/g, "\\'")}')"
+                class="read-more"
+                id="cs-view-${study.id}"
+                aria-label="View case study: ${escapeHtml(study.title)}"
+              >
+                View Case Study
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join("");
+  }
+
+  /* ----------------------------------------------------------
+     ERROR STATE
+  ---------------------------------------------------------- */
+  function renderError() {
+    const grid = document.getElementById("caseStudies");
+    if (grid) {
+      grid.innerHTML = `
+        <div class="cs-error-state" style="grid-column: 1 / -1;">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <h3>Unable to load case studies</h3>
+          <p>Please ensure the backend server is running and Zoho credentials are configured.<br>
+          Try refreshing the page.</p>
+          <button onclick="location.reload()" class="cs-btn cs-btn--teal">Refresh Page</button>
+        </div>
+      `;
+    }
+    const section = document.getElementById("featured-section");
+    if (section) section.style.display = "none";
+  }
+
+  /* ----------------------------------------------------------
+     PDF VIEWER MODAL
+  ---------------------------------------------------------- */
+  let currentPdfTask = null;
+
+  async function openPdfModal(studyId, studyTitle) {
+    if (!pdfModal || !pdfModalBody) return;
+
+    pdfModal.classList.add("active");
+    document.body.style.overflow = "hidden";
+    if (pdfModalTitle) pdfModalTitle.textContent = studyTitle || "Case Study";
+
+    pdfModalBody.innerHTML = `
+      <div class="pdf-loading">
+        <div class="pdf-loading-spinner"></div>
+        <p>Loading document…</p>
+      </div>
+    `;
+
+    try {
+      if (!window.pdfjsLib) throw new Error("PDF.js is not loaded.");
+      const pdfUrl = `/api/case-studies/${studyId}/pdf`;
+      currentPdfTask = pdfjsLib.getDocument(pdfUrl);
+      const pdf = await currentPdfTask.promise;
+
+      pdfModalBody.innerHTML = "";
+
+      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        const page = await pdf.getPage(pageNum);
+        const scale = window.innerWidth < 700 ? 1.0 : 1.5;
+        const viewport = page.getViewport({ scale });
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "pdf-page-wrapper";
+
+        const pageLabel = document.createElement("div");
+        pageLabel.className = "pdf-page-label";
+        pageLabel.textContent = `Page ${pageNum} of ${pdf.numPages}`;
+
+        const canvas = document.createElement("canvas");
+        canvas.className = "pdf-page-canvas";
+        const ctx = canvas.getContext("2d");
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        await page.render({ canvasContext: ctx, viewport }).promise;
+
+        wrapper.appendChild(pageLabel);
+        wrapper.appendChild(canvas);
+        pdfModalBody.appendChild(wrapper);
+      }
+    } catch (err) {
+      console.error("PDF load error:", err);
+      pdfModalBody.innerHTML = `
+        <div class="pdf-error">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <p>Unable to load the document. Please try again or visit the case study page directly.</p>
+          <a href="case-study.html?id=${studyId}" class="cs-btn cs-btn--teal" style="margin-top:1rem; display:inline-flex;">
+            Open Case Study Page
+          </a>
+        </div>
+      `;
+    }
+  }
+
+  function closePdfModal() {
+    if (!pdfModal) return;
+    pdfModal.classList.remove("active");
+    document.body.style.overflow = "";
+    if (currentPdfTask) { currentPdfTask.destroy?.(); currentPdfTask = null; }
+    setTimeout(() => { if (pdfModalBody) pdfModalBody.innerHTML = ""; }, 300);
+  }
+
+  // Expose globally for inline onclick handlers
+  window.openPdfModal = openPdfModal;
+
+  // Attach modal close handlers
+  closePdfBtn?.addEventListener("click", closePdfModal);
+  pdfModal?.addEventListener("click", e => { if (e.target === pdfModal) closePdfModal(); });
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && pdfModal?.classList.contains("active")) closePdfModal();
+  });
+
+  /* ----------------------------------------------------------
+     FILTER BANNER
+  ---------------------------------------------------------- */
+  function showFilterBanner(label, value) {
+    if (!activeFilterBanner || !activeFilterText) return;
+    activeFilterText.textContent = `Showing results filtered by ${label}: ${value}`;
+    activeFilterBanner.style.display = "flex";
+  }
+
+  function hideFilterBanner() {
+    if (activeFilterBanner) activeFilterBanner.style.display = "none";
+  }
+
+  // Clear filter banner
+  btnClearFilter?.addEventListener("click", () => {
+    if (filterIndustry) filterIndustry.value = "all";
+    if (filterService) filterService.value = "all";
+    if (filterSolution) filterSolution.value = "all";
+    hideFilterBanner();
+    renderGrid(allStudies);
+    // Clean URL without reload
+    const clean = `${location.protocol}//${location.host}${location.pathname}`;
+    history.replaceState({}, "", clean);
+  });
+
+  /* ----------------------------------------------------------
+     FILTER CHANGE HANDLERS
+  ---------------------------------------------------------- */
+  const applyFilters = () => renderGrid(allStudies);
+
+  filterIndustry?.addEventListener("change", () => {
+    applyFilters();
+    if (filterIndustry.value !== "all") {
+      showFilterBanner("Industry", filterIndustry.options[filterIndustry.selectedIndex].text);
+    } else hideFilterBanner();
+  });
+
+  filterService?.addEventListener("change", () => {
+    applyFilters();
+    if (filterService.value !== "all") {
+      showFilterBanner("Service", filterService.options[filterService.selectedIndex].text);
+    } else hideFilterBanner();
+  });
+
+  filterSolution?.addEventListener("change", () => {
+    applyFilters();
+    if (filterSolution.value !== "all") {
+      showFilterBanner("Solution", filterSolution.options[filterSolution.selectedIndex].text);
+    } else hideFilterBanner();
+  });
+
+  btnResetFilters?.addEventListener("click", () => {
+    if (filterIndustry) filterIndustry.value = "all";
+    if (filterService) filterService.value = "all";
+    if (filterSolution) filterSolution.value = "all";
+    hideFilterBanner();
+    renderGrid(allStudies);
+  });
+
+  /* ----------------------------------------------------------
+     URL PARAMETER HANDLING
+     Supports ?industry=X, ?service=X, ?solution=X, ?openId=X
+  ---------------------------------------------------------- */
+  function handleUrlParams() {
+    const params = new URLSearchParams(location.search);
+    const openId = params.get("openId");
+    const paramInd = params.get("industry");
+    const paramSrv = params.get("service");
+    const paramSol = params.get("solution");
+
+    let filtersChanged = false;
+
+    // Apply explicit filter params
+    const applyDropdown = (el, val, label) => {
+      if (!el || !val) return;
+      const opt = Array.from(el.options).find(
+        o => o.value.toLowerCase() === val.toLowerCase() ||
+          o.textContent.toLowerCase() === val.toLowerCase()
+      );
+      if (opt) {
+        el.value = opt.value;
+        showFilterBanner(label, opt.textContent);
+        filtersChanged = true;
+      }
+    };
+
+    if (paramInd) applyDropdown(filterIndustry, paramInd, "Industry");
+    if (paramSrv) applyDropdown(filterService, paramSrv, "Service");
+    if (paramSol) applyDropdown(filterSolution, paramSol, "Solution");
+
+    if (filtersChanged) renderGrid(allStudies);
+
+    // Scroll to and highlight a specific card
+    if (openId) {
+      const study = allStudies.find(s => String(s.id) === String(openId));
+      if (study && !paramInd && !paramSrv && !paramSol) {
+        // Auto-set filters to match this study
+        const ind = getFirstVal(study.industry);
+        if (filterIndustry && ind) {
+          const opt = Array.from(filterIndustry.options)
+            .find(o => o.value.toLowerCase() === ind.toLowerCase());
+          if (opt) { filterIndustry.value = opt.value; filtersChanged = true; }
+        }
+        if (filtersChanged) renderGrid(allStudies);
+      }
+
+      // Scroll to the card
+      setTimeout(() => {
+        const card = document.getElementById(`cs-card-${openId}`);
+        if (card) {
+          card.scrollIntoView({ behavior: "smooth", block: "center" });
+          card.classList.add("cs-card--highlighted");
+          setTimeout(() => card.classList.remove("cs-card--highlighted"), 2500);
+        }
+      }, 300);
+    }
+  }
+
+  /* ----------------------------------------------------------
+     BOOT
+  ---------------------------------------------------------- */
+  loadStudies().then(() => {
+    handleUrlParams();
   });
 });

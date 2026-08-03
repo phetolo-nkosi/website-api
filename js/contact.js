@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnText = submitBtn ? submitBtn.querySelector('.btn-text') : null;
   const btnSpinner = submitBtn ? submitBtn.querySelector('.btn-spinner') : null;
   const arrowIcon = submitBtn ? submitBtn.querySelector('.arrow-icon') : null;
-  
+
   // 1. Query Parameter Pre-selection (e.g. ?service=digital)
   const urlParams = new URLSearchParams(window.location.search);
   const serviceParam = urlParams.get('service');
@@ -63,86 +63,89 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 3. Form Submission Validation and Simulation
-  if(contactForm) { if(contactForm && submitBtn) { contactForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    let isValid = true;
-    
-    // Validate Name
-    const nameInput = document.getElementById('contact-name');
-    if (!nameInput.value.trim()) {
-      showError(nameInput, 'error-name');
-      isValid = false;
-    }
+  if (contactForm) {
+    if (contactForm && submitBtn) {
+      contactForm.addEventListener('submit', (e) => {
+        e.preventDefault();
 
-    // Validate Email
-    const emailInput = document.getElementById('contact-email');
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailInput.value.trim() || !emailRegex.test(emailInput.value.trim())) {
-      showError(emailInput, 'error-email');
-      isValid = false;
-    }
+        let isValid = true;
 
-    // Validate Service
-    const serviceSelect = document.getElementById('contact-service');
-    if (!serviceSelect.value) {
-      showError(serviceSelect, 'error-service');
-      isValid = false;
-    }
+        // Validate Name
+        const nameInput = document.getElementById('contact-name');
+        if (!nameInput.value.trim()) {
+          showError(nameInput, 'error-name');
+          isValid = false;
+        }
 
-    // Validate Message
-    const messageInput = document.getElementById('contact-message');
-    if (!messageInput.value.trim()) {
-      showError(messageInput, 'error-message');
-      isValid = false;
-    }
+        // Validate Email
+        const emailInput = document.getElementById('contact-email');
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailInput.value.trim() || !emailRegex.test(emailInput.value.trim())) {
+          showError(emailInput, 'error-email');
+          isValid = false;
+        }
 
-    if (!isValid) {
-      // Shake form container for visual alert on errors
-      contactCardContainer.classList.add('shake-anim');
-      setTimeout(() => {
-        contactCardContainer.classList.remove('shake-anim');
-      }, 500);
-      return;
-    }
+        // Validate Service
+        const serviceSelect = document.getElementById('contact-service');
+        if (!serviceSelect.value) {
+          showError(serviceSelect, 'error-service');
+          isValid = false;
+        }
 
-    // Pass: Animate submission loader HUD state
-    submitBtn.disabled = true;
-    btnText.style.opacity = '0.3';
-    arrowIcon.style.display = 'none';
-    btnSpinner.style.display = 'inline-block';
-    
-    setTimeout(() => {
-      // Generate reference number
-      const randomRef = 'EA-' + Math.floor(1000 + Math.random() * 9000) + '-' + String.fromCharCode(65 + Math.floor(Math.random() * 26));
-      document.getElementById('ref-num').textContent = randomRef;
-      document.getElementById('success-email-display').textContent = emailInput.value.trim();
+        // Validate Message
+        const messageInput = document.getElementById('contact-message');
+        if (!messageInput.value.trim()) {
+          showError(messageInput, 'error-message');
+          isValid = false;
+        }
 
-      // Trigger beautiful slide transition to success screen
-      contactForm.style.opacity = '0';
-      contactForm.style.transform = 'translateY(15px)';
-      
-      setTimeout(() => {
-        contactForm.style.display = 'none';
-        successPanel.style.display = 'block';
+        if (!isValid) {
+          // Shake form container for visual alert on errors
+          contactCardContainer.classList.add('shake-anim');
+          setTimeout(() => {
+            contactCardContainer.classList.remove('shake-anim');
+          }, 500);
+          return;
+        }
+
+        // Pass: Animate submission loader HUD state
+        submitBtn.disabled = true;
+        btnText.style.opacity = '0.3';
+        arrowIcon.style.display = 'none';
+        btnSpinner.style.display = 'inline-block';
+
         setTimeout(() => {
-          successPanel.style.opacity = '1';
-          successPanel.style.transform = 'translateY(0)';
-          
-          // Trigger checkmark animation
-          const circle = successPanel.querySelector('.checkmark-circle');
-          const check = successPanel.querySelector('.checkmark-check');
-          if (circle && check) {
-            circle.style.animation = 'stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards';
-            check.style.animation = 'stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards';
-          }
-        }, 50);
-      }, 300);
+          // Generate reference number
+          const randomRef = 'EA-' + Math.floor(1000 + Math.random() * 9000) + '-' + String.fromCharCode(65 + Math.floor(Math.random() * 26));
+          document.getElementById('ref-num').textContent = randomRef;
+          document.getElementById('success-email-display').textContent = emailInput.value.trim();
 
-    }, 1500); // 1.5s simulated connection delay
-  });
+          // Trigger beautiful slide transition to success screen
+          contactForm.style.opacity = '0';
+          contactForm.style.transform = 'translateY(15px)';
 
-  } }\n  // 4. Back button return routing
+          setTimeout(() => {
+            contactForm.style.display = 'none';
+            successPanel.style.display = 'block';
+            setTimeout(() => {
+              successPanel.style.opacity = '1';
+              successPanel.style.transform = 'translateY(0)';
+
+              // Trigger checkmark animation
+              const circle = successPanel.querySelector('.checkmark-circle');
+              const check = successPanel.querySelector('.checkmark-check');
+              if (circle && check) {
+                circle.style.animation = 'stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards';
+                check.style.animation = 'stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards';
+              }
+            }, 50);
+          }, 300);
+
+        }, 1500); // 1.5s simulated connection delay
+      });
+
+    }
+  } // 4. Back button return routing
   const backBtn = document.getElementById('btn-success-back');
   if (backBtn) {
     backBtn.addEventListener('click', () => {
