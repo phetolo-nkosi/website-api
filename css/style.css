@@ -1344,18 +1344,39 @@ nav {
 }
 
 @keyframes floatCard1 {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-12px) rotate(1deg); }
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-12px) rotate(1deg);
+  }
 }
 
 @keyframes floatCard2 {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-10px) rotate(-1deg); }
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-10px) rotate(-1deg);
+  }
 }
 
 @keyframes floatCard3 {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-14px) rotate(0.5deg); }
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-14px) rotate(0.5deg);
+  }
 }
 
 /* Background glow */
@@ -11071,7 +11092,8 @@ body.cs-page-body {
 .industry-success-card {
   flex: 1;
   max-width: 380px;
-  background: #0f172a; /* Dark background */
+  background: #0f172a;
+  /* Dark background */
   border-radius: 20px;
   padding: 3rem 2.5rem;
   box-shadow: 0 10px 40px rgba(15, 23, 42, 0.4);
@@ -11226,7 +11248,7 @@ body.cs-page-body {
   .industry-carousel-wrapper {
     flex-direction: column;
   }
-  
+
   .industry-carousel-wrapper .carousel-btn {
     display: none;
   }
@@ -11238,14 +11260,14 @@ body.cs-page-body {
     padding: 2rem 0;
     perspective: none;
   }
-  
+
   .industry-success-card {
     max-width: 100%;
     width: 100%;
     opacity: 1;
     transform: none !important;
   }
-  
+
   .industry-success-card.pos-left,
   .industry-success-card.pos-center,
   .industry-success-card.pos-right {
@@ -11253,9 +11275,10 @@ body.cs-page-body {
     opacity: 1;
     z-index: 1;
     box-shadow: 0 10px 40px rgba(15, 23, 42, 0.3);
-    order: 0; /* Let DOM order apply natively */
+    order: 0;
+    /* Let DOM order apply natively */
   }
-  
+
 
 }
 
@@ -11376,9 +11399,9 @@ body.cs-page-body {
 }
 
 .cs-count-badge {
-  background: rgba(13,179,158,0.1);
+  background: rgba(13, 179, 158, 0.1);
   color: var(--brand-teal);
-  border: 1px solid rgba(13,179,158,0.25);
+  border: 1px solid rgba(13, 179, 158, 0.25);
   font-size: 0.78rem;
   font-weight: 600;
   padding: 0.3rem 0.85rem;
@@ -11404,7 +11427,7 @@ body.cs-page-body {
   border-radius: 20px;
   border: 1px solid #e2e8f0;
   overflow: hidden;
-  box-shadow: 0 6px 24px rgba(15,23,42,0.05);
+  box-shadow: 0 6px 24px rgba(15, 23, 42, 0.05);
   transition: var(--transition-smooth);
   flex-direction: column;
   text-decoration: none;
@@ -11413,12 +11436,12 @@ body.cs-page-body {
 
 .highlight-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 20px 50px rgba(15,23,42,0.1);
-  border-color: rgba(13,179,158,0.3);
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.1);
+  border-color: rgba(13, 179, 158, 0.3);
 }
 
 .highlight-card--primary {
-  border-color: rgba(13,179,158,0.2);
+  border-color: rgba(13, 179, 158, 0.2);
 }
 
 .highlight-image-wrapper {
@@ -11456,7 +11479,7 @@ body.cs-page-body {
   letter-spacing: 0.07em;
   padding: 0.35rem 0.8rem;
   border-radius: 50px;
-  box-shadow: 0 4px 12px rgba(13,179,158,0.35);
+  box-shadow: 0 4px 12px rgba(13, 179, 158, 0.35);
 }
 
 .highlight-content {
@@ -11534,7 +11557,7 @@ body.cs-page-body {
 }
 
 .cs-tag--industry {
-  background: rgba(13,179,158,0.1);
+  background: rgba(13, 179, 158, 0.1);
   color: #0d8a7c;
 }
 
@@ -11545,9 +11568,9 @@ body.cs-page-body {
 }
 
 .cs-tag--solution {
-  background: rgba(99,102,241,0.1);
+  background: rgba(99, 102, 241, 0.1);
   color: #4f46e5;
-  border: 1px solid rgba(99,102,241,0.2);
+  border: 1px solid rgba(99, 102, 241, 0.2);
 }
 
 .cs-tag--solution-light {
@@ -11582,13 +11605,13 @@ body.cs-page-body {
 .cs-btn--teal {
   background: var(--brand-teal);
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(13,179,158,0.2);
+  box-shadow: 0 4px 14px rgba(13, 179, 158, 0.2);
 }
 
 .cs-btn--teal:hover {
   background: var(--brand-teal-hover);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(13,179,158,0.35);
+  box-shadow: 0 8px 20px rgba(13, 179, 158, 0.35);
   color: #ffffff;
 }
 
@@ -11599,11 +11622,11 @@ body.cs-page-body {
 .cs-btn--outline {
   background: transparent;
   color: var(--brand-teal);
-  border: 1.5px solid rgba(13,179,158,0.4);
+  border: 1.5px solid rgba(13, 179, 158, 0.4);
 }
 
 .cs-btn--outline:hover {
-  background: rgba(13,179,158,0.08);
+  background: rgba(13, 179, 158, 0.08);
   border-color: var(--brand-teal);
 }
 
@@ -11666,7 +11689,7 @@ body.cs-page-body {
 .filter-select:focus {
   outline: none;
   border-color: var(--brand-teal);
-  box-shadow: 0 0 0 3px rgba(13,179,158,0.12);
+  box-shadow: 0 0 0 3px rgba(13, 179, 158, 0.12);
 }
 
 .filter-select:hover {
@@ -11701,8 +11724,8 @@ body.cs-page-body {
   display: none;
   align-items: center;
   gap: 0.75rem;
-  background: rgba(13,179,158,0.08);
-  border: 1px solid rgba(13,179,158,0.2);
+  background: rgba(13, 179, 158, 0.08);
+  border: 1px solid rgba(13, 179, 158, 0.2);
   border-radius: 10px;
   padding: 0.65rem 1rem;
   margin-top: 0.75rem;
@@ -11752,9 +11775,17 @@ body.cs-page-body {
 }
 
 @keyframes csCardPulse {
-  0%   { box-shadow: 0 0 0 0 rgba(13,179,158,0.5); }
-  30%  { box-shadow: 0 0 0 10px rgba(13,179,158,0.15); }
-  100% { box-shadow: 0 4px 12px rgba(15,23,42,0.02); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(13, 179, 158, 0.5);
+  }
+
+  30% {
+    box-shadow: 0 0 0 10px rgba(13, 179, 158, 0.15);
+  }
+
+  100% {
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.02);
+  }
 }
 
 /* ── Empty / Error States ─────────────────────────────────── */
@@ -11798,8 +11829,13 @@ body.cs-page-body {
 }
 
 @keyframes skeletonShimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 .cs-skeleton-card {
@@ -11825,11 +11861,30 @@ body.cs-page-body {
   gap: 0.75rem;
 }
 
-.cs-skeleton-tag   { height: 22px; width: 80px; }
-.cs-skeleton-title { height: 28px; width: 85%; }
-.cs-skeleton-line  { height: 16px; width: 100%; }
-.cs-skeleton-line--short { width: 65%; }
-.cs-skeleton-btn   { height: 36px; width: 140px; margin-top: auto; }
+.cs-skeleton-tag {
+  height: 22px;
+  width: 80px;
+}
+
+.cs-skeleton-title {
+  height: 28px;
+  width: 85%;
+}
+
+.cs-skeleton-line {
+  height: 16px;
+  width: 100%;
+}
+
+.cs-skeleton-line--short {
+  width: 65%;
+}
+
+.cs-skeleton-btn {
+  height: 36px;
+  width: 140px;
+  margin-top: auto;
+}
 
 /* ── PDF Viewer Modal ─────────────────────────────────────── */
 #pdfViewerModal {
@@ -11837,7 +11892,7 @@ body.cs-page-body {
   position: fixed;
   inset: 0;
   z-index: 10000;
-  background: rgba(2,6,18,0.9);
+  background: rgba(2, 6, 18, 0.9);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   align-items: center;
@@ -11856,14 +11911,21 @@ body.cs-page-body {
   display: flex;
   flex-direction: column;
   background: #0d1526;
-  border-left: 1px solid rgba(255,255,255,0.06);
-  border-right: 1px solid rgba(255,255,255,0.06);
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
   animation: pdfSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes pdfSlideIn {
-  from { transform: translateY(30px); opacity: 0; }
-  to   { transform: translateY(0);    opacity: 1; }
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .pdf-modal-header {
@@ -11872,7 +11934,7 @@ body.cs-page-body {
   justify-content: space-between;
   padding: 1rem 1.5rem;
   background: #070e1c;
-  border-bottom: 1px solid rgba(255,255,255,0.07);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   flex-shrink: 0;
   gap: 1rem;
 }
@@ -11888,22 +11950,22 @@ body.cs-page-body {
 }
 
 .pdf-modal-close {
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   width: 36px;
   height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(255,255,255,0.7);
+  color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
   transition: var(--transition-smooth);
   flex-shrink: 0;
 }
 
 .pdf-modal-close:hover {
-  background: rgba(255,255,255,0.12);
+  background: rgba(255, 255, 255, 0.12);
   color: #ffffff;
 }
 
@@ -11918,10 +11980,22 @@ body.cs-page-body {
   scroll-behavior: smooth;
 }
 
-.pdf-modal-body::-webkit-scrollbar { width: 6px; }
-.pdf-modal-body::-webkit-scrollbar-track { background: #0d1526; }
-.pdf-modal-body::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
-.pdf-modal-body::-webkit-scrollbar-thumb:hover { background: var(--brand-teal); }
+.pdf-modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.pdf-modal-body::-webkit-scrollbar-track {
+  background: #0d1526;
+}
+
+.pdf-modal-body::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+
+.pdf-modal-body::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-teal);
+}
 
 .pdf-page-wrapper {
   display: flex;
@@ -11932,7 +12006,7 @@ body.cs-page-body {
 
 .pdf-page-label {
   font-size: 0.72rem;
-  color: rgba(255,255,255,0.35);
+  color: rgba(255, 255, 255, 0.35);
   text-transform: uppercase;
   letter-spacing: 0.07em;
   margin-bottom: 0.5rem;
@@ -11942,7 +12016,7 @@ body.cs-page-body {
 .pdf-page-canvas {
   max-width: 100%;
   border-radius: 6px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   display: block;
 }
 
@@ -11952,21 +12026,23 @@ body.cs-page-body {
   align-items: center;
   gap: 1.25rem;
   padding: 4rem 2rem;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255, 255, 255, 0.5);
   font-size: 0.95rem;
 }
 
 .pdf-loading-spinner {
   width: 42px;
   height: 42px;
-  border: 3px solid rgba(255,255,255,0.1);
+  border: 3px solid rgba(255, 255, 255, 0.1);
   border-top-color: var(--brand-teal);
   border-radius: 50%;
   animation: spin 0.9s linear infinite;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .pdf-error {
@@ -11976,7 +12052,7 @@ body.cs-page-body {
   gap: 1rem;
   padding: 4rem 2rem;
   text-align: center;
-  color: rgba(255,255,255,0.6);
+  color: rgba(255, 255, 255, 0.6);
   font-size: 0.9rem;
   max-width: 420px;
 }
@@ -12054,14 +12130,14 @@ body.cs-page-body {
   align-items: center;
   justify-content: center;
   gap: 1.25rem;
-  color: rgba(255,255,255,0.6);
+  color: rgba(255, 255, 255, 0.6);
   font-size: 1rem;
 }
 
 .csd-loading-spinner {
   width: 48px;
   height: 48px;
-  border: 3px solid rgba(255,255,255,0.1);
+  border: 3px solid rgba(255, 255, 255, 0.1);
   border-top-color: var(--brand-teal);
   border-radius: 50%;
   animation: spin 0.85s linear infinite;
@@ -12077,7 +12153,7 @@ body.cs-page-body {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: rgba(255,255,255,0.55);
+  color: rgba(255, 255, 255, 0.55);
   font-size: 0.88rem;
   font-weight: 500;
   text-decoration: none;
@@ -12101,7 +12177,7 @@ body.cs-page-body {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 50% 70% at 80% 50%, rgba(13,179,158,0.07) 0%, transparent 70%);
+  background: radial-gradient(ellipse 50% 70% at 80% 50%, rgba(13, 179, 158, 0.07) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -12136,21 +12212,21 @@ body.cs-page-body {
 }
 
 .csd-hero-tag--industry {
-  background: rgba(13,179,158,0.12);
+  background: rgba(13, 179, 158, 0.12);
   color: var(--brand-teal);
-  border: 1px solid rgba(13,179,158,0.25);
+  border: 1px solid rgba(13, 179, 158, 0.25);
 }
 
 .csd-hero-tag--service {
-  background: rgba(255,255,255,0.06);
-  color: rgba(255,255,255,0.75);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .csd-hero-tag--solution {
-  background: rgba(99,102,241,0.1);
+  background: rgba(99, 102, 241, 0.1);
   color: #a5b4fc;
-  border: 1px solid rgba(99,102,241,0.25);
+  border: 1px solid rgba(99, 102, 241, 0.25);
 }
 
 .csd-hero-title {
@@ -12175,13 +12251,13 @@ body.cs-page-body {
   align-items: center;
   gap: 0.4rem;
   font-size: 0.84rem;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .csd-hero-image-wrapper {
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
   aspect-ratio: 4/3;
   background: #0d1526;
 }
@@ -12222,7 +12298,7 @@ body.cs-page-body {
 
 .csd-stat-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 30px rgba(15,23,42,0.07);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.07);
 }
 
 .csd-stat-num {
@@ -12280,7 +12356,7 @@ body.cs-page-body {
   content: "";
   flex: 1;
   height: 1px;
-  background: rgba(13,179,158,0.2);
+  background: rgba(13, 179, 158, 0.2);
 }
 
 .csd-panel-heading {
@@ -12297,8 +12373,13 @@ body.cs-page-body {
   line-height: 1.75;
 }
 
-.csd-panel-text p { margin-bottom: 0.75rem; }
-.csd-panel-text p:last-child { margin-bottom: 0; }
+.csd-panel-text p {
+  margin-bottom: 0.75rem;
+}
+
+.csd-panel-text p:last-child {
+  margin-bottom: 0;
+}
 
 /* ── Sidebar ─────────────────────────────────────────────── */
 .csd-sidebar {
@@ -12356,14 +12437,14 @@ body.cs-page-body {
   text-decoration: none;
   cursor: pointer;
   transition: var(--transition-smooth);
-  box-shadow: 0 4px 14px rgba(13,179,158,0.2);
+  box-shadow: 0 4px 14px rgba(13, 179, 158, 0.2);
   width: 100%;
 }
 
 .csd-back-btn:hover {
   background: var(--brand-teal-hover);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(13,179,158,0.35);
+  box-shadow: 0 8px 20px rgba(13, 179, 158, 0.35);
   color: #ffffff;
 }
 
@@ -12402,7 +12483,7 @@ body.cs-page-body {
   background: #1e293b;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(15,23,42,0.2);
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.2);
   min-height: 400px;
   display: flex;
   flex-direction: column;
@@ -12414,7 +12495,7 @@ body.cs-page-body {
   justify-content: space-between;
   padding: 0.85rem 1.25rem;
   background: #0d1526;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   flex-shrink: 0;
   gap: 1rem;
   flex-wrap: wrap;
@@ -12422,7 +12503,7 @@ body.cs-page-body {
 
 .csd-pdf-toolbar-title {
   font-size: 0.85rem;
-  color: rgba(255,255,255,0.6);
+  color: rgba(255, 255, 255, 0.6);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -12430,7 +12511,7 @@ body.cs-page-body {
 
 .csd-pdf-page-count {
   font-size: 0.78rem;
-  color: rgba(255,255,255,0.4);
+  color: rgba(255, 255, 255, 0.4);
 }
 
 .csd-pdf-body {
@@ -12445,10 +12526,22 @@ body.cs-page-body {
   max-height: 85vh;
 }
 
-.csd-pdf-body::-webkit-scrollbar { width: 6px; }
-.csd-pdf-body::-webkit-scrollbar-track { background: #1e293b; }
-.csd-pdf-body::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-.csd-pdf-body::-webkit-scrollbar-thumb:hover { background: var(--brand-teal); }
+.csd-pdf-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.csd-pdf-body::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+.csd-pdf-body::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+.csd-pdf-body::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-teal);
+}
 
 .csd-pdf-page {
   display: flex;
@@ -12459,7 +12552,7 @@ body.cs-page-body {
 
 .csd-pdf-page-label {
   font-size: 0.7rem;
-  color: rgba(255,255,255,0.3);
+  color: rgba(255, 255, 255, 0.3);
   text-transform: uppercase;
   letter-spacing: 0.07em;
   margin-bottom: 0.5rem;
@@ -12469,7 +12562,7 @@ body.cs-page-body {
 .csd-pdf-canvas {
   max-width: 100%;
   border-radius: 6px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   display: block;
 }
 
@@ -12480,7 +12573,7 @@ body.cs-page-body {
   justify-content: center;
   gap: 1.25rem;
   padding: 4rem 2rem;
-  color: rgba(255,255,255,0.4);
+  color: rgba(255, 255, 255, 0.4);
   font-size: 0.95rem;
   width: 100%;
 }
@@ -12488,7 +12581,7 @@ body.cs-page-body {
 .csd-pdf-spinner {
   width: 44px;
   height: 44px;
-  border: 3px solid rgba(255,255,255,0.1);
+  border: 3px solid rgba(255, 255, 255, 0.1);
   border-top-color: var(--brand-teal);
   border-radius: 50%;
   animation: spin 0.85s linear infinite;
@@ -12502,7 +12595,7 @@ body.cs-page-body {
   gap: 1rem;
   padding: 4rem 2rem;
   text-align: center;
-  color: rgba(255,255,255,0.45);
+  color: rgba(255, 255, 255, 0.45);
   font-size: 0.9rem;
 }
 
