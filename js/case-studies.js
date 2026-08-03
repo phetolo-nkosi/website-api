@@ -12,7 +12,7 @@
  */
 
 const API_URL = "/api/case-studies";
-const FALLBACK_URL = "http://localhost:3000/api/case-studies";
+const FALLBACK_URL = "https://website-api-m3wi.onrender.com/api/case-studies";
 
 /** Shared state */
 let allStudies = [];
