@@ -9,69 +9,6 @@ const {
 
 const router = express.Router();
 
-const MOCK_CASE_STUDIES = [
-    {
-        id: "mock-1",
-        title: "Cloud Architecture & SIS Modernisation",
-        description: "Audited and modernised the legacy Student Information System (SIS) for a major African university, migrating key operations to AWS and integrating workflow automation.",
-        service: "Digital Services",
-        industry: "Education",
-        solution: "Designed a secure multi-region AWS landing zone. Developed real-time database replication pipelines to eliminate legacy bottlenecks. Automated student enrolment steps via serverless workflows, reducing processing times by 65%.",
-        author: "Edge Analytics Digital Team",
-        date: "2026-06-15",
-        stat1: "65% Faster Enrolment",
-        stat2: "99.99% Cloud Uptime",
-        stat3: "12k+ Students Migrated",
-        image: "/api/case-studies/mock-1/image",
-        pdf: "/api/case-studies/mock-1/pdf"
-    },
-    {
-        id: "mock-2",
-        title: "Automated Enterprise Risk & Compliance Portal",
-        description: "Implemented an automated regulatory compliance tracking system for a regional bank, mapping policies to key business units and automating internal audit checklists.",
-        service: "Risk Management",
-        industry: "Financial Services",
-        solution: "Configured custom compliance workflows tracking cross-border transactions. Built automated alert systems mapped to national central bank regulations, reducing human error in filing reports by 80%.",
-        author: "Edge Analytics Risk Advisory",
-        date: "2026-05-10",
-        stat1: "80% Error Reduction",
-        stat2: "100% Audit Readiness",
-        stat3: "24/7 Real-Time Alerts",
-        image: "/api/case-studies/mock-2/image",
-        pdf: "/api/case-studies/mock-2/pdf"
-    },
-    {
-        id: "mock-3",
-        title: "Enterprise Cyber Security Assessment & Remediation",
-        description: "Conducted a comprehensive security audit of a national public sector department, designing a NIST-aligned remediation roadmap and deploying active threat monitoring.",
-        service: "Managed Services",
-        industry: "Government & Public Sector",
-        solution: "Identified critical vulnerabilities in legacy endpoints. Implemented multi-factor authentication, segment-based firewall policies, and conducted employee threat simulation training.",
-        author: "Edge Analytics Cyber Security Division",
-        date: "2026-04-20",
-        stat1: "94% Threat Mitigation",
-        stat2: "Zero Data Breaches",
-        stat3: "NIST-Aligned Security",
-        image: "/api/case-studies/mock-3/image",
-        pdf: "/api/case-studies/mock-3/pdf"
-    },
-    {
-        id: "mock-4",
-        title: "Cloud Scale Data Engineering & BI Dashboards",
-        description: "Helped a pan-African logistics firm aggregate operational data across 14 hubs into a central modern data warehouse, building live analytics dashboards.",
-        service: "Advisory Services",
-        industry: "Logistics & Supply Chain",
-        solution: "Constructed robust ETL data pipelines connecting fleet telemetry and warehouse management software. Designed responsive BI dashboards showing hub productivity in real-time.",
-        author: "Edge Analytics Advisory Group",
-        date: "2026-03-05",
-        stat1: "35% Fuel Optimization",
-        stat2: "14 Hubs Centralized",
-        stat3: "Real-Time Tracking",
-        image: "/api/case-studies/mock-4/image",
-        pdf: "/api/case-studies/mock-4/pdf"
-    }
-];
-
 /**
  * Zoho Creator API endpoint used to retrieve
  * case study records from the configured report.
@@ -155,13 +92,16 @@ router.get("/", async (req, res) => {
 
     } catch (err) {
 
-        // Log the Zoho/API error and fallback to mock data
+        // Log the Zoho/API error and notify frontend
         console.error(
-            "CASE STUDIES ERROR (falling back to mock data):",
+            "CASE STUDIES ERROR:",
             err.response?.data || err.message
         );
 
-        res.json(MOCK_CASE_STUDIES);
+        res.status(503).json({
+            error: "Service Unavailable",
+            message: "The case studies will load shortly."
+        });
 
     }
 
@@ -176,16 +116,6 @@ router.get("/", async (req, res) => {
  * Retrieves a specific case study using its record ID.
  */
 router.get("/:id", async (req, res) => {
-
-    // Return mock data immediately if it's a mock ID
-    if (String(req.params.id).startsWith("mock-")) {
-        const mockStudy = MOCK_CASE_STUDIES.find(
-            study => String(study.id) === String(req.params.id)
-        );
-        if (mockStudy) {
-            return res.json(mockStudy);
-        }
-    }
 
     try {
 
@@ -252,19 +182,11 @@ router.get("/:id", async (req, res) => {
 
     } catch (err) {
 
-        // Log the error and try fallback
+        // Log the error
         console.error(
-            "CASE STUDY ERROR (trying fallback to mock data):",
+            "CASE STUDY ERROR:",
             err.response?.data || err.message
         );
-
-        const fallbackStudy = MOCK_CASE_STUDIES.find(
-            study => String(study.id) === String(req.params.id)
-        );
-
-        if (fallbackStudy) {
-            return res.json(fallbackStudy);
-        }
 
         // Return an appropriate API error
         res.status(500).json({
@@ -288,17 +210,6 @@ router.get("/:id", async (req, res) => {
  * The PDF is not stored on the website server.
  */
 router.get("/:id/pdf", async (req, res) => {
-
-    const serveMockPdf = () => {
-        const base64Pdf = "JVBERi0xLjQKMSAwIG9iago8PAovVHlwZSAvQ2F0YWxvZwovUGFnZXMgMiAwIFIKPj4KZW5kb2JqCjIgMCBvYmoKPDwKL1R5cGUgL1BhZ2VzCi9LaWRzIFszIDAgUl0KL0NvdW50IDEKPj4KZW5kb2JqCjMgMCBvYmoKPDwKL1R5cGUgL1BhZ2UKL1BhcmVudCAyIDAgUgovTWVkaWFCb3ggWzAgMCA1OTUgODQyXQovQ29udGVudHMgNCAwIFIKPj4KZW5kb2JqCjQgMCBvYmoKPDwKL0xlbmd0aCA1OQo+PgpzdHJlYW0KQlQKL0YxIDEyIFRmCjcyIDcyMCBUZCAoRWRnZSBBbmFseXRpY3MgQ2FzZSBTdHVkeSBQcmV2aWV3KSBUagpFVAplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA1CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAxOCAwMDAwMCBuIAowMDAwMDAwMDc3IDAwMDAwIG4gCjAwMDAwMDAxMzYgMDAwMDAgbSAKMDAwMDAwMDIzMyAwMDAwMCBuIAp0cmFpbGVyCjw8Ci9TaXplIDUKL1Jvb3QgMSAwIFIKPj4Kc3RhcnR4cmVmCjM0MAolJUVPRg==";
-        const buffer = Buffer.from(base64Pdf, "base64");
-        res.setHeader("Content-Type", "application/pdf");
-        res.send(buffer);
-    };
-
-    if (String(req.params.id).startsWith("mock-")) {
-        return serveMockPdf();
-    }
 
     try {
 
@@ -324,16 +235,16 @@ router.get("/:id/pdf", async (req, res) => {
         });
 
         response.data.on("error", err => {
-            console.error("PDF STREAM ERROR (falling back to mock PDF):", err);
+            console.error("PDF STREAM ERROR:", err);
             if (!res.headersSent) {
-                serveMockPdf();
+                res.status(500).end();
             }
         });
 
     } catch (err) {
-        console.error("PDF ERROR (falling back to mock PDF):", err.message);
+        console.error("PDF ERROR:", err.message);
         if (!res.headersSent) {
-            serveMockPdf();
+            res.status(500).end();
         }
     }
 
@@ -350,16 +261,6 @@ router.get("/:id/pdf", async (req, res) => {
  * The image is not stored on the website server.
  */
 router.get("/:id/image", async (req, res) => {
-
-    const serveMockImage = () => {
-        // Return a single static placeholder instead of assigning different images based on ID
-        const imagePath = path.join(__dirname, "../images", "insight_security.png");
-        res.sendFile(imagePath);
-    };
-
-    if (String(req.params.id).startsWith("mock-")) {
-        return serveMockImage();
-    }
 
     try {
 
@@ -381,9 +282,9 @@ router.get("/:id/image", async (req, res) => {
 
     } catch (err) {
 
-        console.error("IMAGE ERROR (falling back to mock image):", err.message);
+        console.error("IMAGE ERROR:", err.message);
         if (!res.headersSent) {
-            serveMockImage();
+            res.status(500).end();
         }
 
     }

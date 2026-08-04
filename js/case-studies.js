@@ -11,8 +11,7 @@
  *   4. PDF Viewer Modal   — full-screen PDF.js canvas viewer
  */
 
-const API_URL = "/api/case-studies";
-const FALLBACK_URL = "https://website-api-m3wi.onrender.com/api/case-studies";
+const API_URL = "https://website-api-m3wi.onrender.com/api/case-studies";
 
 /** Shared state */
 let allStudies = [];
@@ -41,6 +40,21 @@ document.addEventListener("DOMContentLoaded", () => {
   if (window.pdfjsLib) {
     pdfjsLib.GlobalWorkerOptions.workerSrc =
       "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
+  }
+
+  /* ----------------------------------------------------------
+     SCROLL LISTENER FOR STICKY FILTER
+  ---------------------------------------------------------- */
+  const filterSection = document.getElementById("filters");
+  if (filterSection) {
+    window.addEventListener("scroll", () => {
+      // Offset can be adjusted. 150px is when it typically detaches from the header
+      if (window.scrollY > 150) {
+        filterSection.classList.add("is-scrolled");
+      } else {
+        filterSection.classList.remove("is-scrolled");
+      }
+    }, { passive: true });
   }
 
   /* ----------------------------------------------------------
@@ -114,16 +128,19 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch(API_URL);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       allStudies = await res.json();
-    } catch (primaryErr) {
-      console.warn("Primary API failed, trying fallback:", primaryErr.message);
+      // Validate — API errors return {error:...} not an array
+      if (!Array.isArray(allStudies)) throw new Error("Unexpected response");
+    } catch (err) {
+      console.error("Could not load case studies:", err.message);
+      renderError();
+      return;
+    }
+
+    // Cache in sessionStorage so the index page can read it without a second API call
+    if (Array.isArray(allStudies) && allStudies.length) {
       try {
-        const res = await fetch(FALLBACK_URL);
-        allStudies = await res.json();
-      } catch (fallbackErr) {
-        console.error("Both APIs failed:", fallbackErr);
-        renderError();
-        return;
-      }
+        sessionStorage.setItem("ea_case_studies", JSON.stringify(allStudies));
+      } catch (_) { /* storage quota exceeded – silently ignore */ }
     }
 
     updateStatsStrip(allStudies);
@@ -231,11 +248,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const service = escapeHtml(getDisplayVal(study.service));
       const solution = escapeHtml(getDisplayVal(study.solution));
 
+      const delay = idx * 0.1;
       return `
-        <article class="case-card" id="highlight-cs-card-${study.id}">
+        <article class="case-card animate-fade-in" style="animation-delay: ${delay}s" id="highlight-cs-card-${study.id}">
           <div class="case-image-wrapper">
             <img
-              src="/api/case-studies/${study.id}/image"
+              src="https://website-api-m3wi.onrender.com/api/case-studies/${study.id}/image"
               alt="${escapeHtml(study.title)}"
               class="case-image"
               onerror="this.src='images/insight_education.png'"
@@ -336,16 +354,17 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    grid.innerHTML = filtered.map(study => {
+    grid.innerHTML = filtered.map((study, idx) => {
       const industry = escapeHtml(getDisplayVal(study.industry));
       const service = escapeHtml(getDisplayVal(study.service));
       const solution = escapeHtml(getDisplayVal(study.solution));
 
+      const delay = idx * 0.1;
       return `
-        <article class="case-card" id="cs-card-${study.id}">
+        <article class="case-card animate-fade-in" style="animation-delay: ${delay}s" id="cs-card-${study.id}">
           <div class="case-image-wrapper">
             <img
-              src="/api/case-studies/${study.id}/image"
+              src="https://website-api-m3wi.onrender.com/api/case-studies/${study.id}/image"
               alt="${escapeHtml(study.title)}"
               class="case-image"
               onerror="this.src='images/insight_education.png'"
@@ -391,16 +410,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const grid = document.getElementById("caseStudies");
     if (grid) {
       grid.innerHTML = `
-        <div class="cs-error-state" style="grid-column: 1 / -1;">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <div class="modern-error-state">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"></circle>
             <line x1="12" y1="8" x2="12" y2="12"></line>
             <line x1="12" y1="16" x2="12.01" y2="16"></line>
           </svg>
-          <h3>Unable to load case studies</h3>
-          <p>Please ensure the backend server is running and Zoho credentials are configured.<br>
-          Try refreshing the page.</p>
-          <button onclick="location.reload()" class="cs-btn cs-btn--teal">Refresh Page</button>
+          <h3>Case Studies Updating</h3>
+          <p>The case studies will load shortly.<br>
+          Please check back in a few moments.</p>
+          <button onclick="location.reload()" class="cs-btn">Refresh Page</button>
         </div>
       `;
     }
@@ -429,7 +448,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       if (!window.pdfjsLib) throw new Error("PDF.js is not loaded.");
-      const pdfUrl = `/api/case-studies/${studyId}/pdf`;
+      const pdfUrl = `https://website-api-m3wi.onrender.com/api/case-studies/${studyId}/pdf`;
       currentPdfTask = pdfjsLib.getDocument(pdfUrl);
       const pdf = await currentPdfTask.promise;
 
@@ -462,14 +481,16 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       console.error("PDF load error:", err);
       pdfModalBody.innerHTML = `
-        <div class="pdf-error">
-          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.5">
+        <div class="modern-error-state">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"></circle>
             <line x1="12" y1="8" x2="12" y2="12"></line>
             <line x1="12" y1="16" x2="12.01" y2="16"></line>
           </svg>
-          <p>Unable to load the document. Please try again or visit the case study page directly.</p>
-          <a href="case-study.html?id=${studyId}" class="cs-btn cs-btn--teal" style="margin-top:1rem; display:inline-flex;">
+          <h3>Document Updating</h3>
+          <p>The case study document will load shortly.<br>
+          Please check back in a few moments.</p>
+          <a href="case-study.html?id=${studyId}" class="cs-btn">
             Open Case Study Page
           </a>
         </div>
