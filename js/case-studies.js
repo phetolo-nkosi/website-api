@@ -1,643 +1,1480 @@
 /**
  * ============================================================
- * INSIGHTS PAGE — case-studies.js
+ * CASE STUDIES - CENTRAL JAVASCRIPT
  * ============================================================
  *
- * Retrieves case studies from the Express/Zoho backend and
- * renders the full Insights page:
- *   1. Latest Highlights  — 2 most-recent case studies
- *   2. Filter Bar         — Industry / Service / Solution
- *   3. All Case Studies   — filterable card grid
- *   4. PDF Viewer Modal   — full-screen PDF.js canvas viewer
+ * This single file handles:
+ *
+ * 1. Latest 4 case studies on the Index page
+ * 2. Case studies grouped by Industry on the Services page
+ * 3. Full Case Study page
+ *
+ * The script automatically determines which page it is
+ * running on by checking for specific HTML elements.
  */
 
-const API_URL = "https://website-api-m3wi.onrender.com/api/case-studies";
 
-/** Shared state */
-let allStudies = [];
+/**
+ * ============================================================
+ * CONFIGURATION
+ * ============================================================
+ */
 
-/* ============================================================
-   DOM-READY ENTRY POINT
-   ============================================================ */
-document.addEventListener("DOMContentLoaded", () => {
+const CASE_STUDIES_API =
+    "/api/case-studies";
 
-  // ── Filter controls ──────────────────────────────────────
-  const filterIndustry = document.getElementById("filterIndustry");
-  const filterService = document.getElementById("filterService");
-  const filterSolution = document.getElementById("filterSolution");
-  const btnResetFilters = document.getElementById("btnResetFilters");
-  const activeFilterBanner = document.getElementById("active-filter-banner");
-  const activeFilterText = document.getElementById("active-filter-text");
-  const btnClearFilter = document.getElementById("btn-clear-active-filter");
 
-  // ── PDF Modal elements ────────────────────────────────────
-  const pdfModal = document.getElementById("pdfViewerModal");
-  const closePdfBtn = document.getElementById("closePdfModal");
-  const pdfModalBody = document.getElementById("pdfModalBody");
-  const pdfModalTitle = document.getElementById("pdfModalTitle");
+/**
+ * ============================================================
+ * PAGE INITIALISATION
+ * ============================================================
+ *
+ * Determine which case-study functionality should run.
+ */
 
-  // ── Initialise PDF.js worker ──────────────────────────────
-  if (window.pdfjsLib) {
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
-  }
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-  /* ----------------------------------------------------------
-     SCROLL LISTENER FOR STICKY FILTER
-  ---------------------------------------------------------- */
-  const filterSection = document.getElementById("filters");
-  if (filterSection) {
-    window.addEventListener("scroll", () => {
-      // Offset can be adjusted. 150px is when it typically detaches from the header
-      if (window.scrollY > 150) {
-        filterSection.classList.add("is-scrolled");
-      } else {
-        filterSection.classList.remove("is-scrolled");
-      }
-    }, { passive: true });
-  }
+        /**
+         * Index page
+         */
+        if (
+            document.getElementById(
+                "latest-case-studies-grid"
+            )
+        ) {
 
-  /* ----------------------------------------------------------
-     UTILITY HELPERS
-  ---------------------------------------------------------- */
+            loadLatestCaseStudies();
 
-  /** Safely escape HTML to prevent XSS */
-  function escapeHtml(str) {
-    if (!str) return "";
-    return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
+        }
 
-  /** Truncate text to maxLength and append ellipsis */
-  function truncate(str, maxLen) {
-    if (!str) return "";
-    return str.length <= maxLen ? str : str.substring(0, maxLen) + "…";
-  }
 
-  /** Return first value from string-or-array field */
-  function getFirstVal(val) {
-    if (!val) return null;
-    if (Array.isArray(val)) return val.length > 0 ? String(val[0]).trim() : null;
-    return String(val).trim();
-  }
+        /**
+         * Services page
+         */
+        if (
+            document.getElementById(
+                "industry-case-studies-container"
+            )
+        ) {
 
-  /** Return display string from string-or-array field */
-  function getDisplayVal(val) {
-    if (!val) return "";
-    return Array.isArray(val) ? val.join(", ") : String(val);
-  }
+            loadIndustryCaseStudies();
 
-  /** Add value(s) to a Set, handles string or array */
-  function addToSet(set, val) {
-    if (!val) return;
-    if (Array.isArray(val)) val.forEach(v => { if (v && String(v).trim()) set.add(String(v).trim()); });
-    else if (String(val).trim()) set.add(String(val).trim());
-  }
+        }
 
-  /* ----------------------------------------------------------
-     LOADING SKELETON
-  ---------------------------------------------------------- */
-  function showLoadingSkeleton(containerId, count = 4) {
-    const el = document.getElementById(containerId);
-    if (!el) return;
-    el.innerHTML = Array(count).fill(`
-      <div class="cs-skeleton-card">
-        <div class="cs-skeleton-img skeleton-pulse"></div>
-        <div class="cs-skeleton-body">
-          <div class="cs-skeleton-tag skeleton-pulse"></div>
-          <div class="cs-skeleton-title skeleton-pulse"></div>
-          <div class="cs-skeleton-line skeleton-pulse"></div>
-          <div class="cs-skeleton-line cs-skeleton-line--short skeleton-pulse"></div>
-          <div class="cs-skeleton-btn skeleton-pulse"></div>
-        </div>
-      </div>
-    `).join("");
-  }
 
-  /* ----------------------------------------------------------
-     FETCH CASE STUDIES
-  ---------------------------------------------------------- */
-  async function loadStudies() {
-    showLoadingSkeleton("caseStudies", 4);
+        /**
+         * Full case study page
+         */
+        if (
+            document.getElementById(
+                "case-study-content"
+            )
+        ) {
+
+            loadFullCaseStudy();
+
+        }
+
+
+        /**
+         * Case Studies listing page
+         */
+        if (
+            document.getElementById(
+                "cs-all-grid"
+            )
+        ) {
+
+            loadCaseStudiesPage();
+
+        }
+
+    }
+);
+
+
+/**
+ * ============================================================
+ * GET ALL CASE STUDIES
+ * ============================================================
+ *
+ * All pages use this same function.
+ *
+ * The Node.js backend handles the Zoho API and caching.
+ */
+async function getCaseStudies() {
+
+    const response =
+        await fetch(
+            CASE_STUDIES_API
+        );
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            "Unable to retrieve case studies."
+        );
+
+    }
+
+
+    const data = await response.json();
+
+    // Cache globally for modal usage
+    if (!window.allCaseStudiesData) {
+        window.allCaseStudiesData = new Map();
+    }
+    data.forEach(cs => window.allCaseStudiesData.set(cs.id, cs));
+
+    return data;
+
+}
+
+
+/**
+ * ============================================================
+ * INDEX PAGE
+ * ============================================================
+ *
+ * Displays the latest four case studies based on
+ * Published Date.
+ */
+
+
+/**
+ * Load latest case studies.
+ */
+async function loadLatestCaseStudies() {
+
+    const grid =
+        document.getElementById(
+            "latest-case-studies-grid"
+        );
+
+    const loading =
+        document.getElementById(
+            "latest-case-studies-loading"
+        );
+
+    const error =
+        document.getElementById(
+            "latest-case-studies-error"
+        );
+
 
     try {
-      const res = await fetch(API_URL);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      allStudies = await res.json();
-      // Validate — API errors return {error:...} not an array
-      if (!Array.isArray(allStudies)) throw new Error("Unexpected response");
+
+        if (loading) {
+            loading.hidden = false;
+        }
+
+
+        if (error) {
+            error.hidden = true;
+        }
+
+
+        /**
+         * Get case studies from Node.js.
+         */
+        const caseStudies =
+            await getCaseStudies();
+
+
+        /**
+         * Sort by published date.
+         *
+         * Newest first.
+         */
+        caseStudies.sort(
+            (a, b) => {
+
+                return (
+                    new Date(b.date) -
+                    new Date(a.date)
+                );
+
+            }
+        );
+
+
+        /**
+         * Only display the latest four.
+         */
+        const latestFour =
+            caseStudies.slice(0, 4);
+
+
+        /**
+         * Render cards.
+         */
+        renderCaseStudyCards(
+            latestFour,
+            grid
+        );
+
+
     } catch (err) {
-      console.error("Could not load case studies:", err.message);
-      renderError();
-      return;
+
+        console.error(
+            "Latest case studies error:",
+            err
+        );
+
+
+        if (error) {
+            error.hidden = false;
+        }
+
+
+    } finally {
+
+        if (loading) {
+            loading.hidden = true;
+        }
+
     }
 
-    // Cache in sessionStorage so the index page can read it without a second API call
-    if (Array.isArray(allStudies) && allStudies.length) {
-      try {
-        sessionStorage.setItem("ea_case_studies", JSON.stringify(allStudies));
-      } catch (_) { /* storage quota exceeded – silently ignore */ }
+}
+
+
+/**
+ * ============================================================
+ * SERVICES PAGE
+ * ============================================================
+ *
+ * Displays case studies grouped by Industry.
+ */
+
+
+/**
+ * Load case studies by industry.
+ */
+async function loadIndustryCaseStudies() {
+
+    const container =
+        document.getElementById(
+            "industry-case-studies-container"
+        );
+
+    const loading =
+        document.getElementById(
+            "industry-case-studies-loading"
+        );
+
+    const error =
+        document.getElementById(
+            "industry-case-studies-error"
+        );
+
+
+    try {
+
+        if (loading) {
+            loading.hidden = false;
+        }
+
+
+        if (error) {
+            error.hidden = true;
+        }
+
+
+        /**
+         * Get all case studies.
+         */
+        const caseStudies =
+            await getCaseStudies();
+
+
+        /**
+         * Sort newest first.
+         */
+        caseStudies.sort(
+            (a, b) => {
+
+                return (
+                    new Date(b.date) -
+                    new Date(a.date)
+                );
+
+            }
+        );
+
+
+        /**
+         * Group by Industry.
+         */
+        const grouped =
+            groupByIndustry(
+                caseStudies
+            );
+
+
+        /**
+         * Render industries.
+         */
+        renderIndustries(
+            grouped,
+            container
+        );
+
+
+    } catch (err) {
+
+        console.error(
+            "Industry case studies error:",
+            err
+        );
+
+
+        if (error) {
+            error.hidden = false;
+        }
+
+
+    } finally {
+
+        if (loading) {
+            loading.hidden = true;
+        }
+
     }
 
-    updateStatsStrip(allStudies);
-    populateFilters(allStudies);
-    renderHighlights(allStudies);
-    renderGrid(allStudies);
-  }
+}
 
-  /* ----------------------------------------------------------
-     STATS STRIP
-  ---------------------------------------------------------- */
-  function updateStatsStrip(studies) {
-    const totalEl = document.getElementById("cs-total-count");
-    const industryEl = document.getElementById("cs-industry-count");
-    const serviceEl = document.getElementById("cs-service-count");
 
-    const industries = new Set();
-    const services = new Set();
-    studies.forEach(s => {
-      addToSet(industries, s.industry);
-      addToSet(services, s.service);
-    });
+/**
+ * ============================================================
+ * CASE STUDIES LISTING PAGE
+ * ============================================================
+ *
+ * Handles:  case-studies.html
+ *
+ *   - Hero stat counters
+ *   - Featured (latest 2) section
+ *   - Filter pill bar (per industry)
+ *   - Search input
+ *   - Full card grid with live filter+search
+ */
+async function loadCaseStudiesPage() {
 
-    animateCounter(totalEl, studies.length);
-    animateCounter(industryEl, industries.size);
-    animateCounter(serviceEl, services.size);
-  }
+    // Element refs
+    const featuredGrid = document.getElementById("cs-featured-grid");
+    const featuredLoading = document.getElementById("cs-featured-loading");
+    const featuredError = document.getElementById("cs-featured-error");
 
-  function animateCounter(el, target) {
-    if (!el) return;
-    let current = 0;
-    const step = Math.max(1, Math.ceil(target / 30));
-    const timer = setInterval(() => {
-      current = Math.min(current + step, target);
-      el.textContent = current;
-      if (current >= target) clearInterval(timer);
-    }, 40);
-  }
+    const allGrid = document.getElementById("cs-all-grid");
+    const allLoading = document.getElementById("cs-all-loading");
+    const allError = document.getElementById("cs-all-error");
+    const noResults = document.getElementById("cs-no-results");
+    const resetBtn = document.getElementById("cs-reset-btn");
+    const searchInput = document.getElementById("cs-search");
 
-  /* ----------------------------------------------------------
-     POPULATE FILTER DROPDOWNS
-  ---------------------------------------------------------- */
-  function populateFilters(studies) {
-    if (!filterIndustry && !filterService && !filterSolution) return;
+    const industrySelect = document.getElementById("cs-filter-industry");
+    const serviceSelect = document.getElementById("cs-filter-service");
+    const solutionSelect = document.getElementById("cs-filter-solution");
 
-    const industries = new Set();
-    const services = new Set();
-    const solutions = new Set();
+    const totalCountEl = document.getElementById("cs-total-count");
+    const industryCountEl = document.getElementById("cs-industry-count");
 
-    studies.forEach(s => {
-      addToSet(industries, s.industry);
-      addToSet(services, s.service);
-      addToSet(solutions, s.solution);
-    });
+    // State
+    let allCaseStudies = [];
+    let activeIndustry = "all";
+    let activeService = "all";
+    let activeSolution = "all";
+    let searchQuery = "";
 
-    const buildOptions = (set, defaultLabel) => {
-      const opts = [`<option value="all">${defaultLabel}</option>`];
-      Array.from(set).sort().forEach(v => {
-        opts.push(`<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`);
-      });
-      return opts.join("");
-    };
+    // Check for ?filter= in URL (Optional legacy support)
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlFilter = urlParams.get("filter");
 
-    // Save current selections before rebuilding
-    const curInd = filterIndustry ? filterIndustry.value : "all";
-    const curSrv = filterService ? filterService.value : "all";
-    const curSol = filterSolution ? filterSolution.value : "all";
+    try {
 
-    if (filterIndustry) {
-      filterIndustry.innerHTML = buildOptions(industries, "All Industries");
-      if (industries.has(curInd)) filterIndustry.value = curInd;
-    }
-    if (filterService) {
-      filterService.innerHTML = buildOptions(services, "All Services");
-      if (services.has(curSrv)) filterService.value = curSrv;
-    }
-    if (filterSolution) {
-      filterSolution.innerHTML = buildOptions(solutions, "All Solutions");
-      if (solutions.has(curSol)) filterSolution.value = curSol;
-    }
-  }
+        // ── Fetch ──────────────────────────────────────────────
+        allCaseStudies = await getCaseStudies();
 
-  /* ----------------------------------------------------------
-     LATEST HIGHLIGHTS  (top 2 by date)
-  ---------------------------------------------------------- */
-  function renderHighlights(studies) {
-    const section = document.getElementById("featured-section");
-    const grid = document.getElementById("highlights-grid");
-    if (!section || !grid) return;
+        // Sort newest first
+        allCaseStudies.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    if (!studies.length) {
-      section.style.display = "none";
-      return;
-    }
+        // ── Hero stats ─────────────────────────────────────────
+        if (totalCountEl) totalCountEl.textContent = allCaseStudies.length;
 
-    const sorted = [...studies].sort((a, b) => {
-      return new Date(b.date || 0) - new Date(a.date || 0);
-    });
+        // ── Populate Select Dropdowns ────────────────────────
 
-    const top2 = sorted.slice(0, 2);
-    section.style.display = "block";
+        // Helper to extract unique sorted values
+        const getUnique = (key) => [...new Set(allCaseStudies.map(cs => cs[key]?.trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b));
 
-    grid.innerHTML = top2.map((study, idx) => {
-      const industry = escapeHtml(getDisplayVal(study.industry));
-      const service = escapeHtml(getDisplayVal(study.service));
-      const solution = escapeHtml(getDisplayVal(study.solution));
+        const industries = getUnique("industry");
+        const services = getUnique("service");
+        const solutions = getUnique("solution");
 
-      const delay = idx * 0.1;
-      return `
-        <article class="case-card animate-fade-in" style="animation-delay: ${delay}s" id="highlight-cs-card-${study.id}">
-          <div class="case-image-wrapper">
-            <img
-              src="https://website-api-m3wi.onrender.com/api/case-studies/${study.id}/image"
-              alt="${escapeHtml(study.title)}"
-              class="case-image"
-              onerror="this.src='images/insight_education.png'"
-              loading="lazy"
-            >
-          </div>
-          <div class="case-content">
-            <div>
-              <div class="case-header">
-                ${industry ? `<span class="case-tag case-tag-industry">${industry}</span>` : ""}
-                ${service ? `<span class="case-tag case-tag-service">${service}</span>` : ""}
-                ${solution ? `<span class="case-tag cs-tag--solution-light">${solution}</span>` : ""}
-              </div>
-              <h2>${escapeHtml(study.title)}</h2>
-              <p class="summary">${escapeHtml(truncate(study.description, 160))}</p>
-              ${study.date ? `<p class="cs-card-date">${escapeHtml(study.date)}</p>` : ""}
-            </div>
-            <div class="footer">
-              <span class="author">${escapeHtml(study.author || "Edge Analytics")}</span>
-              <button
-                onclick="openPdfModal('${study.id}', '${escapeHtml(study.title).replace(/'/g, "\\'")}')"
-                class="read-more"
-                id="view-highlight-${study.id}"
-                aria-label="View case study: ${escapeHtml(study.title)}"
-              >
-                View Case Study
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </button>
-            </div>
-          </div>
-        </article>
-      `;
-    }).join("");
-  }
+        if (industryCountEl) industryCountEl.textContent = industries.length;
 
-  /* ----------------------------------------------------------
-     CASE STUDIES GRID
-  ---------------------------------------------------------- */
-  function renderGrid(studies) {
-    const grid = document.getElementById("caseStudies");
-    const countBadge = document.getElementById("cs-grid-count");
-    if (!grid) return;
+        // Populate Industry
+        if (industrySelect) {
+            industries.forEach(val => {
+                const opt = document.createElement("option");
+                opt.value = val;
+                opt.textContent = val;
+                industrySelect.appendChild(opt);
+            });
+            industrySelect.addEventListener("change", (e) => {
+                activeIndustry = e.target.value;
+                renderFiltered();
+            });
+        }
 
-    // Apply active filters
-    const indVal = filterIndustry ? filterIndustry.value : "all";
-    const srvVal = filterService ? filterService.value : "all";
-    const solVal = filterSolution ? filterSolution.value : "all";
+        // Populate Service
+        if (serviceSelect) {
+            services.forEach(val => {
+                const opt = document.createElement("option");
+                opt.value = val;
+                opt.textContent = val;
+                serviceSelect.appendChild(opt);
+            });
+            serviceSelect.addEventListener("change", (e) => {
+                activeService = e.target.value;
+                renderFiltered();
+            });
+        }
 
-    const matchField = (fieldVal, filterVal) => {
-      if (!fieldVal) return false;
-      const lower = filterVal.toLowerCase();
-      if (Array.isArray(fieldVal)) return fieldVal.some(v => String(v).toLowerCase().includes(lower));
-      return String(fieldVal).toLowerCase().includes(lower);
-    };
+        // Populate Solution
+        if (solutionSelect) {
+            solutions.forEach(val => {
+                const opt = document.createElement("option");
+                opt.value = val;
+                opt.textContent = val;
+                solutionSelect.appendChild(opt);
+            });
+            solutionSelect.addEventListener("change", (e) => {
+                activeSolution = e.target.value;
+                renderFiltered();
+            });
+        }
 
-    let filtered = studies;
-    if (indVal !== "all") filtered = filtered.filter(s => matchField(s.industry, indVal));
-    if (srvVal !== "all") filtered = filtered.filter(s => matchField(s.service, srvVal));
-    if (solVal !== "all") filtered = filtered.filter(s => matchField(s.solution, solVal));
+        // ── Search ─────────────────────────────────────────────
+        if (searchInput) {
+            searchInput.addEventListener("input", () => {
+                searchQuery = searchInput.value.trim().toLowerCase();
+                renderFiltered();
+            });
+        }
 
-    if (countBadge) {
-      countBadge.textContent = `${filtered.length} ${filtered.length === 1 ? "result" : "results"}`;
+        // ── Featured cards (latest 2) ──────────────────────────
+        if (featuredLoading) featuredLoading.hidden = true;
+
+        if (featuredGrid) {
+            const featured = allCaseStudies.slice(0, 2);
+            featured.forEach(cs => {
+                featuredGrid.appendChild(createCaseStudyCard(cs));
+            });
+        }
+
+        // ── Reset button ───────────────────────────────────────
+        if (resetBtn) {
+            resetBtn.addEventListener("click", () => {
+                activeIndustry = "all";
+                activeService = "all";
+                activeSolution = "all";
+                searchQuery = "";
+
+                if (searchInput) searchInput.value = "";
+                if (industrySelect) industrySelect.value = "all";
+                if (serviceSelect) serviceSelect.value = "all";
+                if (solutionSelect) solutionSelect.value = "all";
+
+                renderFiltered();
+            });
+        }
+
+        // ── Apply ?filter= from URL ────────────────────────────
+        if (urlFilter) {
+            if (industries.includes(urlFilter)) {
+                activeIndustry = urlFilter;
+                if (industrySelect) industrySelect.value = urlFilter;
+            } else if (services.includes(urlFilter)) {
+                activeService = urlFilter;
+                if (serviceSelect) serviceSelect.value = urlFilter;
+            }
+        }
+
+        // ── Initial render ─────────────────────────────────────
+        if (allLoading) allLoading.hidden = true;
+        renderFiltered();
+
+    } catch (err) {
+
+        console.error("Case studies page error:", err);
+
+        if (featuredLoading) featuredLoading.hidden = true;
+        if (featuredError) featuredError.hidden = false;
+        if (allLoading) allLoading.hidden = true;
+        if (allError) allError.hidden = false;
+
     }
 
-    // Empty state
-    if (filtered.length === 0) {
-      const label = indVal !== "all" && filterIndustry
-        ? filterIndustry.options[filterIndustry.selectedIndex]?.text || indVal
-        : srvVal !== "all" && filterService
-          ? filterService.options[filterService.selectedIndex]?.text || srvVal
-          : "your criteria";
 
-      grid.innerHTML = `
-        <div class="cs-empty-state" style="grid-column: 1 / -1;">
-          <div class="cs-empty-icon">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-          </div>
-          <h3>No case studies found</h3>
-          <p>No results match <strong>${escapeHtml(label)}</strong>.<br>We are constantly growing our portfolio — please check back soon.</p>
-          <button id="emptyResetBtn" class="cs-btn cs-btn--teal">
-            View All Case Studies
-          </button>
+    // ── Render filtered + searched grid ─────────────────────────
+    function renderFiltered() {
+
+        if (!allGrid) return;
+
+        let filtered = allCaseStudies;
+
+        if (activeIndustry && activeIndustry !== "all") {
+            filtered = filtered.filter(cs => (cs.industry?.trim() || "") === activeIndustry);
+        }
+
+        if (activeService && activeService !== "all") {
+            filtered = filtered.filter(cs => (cs.service?.trim() || "") === activeService);
+        }
+
+        if (activeSolution && activeSolution !== "all") {
+            filtered = filtered.filter(cs => (cs.solution?.trim() || "") === activeSolution);
+        }
+
+        if (searchQuery) {
+            filtered = filtered.filter(cs =>
+                [cs.title, cs.description, cs.industry, cs.service, cs.solution]
+                    .join(" ").toLowerCase()
+                    .includes(searchQuery)
+            );
+        }
+
+        allGrid.innerHTML = "";
+
+        if (!filtered.length) {
+            if (noResults) noResults.hidden = false;
+            return;
+        }
+
+        if (noResults) noResults.hidden = true;
+
+        filtered.forEach(cs => {
+            allGrid.appendChild(createCaseStudyCard(cs));
+        });
+
+    }
+
+}
+
+
+/**
+ * ============================================================
+ * GROUP BY INDUSTRY
+ * ============================================================
+ */
+function groupByIndustry(
+    caseStudies
+) {
+
+    return caseStudies.reduce(
+        (groups, caseStudy) => {
+
+            const industry =
+                caseStudy.industry?.trim() ||
+                "Other";
+
+
+            if (!groups[industry]) {
+
+                groups[industry] = [];
+
+            }
+
+
+            groups[industry].push(
+                caseStudy
+            );
+
+
+            return groups;
+
+        },
+        {}
+    );
+
+}
+
+
+/**
+ * ============================================================
+ * RENDER INDUSTRIES  (dark single-card carousel)
+ * ============================================================
+ *
+ * Layout:
+ *   - Left sidebar: vertical industry tab pills
+ *   - Right: a single-card carousel (one case study at a time)
+ *   - Navigation arrows + progress counter
+ */
+function renderIndustries(groupedCaseStudies, container) {
+
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    const industries = Object.keys(groupedCaseStudies);
+
+    if (!industries.length) {
+        container.innerHTML = `<p style="color:#94a3b8;">No case studies are currently available.</p>`;
+        return;
+    }
+
+    industries.sort((a, b) => a.localeCompare(b));
+
+    // ── Outer shell ───────────────────────────────────────────
+    const shell = document.createElement("div");
+    shell.className = "idc-shell";
+
+    // ── Sidebar: industry tabs ─────────────────────────────────
+    const sidebar = document.createElement("div");
+    sidebar.className = "idc-sidebar";
+
+    // ── Main panel ────────────────────────────────────────────
+    const panel = document.createElement("div");
+    panel.className = "idc-panel";
+
+    // Viewport (clips the visible card)
+    const viewport = document.createElement("div");
+    viewport.className = "idc-viewport";
+
+    // Navigation bar
+    const navBar = document.createElement("div");
+    navBar.className = "idc-nav";
+    navBar.innerHTML = `
+        <div class="idc-counter">
+            <span class="idc-cur">1</span>
+            <span class="idc-sep">/</span>
+            <span class="idc-tot">1</span>
         </div>
-      `;
-      document.getElementById("emptyResetBtn")?.addEventListener("click", () => {
-        if (filterIndustry) filterIndustry.value = "all";
-        if (filterService) filterService.value = "all";
-        if (filterSolution) filterSolution.value = "all";
-        hideFilterBanner();
-        renderGrid(allStudies);
-      });
-      return;
-    }
-
-    grid.innerHTML = filtered.map((study, idx) => {
-      const industry = escapeHtml(getDisplayVal(study.industry));
-      const service = escapeHtml(getDisplayVal(study.service));
-      const solution = escapeHtml(getDisplayVal(study.solution));
-
-      const delay = idx * 0.1;
-      return `
-        <article class="case-card animate-fade-in" style="animation-delay: ${delay}s" id="cs-card-${study.id}">
-          <div class="case-image-wrapper">
-            <img
-              src="https://website-api-m3wi.onrender.com/api/case-studies/${study.id}/image"
-              alt="${escapeHtml(study.title)}"
-              class="case-image"
-              onerror="this.src='images/insight_education.png'"
-              loading="lazy"
-            >
-          </div>
-          <div class="case-content">
-            <div>
-              <div class="case-header">
-                ${industry ? `<span class="case-tag case-tag-industry">${industry}</span>` : ""}
-                ${service ? `<span class="case-tag case-tag-service">${service}</span>` : ""}
-                ${solution ? `<span class="case-tag cs-tag--solution-light">${solution}</span>` : ""}
-              </div>
-              <h2>${escapeHtml(study.title)}</h2>
-              <p class="summary">${escapeHtml(truncate(study.description, 160))}</p>
-              ${study.date ? `<p class="cs-card-date">${escapeHtml(study.date)}</p>` : ""}
-            </div>
-            <div class="footer">
-              <span class="author">${escapeHtml(study.author || "Edge Analytics")}</span>
-              <button
-                onclick="openPdfModal('${study.id}', '${escapeHtml(study.title).replace(/'/g, "\\'")}')"
-                class="read-more"
-                id="cs-view-${study.id}"
-                aria-label="View case study: ${escapeHtml(study.title)}"
-              >
-                View Case Study
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </button>
-            </div>
-          </div>
-        </article>
-      `;
-    }).join("");
-  }
-
-  /* ----------------------------------------------------------
-     ERROR STATE
-  ---------------------------------------------------------- */
-  function renderError() {
-    const grid = document.getElementById("caseStudies");
-    if (grid) {
-      grid.innerHTML = `
-        <div class="modern-error-state">
-          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
-          <h3>Case Studies Updating</h3>
-          <p>The case studies will load shortly.<br>
-          Please check back in a few moments.</p>
-          <button onclick="location.reload()" class="cs-btn">Refresh Page</button>
+        <div class="idc-arrows">
+            <button class="idc-arrow" id="idc-prev" aria-label="Previous">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <button class="idc-arrow" id="idc-next" aria-label="Next">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
         </div>
-      `;
-    }
-    const section = document.getElementById("featured-section");
-    if (section) section.style.display = "none";
-  }
-
-  /* ----------------------------------------------------------
-     PDF VIEWER MODAL
-  ---------------------------------------------------------- */
-  let currentPdfTask = null;
-
-  async function openPdfModal(studyId, studyTitle) {
-    if (!pdfModal || !pdfModalBody) return;
-
-    pdfModal.classList.add("active");
-    document.body.style.overflow = "hidden";
-    if (pdfModalTitle) pdfModalTitle.textContent = studyTitle || "Case Study";
-
-    pdfModalBody.innerHTML = `
-      <div class="pdf-loading">
-        <div class="pdf-loading-spinner"></div>
-        <p>Loading document…</p>
-      </div>
     `;
 
-    try {
-      if (!window.pdfjsLib) throw new Error("PDF.js is not loaded.");
-      const pdfUrl = `https://website-api-m3wi.onrender.com/api/case-studies/${studyId}/pdf`;
-      currentPdfTask = pdfjsLib.getDocument(pdfUrl);
-      const pdf = await currentPdfTask.promise;
+    panel.appendChild(viewport);
+    panel.appendChild(navBar);
 
-      pdfModalBody.innerHTML = "";
+    shell.appendChild(sidebar);
+    shell.appendChild(panel);
+    container.appendChild(shell);
 
-      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-        const page = await pdf.getPage(pageNum);
-        const scale = window.innerWidth < 700 ? 1.0 : 1.5;
-        const viewport = page.getViewport({ scale });
+    // Cached refs
+    const curEl = navBar.querySelector(".idc-cur");
+    const totEl = navBar.querySelector(".idc-tot");
+    const prevBtn = navBar.querySelector("#idc-prev");
+    const nextBtn = navBar.querySelector("#idc-next");
 
-        const wrapper = document.createElement("div");
-        wrapper.className = "pdf-page-wrapper";
+    // ── State ────────────────────────────────────────────────
+    let activeIndustry = 0;
+    let activeCard = 0;
+    const tabs = [];
 
-        const pageLabel = document.createElement("div");
-        pageLabel.className = "pdf-page-label";
-        pageLabel.textContent = `Page ${pageNum} of ${pdf.numPages}`;
+    // ── Build sidebar tabs ───────────────────────────────────
+    industries.forEach((industry, idx) => {
+        const tab = document.createElement("button");
+        tab.className = "idc-tab" + (idx === 0 ? " active" : "");
+        tab.innerHTML = `
+            <span class="idc-tab-label">${escapeHtml(industry)}</span>
+            <svg class="idc-tab-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        `;
+        tab.addEventListener("click", () => switchIndustry(idx));
+        sidebar.appendChild(tab);
+        tabs.push(tab);
+    });
 
-        const canvas = document.createElement("canvas");
-        canvas.className = "pdf-page-canvas";
-        const ctx = canvas.getContext("2d");
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
-
-        await page.render({ canvasContext: ctx, viewport }).promise;
-
-        wrapper.appendChild(pageLabel);
-        wrapper.appendChild(canvas);
-        pdfModalBody.appendChild(wrapper);
-      }
-    } catch (err) {
-      console.error("PDF load error:", err);
-      pdfModalBody.innerHTML = `
-        <div class="modern-error-state">
-          <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
-          <h3>Document Updating</h3>
-          <p>The case study document will load shortly.<br>
-          Please check back in a few moments.</p>
-          <a href="case-study.html?id=${studyId}" class="cs-btn">
-            Open Case Study Page
-          </a>
-        </div>
-      `;
+    // ── Render helpers ───────────────────────────────────────
+    function renderCard(caseStudy) {
+        const el = document.createElement("div");
+        el.className = "idc-card";
+        el.innerHTML = `
+            <div class="idc-card-img" style="background-image:url('${escapeHtml(caseStudy.image || '')}')">
+                <div class="idc-card-img-overlay"></div>
+            </div>
+            <div class="idc-card-body">
+                <div class="idc-card-tags">
+                    <span class="idc-tag">${escapeHtml(caseStudy.industry || '')}</span>
+                    <span class="idc-tag idc-tag--service">${escapeHtml(caseStudy.service || '')}</span>
+                </div>
+                <h3 class="idc-card-title">${escapeHtml(caseStudy.title || '')}</h3>
+                <p class="idc-card-desc">${escapeHtml(caseStudy.description || '')}</p>
+                <div class="idc-card-footer">
+                    <span class="idc-card-date">${formatDate(caseStudy.date)}</span>
+                    <button type="button" class="case-study-link" onclick="openCaseStudyModal('${encodeURIComponent(caseStudy.id)}')">
+                    Read case study &rarr;
+                </button>
+                </div>
+            </div>
+        `;
+        return el;
     }
-  }
 
-  function closePdfModal() {
-    if (!pdfModal) return;
-    pdfModal.classList.remove("active");
-    document.body.style.overflow = "";
-    if (currentPdfTask) { currentPdfTask.destroy?.(); currentPdfTask = null; }
-    setTimeout(() => { if (pdfModalBody) pdfModalBody.innerHTML = ""; }, 300);
-  }
+    function showCard() {
+        const cards = groupedCaseStudies[industries[activeIndustry]];
+        const cs = cards[activeCard];
 
-  // Expose globally for inline onclick handlers
-  window.openPdfModal = openPdfModal;
+        // Fade old out, new in
+        const old = viewport.querySelector(".idc-card");
+        const fresh = renderCard(cs);
+        fresh.classList.add("idc-entering");
+        viewport.appendChild(fresh);
 
-  // Attach modal close handlers
-  closePdfBtn?.addEventListener("click", closePdfModal);
-  pdfModal?.addEventListener("click", e => { if (e.target === pdfModal) closePdfModal(); });
-  document.addEventListener("keydown", e => {
-    if (e.key === "Escape" && pdfModal?.classList.contains("active")) closePdfModal();
-  });
+        if (old) {
+            old.classList.add("idc-leaving");
+            setTimeout(() => old.remove(), 350);
+        }
 
-  /* ----------------------------------------------------------
-     FILTER BANNER
-  ---------------------------------------------------------- */
-  function showFilterBanner(label, value) {
-    if (!activeFilterBanner || !activeFilterText) return;
-    activeFilterText.textContent = `Showing results filtered by ${label}: ${value}`;
-    activeFilterBanner.style.display = "flex";
-  }
+        setTimeout(() => fresh.classList.remove("idc-entering"), 20);
 
-  function hideFilterBanner() {
-    if (activeFilterBanner) activeFilterBanner.style.display = "none";
-  }
+        // Update counter
+        curEl.textContent = activeCard + 1;
+        totEl.textContent = cards.length;
 
-  // Clear filter banner
-  btnClearFilter?.addEventListener("click", () => {
-    if (filterIndustry) filterIndustry.value = "all";
-    if (filterService) filterService.value = "all";
-    if (filterSolution) filterSolution.value = "all";
-    hideFilterBanner();
-    renderGrid(allStudies);
-    // Clean URL without reload
-    const clean = `${location.protocol}//${location.host}${location.pathname}`;
-    history.replaceState({}, "", clean);
-  });
+        // Arrow states
+        prevBtn.disabled = activeCard === 0;
+        nextBtn.disabled = activeCard === cards.length - 1;
+    }
 
-  /* ----------------------------------------------------------
-     FILTER CHANGE HANDLERS
-  ---------------------------------------------------------- */
-  const applyFilters = () => renderGrid(allStudies);
+    function switchIndustry(idx) {
+        tabs[activeIndustry].classList.remove("active");
+        activeIndustry = idx;
+        activeCard = 0;
+        tabs[activeIndustry].classList.add("active");
+        showCard();
+    }
 
-  filterIndustry?.addEventListener("change", () => {
-    applyFilters();
-    if (filterIndustry.value !== "all") {
-      showFilterBanner("Industry", filterIndustry.options[filterIndustry.selectedIndex].text);
-    } else hideFilterBanner();
-  });
+    prevBtn.addEventListener("click", () => {
+        if (activeCard > 0) { activeCard--; showCard(); }
+    });
 
-  filterService?.addEventListener("change", () => {
-    applyFilters();
-    if (filterService.value !== "all") {
-      showFilterBanner("Service", filterService.options[filterService.selectedIndex].text);
-    } else hideFilterBanner();
-  });
+    nextBtn.addEventListener("click", () => {
+        const total = groupedCaseStudies[industries[activeIndustry]].length;
+        if (activeCard < total - 1) { activeCard++; showCard(); }
+    });
 
-  filterSolution?.addEventListener("change", () => {
-    applyFilters();
-    if (filterSolution.value !== "all") {
-      showFilterBanner("Solution", filterSolution.options[filterSolution.selectedIndex].text);
-    } else hideFilterBanner();
-  });
+    // Initial render
+    showCard();
 
-  btnResetFilters?.addEventListener("click", () => {
-    if (filterIndustry) filterIndustry.value = "all";
-    if (filterService) filterService.value = "all";
-    if (filterSolution) filterSolution.value = "all";
-    hideFilterBanner();
-    renderGrid(allStudies);
-  });
+}
 
-  /* ----------------------------------------------------------
-     URL PARAMETER HANDLING
-     Supports ?industry=X, ?service=X, ?solution=X, ?openId=X
-  ---------------------------------------------------------- */
-  function handleUrlParams() {
-    const params = new URLSearchParams(location.search);
-    const openId = params.get("openId");
-    const paramInd = params.get("industry");
-    const paramSrv = params.get("service");
-    const paramSol = params.get("solution");
 
-    let filtersChanged = false;
+/**
+ * ============================================================
+ * CREATE CASE STUDY CARD
+ * ============================================================
+ *
+ * Used by BOTH:
+ *
+ * - Index page
+ * - Services page
+ */
+function createCaseStudyCard(
+    caseStudy
+) {
 
-    // Apply explicit filter params
-    const applyDropdown = (el, val, label) => {
-      if (!el || !val) return;
-      const opt = Array.from(el.options).find(
-        o => o.value.toLowerCase() === val.toLowerCase() ||
-          o.textContent.toLowerCase() === val.toLowerCase()
-      );
-      if (opt) {
-        el.value = opt.value;
-        showFilterBanner(label, opt.textContent);
-        filtersChanged = true;
-      }
+    const card =
+        document.createElement(
+            "article"
+        );
+
+
+    card.className =
+        "case-study-card";
+
+
+    card.innerHTML = `
+
+        <div class="case-study-image-wrapper">
+            <img src="${escapeHtml(caseStudy.image)}" alt="${escapeHtml(caseStudy.title)}" class="case-study-image" loading="lazy">
+        </div>
+
+        <div class="case-study-content">
+            <div class="case-study-meta">
+                <span class="case-study-tag">${escapeHtml(caseStudy.industry || "Industry")}</span>
+                <span class="case-study-tag">${escapeHtml(caseStudy.service || "Service")}</span>
+            </div>
+
+            <h3 class="case-study-title">${escapeHtml(caseStudy.title)}</h3>
+            
+            <p class="case-study-description">${escapeHtml(caseStudy.description || "")}</p>
+
+            ${(caseStudy.stat1 || caseStudy.stat2 || caseStudy.stat3) ? `
+            <div class="case-study-stats-row">
+                ${caseStudy.stat1 ? `<div class="cs-stat-box">${escapeHtml(caseStudy.stat1)}</div>` : ''}
+                ${caseStudy.stat2 ? `<div class="cs-stat-box">${escapeHtml(caseStudy.stat2)}</div>` : ''}
+                ${caseStudy.stat3 ? `<div class="cs-stat-box">${escapeHtml(caseStudy.stat3)}</div>` : ''}
+            </div>
+            ` : ''}
+
+            <div class="case-study-footer">
+                <span class="case-study-author">Edge Analytics</span>
+                <button type="button" class="case-study-link" onclick="openCaseStudyModal('${encodeURIComponent(caseStudy.id)}')">
+                    View Case Study &rarr;
+                </button>
+            </div>
+        </div>
+
+    `;
+
+
+    return card;
+
+}
+
+
+/**
+ * ============================================================
+ * RENDER CASE STUDY CARDS
+ * ============================================================
+ */
+function renderCaseStudyCards(
+    caseStudies,
+    container
+) {
+
+    if (!container) {
+        return;
+    }
+
+
+    container.innerHTML = "";
+
+
+    if (!caseStudies.length) {
+
+        container.innerHTML = `
+            <p>
+                No case studies are currently available.
+            </p>
+        `;
+
+        return;
+
+    }
+
+
+    caseStudies.forEach(
+        caseStudy => {
+
+            const card =
+                createCaseStudyCard(
+                    caseStudy
+                );
+
+
+            container.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
+
+
+/**
+ * ============================================================
+ * FULL CASE STUDY PAGE
+ * ============================================================
+ */
+
+
+/**
+ * Load a single case study.
+ */
+async function loadFullCaseStudy() {
+
+    const loading =
+        document.getElementById(
+            "case-study-loading"
+        );
+
+    const error =
+        document.getElementById(
+            "case-study-error"
+        );
+
+    const content =
+        document.getElementById(
+            "case-study-content"
+        );
+
+
+    /**
+     * Get ID from URL.
+     *
+     * Example:
+     *
+     * case-study.html?id=123
+     */
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    const caseStudyId =
+        params.get("id");
+
+
+    /**
+     * Check that an ID exists.
+     */
+    if (!caseStudyId) {
+
+        showCaseStudyError();
+
+        return;
+
+    }
+
+
+    try {
+
+        loading.hidden = false;
+        error.hidden = true;
+        content.hidden = true;
+
+
+        /**
+         * Retrieve the individual case study.
+         *
+         * This uses the Node.js cached endpoint.
+         */
+        const response =
+            await fetch(
+                `${CASE_STUDIES_API}/${encodeURIComponent(
+                    caseStudyId
+                )}`
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Case study not found."
+            );
+
+        }
+
+
+        const caseStudy =
+            await response.json();
+
+
+        /**
+         * Populate the page.
+         */
+        renderFullCaseStudy(
+            caseStudy
+        );
+
+
+        /**
+         * Display the page.
+         */
+        content.hidden = false;
+
+
+    } catch (err) {
+
+        console.error(
+            "Full case study error:",
+            err
+        );
+
+
+        showCaseStudyError();
+
+
+    } finally {
+
+        loading.hidden = true;
+
+    }
+
+}
+
+
+/**
+ * ============================================================
+ * RENDER FULL CASE STUDY
+ * ============================================================
+ */
+function renderFullCaseStudy(
+    caseStudy
+) {
+
+    /**
+     * Browser title.
+     */
+    document.title =
+        `${caseStudy.title} | Case Study`;
+
+
+    /**
+     * Industry.
+     */
+    setText(
+        "case-study-industry",
+        caseStudy.industry
+    );
+
+
+    /**
+     * Service.
+     */
+    setText(
+        "case-study-service",
+        caseStudy.service
+    );
+
+
+    /**
+     * Title.
+     */
+    setText(
+        "case-study-title",
+        caseStudy.title
+    );
+
+
+    /**
+     * Published date.
+     */
+    setText(
+        "case-study-date",
+        formatDate(
+            caseStudy.date
+        )
+    );
+
+
+    /**
+     * Main image.
+     */
+    const image =
+        document.getElementById(
+            "case-study-image"
+        );
+
+
+    if (image) {
+
+        image.src =
+            caseStudy.image;
+
+        image.alt =
+            caseStudy.title ||
+            "Case study";
+
+    }
+
+
+    /**
+     * Description.
+     */
+    setText(
+        "case-study-description",
+        caseStudy.description
+    );
+
+
+    /**
+     * Solution.
+     */
+    setText(
+        "case-study-solution",
+        caseStudy.solution
+    );
+
+
+    /**
+     * Statistics.
+     */
+    renderStatistic(
+        "case-study-stat1",
+        caseStudy.stat1
+    );
+
+
+    renderStatistic(
+        "case-study-stat2",
+        caseStudy.stat2
+    );
+
+
+    renderStatistic(
+        "case-study-stat3",
+        caseStudy.stat3
+    );
+
+
+    /**
+     * PDF viewer.
+     */
+    const pdf =
+        document.getElementById(
+            "case-study-pdf"
+        );
+
+
+    if (pdf) {
+
+        pdf.src =
+            caseStudy.pdf;
+
+    }
+
+}
+
+
+/**
+ * ============================================================
+ * RENDER STATISTIC
+ * ============================================================
+ */
+function renderStatistic(
+    elementId,
+    value
+) {
+
+    const element =
+        document.getElementById(
+            elementId
+        );
+
+
+    if (!element) {
+        return;
+    }
+
+
+    if (
+        value === null ||
+        value === undefined ||
+        value === ""
+    ) {
+
+        element.parentElement.style.display =
+            "none";
+
+        return;
+
+    }
+
+
+    element.textContent =
+        value;
+
+}
+
+
+/**
+ * ============================================================
+ * SET TEXT
+ * ============================================================
+ */
+function setText(
+    elementId,
+    value
+) {
+
+    const element =
+        document.getElementById(
+            elementId
+        );
+
+
+    if (!element) {
+        return;
+    }
+
+
+    element.textContent =
+        value || "";
+
+}
+
+
+/**
+ * ============================================================
+ * FORMAT DATE
+ * ============================================================
+ */
+function formatDate(
+    dateValue
+) {
+
+    if (!dateValue) {
+
+        return "";
+
+    }
+
+
+    const date =
+        new Date(dateValue);
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return dateValue;
+
+    }
+
+
+    return date.toLocaleDateString(
+        "en-ZA",
+        {
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        }
+    );
+
+}
+
+
+/**
+ * ============================================================
+ * ERROR HANDLING
+ * ============================================================
+ */
+function showCaseStudyError() {
+
+    const loading =
+        document.getElementById(
+            "case-study-loading"
+        );
+
+    const error =
+        document.getElementById(
+            "case-study-error"
+        );
+
+    const content =
+        document.getElementById(
+            "case-study-content"
+        );
+
+
+    if (loading) {
+        loading.hidden = true;
+    }
+
+
+    if (content) {
+        content.hidden = true;
+    }
+
+
+    if (error) {
+        error.hidden = false;
+    }
+
+}
+
+
+/**
+ * ============================================================
+ * HTML ESCAPING
+ * ============================================================
+ *
+ * Used when creating HTML cards.
+ */
+function escapeHtml(
+    value
+) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+/**
+ * ============================================================
+ * READ-ONLY CASE STUDY MODAL
+ * ============================================================
+ */
+
+/* ============================================================
+   PDF MODAL
+============================================================ */
+
+function openCaseStudyModal(id) {
+
+    if (!window.allCaseStudiesData) return;
+
+    const cs = window.allCaseStudiesData.get(decodeURIComponent(id));
+
+    if (!cs) return;
+
+    let modal = document.getElementById("cs-modal-overlay");
+
+    if (!modal) {
+
+        modal = document.createElement("div");
+
+        modal.id = "cs-modal-overlay";
+
+        modal.className = "cs-modal-overlay";
+
+        modal.innerHTML = `
+            <div class="cs-pdf-modal">
+
+                <div class="cs-pdf-toolbar">
+
+                    <div class="cs-pdf-title">
+                        ${escapeHtml(cs.title)}
+                    </div>
+
+                    <div class="cs-pdf-buttons">
+
+                        <a
+                            id="cs-open-tab"
+                            class="cs-pdf-btn"
+                            target="_blank">
+                            Open in New Tab
+                        </a>
+
+                        <button
+                            id="cs-fullscreen"
+                            class="cs-pdf-btn">
+                            Full Screen
+                        </button>
+
+                        <button
+                            class="cs-pdf-close"
+                            onclick="closeCaseStudyModal()">
+
+                            ✕
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div class="cs-pdf-container">
+
+                    <iframe
+    id="cs-pdf-frame"
+    class="cs-pdf-frame"
+    loading="lazy"
+    allowfullscreen
+    referrerpolicy="no-referrer">
+</iframe>
+
+                </div>
+
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        modal.addEventListener("click", function (e) {
+
+            if (e.target === modal) {
+
+                closeCaseStudyModal();
+
+            }
+
+        });
+
+        document.addEventListener("keydown", function (e) {
+
+            if (
+                e.key === "Escape" &&
+                modal.classList.contains("active")
+            ) {
+
+                closeCaseStudyModal();
+
+            }
+
+        });
+
+    }
+
+    const pdfFrame = document.getElementById("cs-pdf-frame");
+
+    // Hide the PDF viewer toolbar where supported
+    pdfFrame.src = `${cs.pdf}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`;
+
+    document.getElementById("cs-open-tab").href = cs.pdf;
+
+    document.getElementById("cs-fullscreen").onclick = function () {
+
+        const frame = document.getElementById("cs-pdf-frame");
+
+        if (frame.requestFullscreen) {
+
+            frame.requestFullscreen();
+
+        }
+
     };
 
-    if (paramInd) applyDropdown(filterIndustry, paramInd, "Industry");
-    if (paramSrv) applyDropdown(filterService, paramSrv, "Service");
-    if (paramSol) applyDropdown(filterSolution, paramSol, "Solution");
+    document.body.style.overflow = "hidden";
 
-    if (filtersChanged) renderGrid(allStudies);
+    modal.classList.add("active");
 
-    // Scroll to and highlight a specific card
-    if (openId) {
-      const study = allStudies.find(s => String(s.id) === String(openId));
-      if (study && !paramInd && !paramSrv && !paramSol) {
-        // Auto-set filters to match this study
-        const ind = getFirstVal(study.industry);
-        if (filterIndustry && ind) {
-          const opt = Array.from(filterIndustry.options)
-            .find(o => o.value.toLowerCase() === ind.toLowerCase());
-          if (opt) { filterIndustry.value = opt.value; filtersChanged = true; }
-        }
-        if (filtersChanged) renderGrid(allStudies);
-      }
+}
 
-      // Scroll to the card
-      setTimeout(() => {
-        const card = document.getElementById(`cs-card-${openId}`);
-        if (card) {
-          card.scrollIntoView({ behavior: "smooth", block: "center" });
-          card.classList.add("cs-card--highlighted");
-          setTimeout(() => card.classList.remove("cs-card--highlighted"), 2500);
-        }
-      }, 300);
-    }
-  }
+function closeCaseStudyModal() {
 
-  /* ----------------------------------------------------------
-     BOOT
-  ---------------------------------------------------------- */
-  loadStudies().then(() => {
-    handleUrlParams();
-  });
-});
+    const modal = document.getElementById("cs-modal-overlay");
+
+    if (!modal) return;
+
+    modal.classList.remove("active");
+
+    document.body.style.overflow = "";
+
+    document.getElementById("cs-pdf-frame").src = "";
+
+}

@@ -40,7 +40,7 @@
               <li><a href="service-managed.html" class="dropdown-item">Managed services</a></li>
             </ul>
           </li>
-          <li><a href="zoho-case-studies.html" class="nav-link">Our insights</a></li>
+          <li><a href="case-studies.html" class="nav-link">Our insights</a></li>
           <li><a href="about.html" class="nav-link">About us</a></li>
         </ul>
       </nav>
@@ -485,107 +485,64 @@
     </div>
   </section>
 
-  <!-- Our Insights Section -->
-  <section class="insights-section" id="insights">
-    <div class="container">
 
-      <div class="why-us-header">
-        <span class="insights-badge">Our case studies</span>
-        <h2 class="why-us-title">Real impact, proven results</h2>
-        <p class="why-us-description" style="color: #000;">
-          Discover how we've helped organisations across Africa overcome complex challenges and achieve measurable
-          outcomes. Our case studies showcase real-world transformations — from modernising legacy systems and
-          strengthening risk frameworks, to unlocking the power of data and AI.
+  <!-- =========================================================
+     LATEST CASE STUDIES
+     ========================================================= -->
+
+  <section class="latest-case-studies" id="latest-case-studies">
+
+    <div class="case-studies-container">
+
+      <!-- Section Heading -->
+      <div class="case-studies-heading">
+
+        <span class="section-label">
+          Our Insights
+        </span>
+
+        <h2>
+          Where data, trends, and strategy converge
+        </h2>
+
+        <p>
+          Our insights combine expert analysis, future-focused thinking, and practical guidance to help
+          organisations navigate change with confidence. We explore emerging technologies, evolving risks, and industry
+          trends to equip leaders with clear insights for informed decision-making and sustainable growth.
         </p>
+
       </div>
 
-      <div class="case-grid" id="index-case-grid">
-        <!-- Cards rendered by inline script below -->
+
+      <!-- Loading State -->
+      <div id="latest-case-studies-loading" class="case-studies-loading">
+        Loading latest Insights...
       </div>
 
-      <div class="services-footer" style="margin-top: 3rem;">
-        <a href="zoho-case-studies.html" class="btn btn-services-explore">
-          Explore all case studies
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-            stroke-linecap="round" stroke-linejoin="round">
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-            <polyline points="12 5 19 12 12 19"></polyline>
-          </svg>
+
+      <!-- Error State -->
+      <div id="latest-case-studies-error" class="case-studies-error" hidden>
+        Unable to load insights at this time.
+      </div>
+
+
+      <!-- Case Study Cards -->
+      <div id="latest-case-studies-grid" class="case-studies-grid">
+      </div>
+
+
+      <!-- View All -->
+      <div class="case-studies-view-all">
+
+        <a href="case-studies.html" class="case-studies-button">
+          Explore all insights &rarr;
         </a>
+
       </div>
 
     </div>
+
   </section>
-
-  <script>
-    (function () {
-      const caseStudies = [
-        {
-          title: "Student Success Powered by Data Intelligence",
-          description: "Empowering the institution to achieve 95% data accuracy, while reducing the time required for student intervention by up to 50% through a Unified Data, Analytics and AI solution.",
-          date: "03 March 2026",
-          service: "Digital Services",
-          industry: "Education",
-          image: "images/casestudies/insight_education.png"
-        },
-        {
-          title: "Automating Academic Administration for Student Success",
-          description: "An institution in South Africa faced difficulties in efficiently managing student inquiries due to a large student body and numerous administrative tasks. The staff often struggled to provide timely and accurate responses, leading to delays, miscommunication, and student frustration.",
-          date: "30 August 2024",
-          service: "Digital Services",
-          industry: "Education",
-          image: "images/casestudies/istockphoto-1344939844-612x612.jpg"
-        },
-        {
-          title: "Secure Minds, Secure Campus: Elevating Cyber Awareness",
-          description: "Higher Ed institutions were caught off-guard by the sudden shift to online classes, and most found themselves vulnerable and unprepared for cyber threats.",
-          date: "10 November 2025",
-          service: "Risk Management",
-          industry: "Education",
-          image: "images/casestudies/insight_security.png"
-        },
-        {
-          title: "From Fraud Assessment to Digital Transformation",
-          description: "Identifying over 25% in process inefficiencies, reducing false positives by 35%, and defining a clear roadmap to accelerate fraud detection and response.",
-          date: "18 April 2022",
-          service: "Advisory Services",
-          industry: "Banking",
-          image: "images/casestudies/istockphoto-1451866244-612x612.jpg"
-        }
-      ];
-
-      const arrowSvg = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`;
-
-      const grid = document.getElementById('index-case-grid');
-      if (grid) {
-        grid.innerHTML = caseStudies.map(cs => `
-          <div class="case-card">
-            <div class="case-image-wrapper">
-              <img src="${cs.image}" alt="${cs.title}" class="case-image" onerror="this.src='images/casestudies/insight_education.png'">
-            </div>
-            <div class="case-content">
-              <div>
-                <div class="case-header">
-                  <span class="case-tag case-tag-industry">${cs.industry}</span>
-                  <span class="case-tag case-tag-service">${cs.service}</span>
-                </div>
-                <h2>${cs.title}</h2>
-                <p class="summary">${cs.description}</p>
-                <p style="color:#94a3b8; font-size:0.82rem; margin-top:0.4rem;">${cs.date}</p>
-              </div>
-              <div class="footer">
-                <span class="author">Edge Analytics</span>
-                <a href="zoho-case-studies.html" class="read-more">
-                  Go to Case Study
-                  ${arrowSvg}
-                </a>
-              </div>
-            </div>
-          </div>
-        `).join('');
-      }
-    })();
-  </script>
 
 
   <!-- CTA Banner Section -->
@@ -810,6 +767,8 @@
   </button>
 
   <script src="js/main.js"></script>
+  <script src="js/case-studies.js"></script>
+
 
 </body>
 

@@ -89,7 +89,7 @@
               <li><a href="service-managed.html" class="dropdown-item">Managed services</a></li>
             </ul>
           </li>
-          <li><a href="zoho-case-studies.html" class="nav-link">Our insights</a></li>
+          <li><a href="case-studies.html" class="nav-link">Our insights</a></li>
           <li><a href="about.html" class="nav-link">About us</a></li>
         </ul>
       </nav>
@@ -669,9 +669,14 @@
     </div>
   </section>
 
-  <!-- Success Stories Section -->
-  <section class="success-stories-section">
-    <div class="container">
+  <!-- =========================================================
+     CASE STUDIES BY INDUSTRY
+     ========================================================= -->
+
+  <section class="industry-case-studies" id="industry-case-studies">
+
+    <div class="case-studies-container">
+
       <div class="success-stories-header" style="text-align: center; margin-bottom: 3.5rem;">
         <span class="insights-badge">Proven impact</span>
         <h2 class="insights-title">Success stories that speak for themselves</h2>
@@ -680,88 +685,29 @@
           outcomes. Explore our real-world transformations tailored by industry.
         </p>
       </div>
-      
-      <div class="industry-carousel-wrapper">
-        <button class="carousel-btn left" id="ind-slider-prev" aria-label="Previous slide">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="15 18 9 12 15 6"></polyline>
-          </svg>
-        </button>
 
-        <div class="industry-success-grid" id="industry-slider">
-          
-          <!-- Banking -->
-          <div class="industry-success-card pos-left">
-            <div class="industry-success-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-              </svg>
-            </div>
-            <h3 class="industry-success-title">Banking</h3>
-            <p class="industry-success-text">
-              See how we've empowered financial institutions to modernize core systems, strengthen risk frameworks, and leverage predictive data analytics.
-            </p>
-            <a href="zoho-case-studies.html?industry=Banking#filters" class="btn btn-industry-cta">
-              View Banking Cases
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </a>
-          </div>
 
-          <!-- Non-profit -->
-          <div class="industry-success-card pos-center">
-            <div class="industry-success-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
-              </svg>
-            </div>
-            <h3 class="industry-success-title">Non-profit</h3>
-            <p class="industry-success-text">
-              Learn how non-profits use our tailored digital solutions to optimize operations, engage donors, and maximize their social impact.
-            </p>
-            <a href="zoho-case-studies.html?industry=Non-profit#filters" class="btn btn-industry-cta">
-              View Non-profit Cases
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </a>
-          </div>
 
-          <!-- Education -->
-          <div class="industry-success-card pos-right">
-            <div class="industry-success-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
-                <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
-              </svg>
-            </div>
-            <h3 class="industry-success-title">Education</h3>
-            <p class="industry-success-text">
-              Discover how educational institutions are transforming student experiences and administrative efficiency with our scalable cloud platforms.
-            </p>
-            <a href="zoho-case-studies.html?industry=Education#filters" class="btn btn-industry-cta">
-              View Education Cases
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            </a>
-          </div>
-
-        </div>
-
-        <button class="carousel-btn right" id="ind-slider-next" aria-label="Next slide">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="9 18 15 12 9 6"></polyline>
-          </svg>
-        </button>
+      <!-- Loading -->
+      <div id="industry-case-studies-loading" class="case-studies-loading">
+        Loading insights...
       </div>
+
+
+      <!-- Error -->
+      <div id="industry-case-studies-error" class="case-studies-error" hidden>
+        Unable to load insights at this time.
+      </div>
+
+
+      <!-- Industries will be generated here -->
+      <div id="industry-case-studies-container">
+      </div>
+
     </div>
+
   </section>
+
 
   <!-- Solve Your Toughest Challenges CTA Section -->
   <section class="challenges-cta-section">
@@ -783,7 +729,8 @@
 
       <!-- Right Side: Actions -->
       <div class="challenges-cta-actions">
-        <a href="https://outlook.office.com/bookwithme/user/14a1fbc786d24d7b8b8222f211538eff@edgeanalytics.co.za/meetingtype/yTQWmW0irkCeYZSCL-KU3A2?anonymous&ismsaljsauthenabled&ep=mlink" target="_blank" class="btn btn-book-call">
+        <a href="https://outlook.office.com/bookwithme/user/14a1fbc786d24d7b8b8222f211538eff@edgeanalytics.co.za/meetingtype/yTQWmW0irkCeYZSCL-KU3A2?anonymous&ismsaljsauthenabled&ep=mlink"
+          target="_blank" class="btn btn-book-call">
           Book a call
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
             stroke-linejoin="round">
@@ -1124,27 +1071,30 @@
       const prevBtn = document.getElementById('ind-slider-prev');
       const nextBtn = document.getElementById('ind-slider-next');
       if (!slider || !prevBtn || !nextBtn) return;
-      
+
       const cards = Array.from(slider.querySelectorAll('.industry-success-card'));
       let positions = ['pos-left', 'pos-center', 'pos-right'];
-      
+
       function applyPositions() {
         cards.forEach((card, index) => {
           card.classList.remove('pos-left', 'pos-center', 'pos-right');
           card.classList.add(positions[index]);
         });
       }
-      
+
       nextBtn.addEventListener('click', () => {
         positions.unshift(positions.pop());
         applyPositions();
       });
-      
+
       prevBtn.addEventListener('click', () => {
         positions.push(positions.shift());
         applyPositions();
       });
     });
   </script>
+  <script src="js/case-studies.js"></script>
+
 </body>
+
 </html>

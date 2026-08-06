@@ -655,7 +655,7 @@ async function renderDynamicCaseStudies(containerId, serviceFilter, limit = 4) {
             </div>
             <div class="footer">
               <span class="author">${pubDate}</span>
-              <a href="zoho-case-studies.html?openId=${cs.id}#filters" class="read-more">
+              <a href="case-studies.html?openId=${cs.id}#filters" class="read-more">
                 Go to the Case Study
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <line x1="5" y1="12" x2="19" y2="12"></line>

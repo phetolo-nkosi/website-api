@@ -1,72 +1,216 @@
 const axios = require("axios");
 
 /**
- * Generate a new Zoho OAuth access token using the stored refresh token.
+ * ============================================================
+ * ZOHO CONFIGURATION
+ * ============================================================
+ */
+
+const ZOHO_OAUTH_URL =
+    "https://accounts.zoho.com/oauth/v2/token";
+
+const TOKEN_EXPIRY_BUFFER = 60 * 1000; // 1 minute
+
+
+/**
+ * ============================================================
+ * ACCESS TOKEN CACHE
+ * ============================================================
  *
- * The access token is required when making authenticated requests
- * to the Zoho Creator API.
+ * Instead of requesting a new OAuth access token every time
+ * a Zoho API request is made, we keep the current token in
+ * memory and reuse it until it is close to expiring.
+ */
+
+let cachedAccessToken = null;
+let tokenExpiresAt = 0;
+
+
+/**
+ * Keeps track of an access-token request that is already
+ * in progress.
+ *
+ * This prevents multiple simultaneous requests from generating
+ * multiple OAuth tokens.
+ */
+let tokenRequestPromise = null;
+
+
+/**
+ * ============================================================
+ * GENERATE / GET ACCESS TOKEN
+ * ============================================================
+ *
+ * Returns a valid Zoho OAuth access token.
+ *
+ * If a valid cached token exists, it is reused.
+ * A new token is only requested when the cached token has
+ * expired or is about to expire.
  */
 async function getAccessToken() {
-    try {
-        // Request a new access token from Zoho OAuth
-        const response = await axios.post(
-            "https://accounts.zoho.com/oauth/v2/token",
-            null,
-            {
-                params: {
-                    // OAuth refresh token stored in environment variables
-                    refresh_token: process.env.ZOHO_REFRESH_TOKEN,
 
-                    // OAuth client credentials stored in environment variables
-                    client_id: process.env.ZOHO_CLIENT_ID,
-                    client_secret: process.env.ZOHO_CLIENT_SECRET,
-
-                    // Specifies that the refresh token should be used
-                    // to generate a new access token
-                    grant_type: "refresh_token"
-                }
-            }
-        );
-
-        // Return the newly generated access token
-        return response.data.access_token;
-
-    } catch (err) {
-        // Log Zoho's response if available; otherwise log the error message
-        console.error(
-            "Failed to generate Zoho access token:",
-            err.response?.data || err.message
-        );
-
-        // Pass the error back to the calling function
-        throw err;
+    // Check whether the cached token is still valid
+    if (
+        cachedAccessToken &&
+        Date.now() < tokenExpiresAt
+    ) {
+        return cachedAccessToken;
     }
+
+
+    /**
+     * If another request is already generating a token,
+     * wait for that request instead of creating another one.
+     */
+    if (tokenRequestPromise) {
+        return tokenRequestPromise;
+    }
+
+
+    /**
+     * Create the token request.
+     */
+    tokenRequestPromise = (async () => {
+
+        try {
+
+            console.log("Requesting new Zoho access token...");
+
+            const response = await axios.post(
+                ZOHO_OAUTH_URL,
+                null,
+                {
+                    params: {
+                        refresh_token:
+                            process.env.ZOHO_REFRESH_TOKEN,
+
+                        client_id:
+                            process.env.ZOHO_CLIENT_ID,
+
+                        client_secret:
+                            process.env.ZOHO_CLIENT_SECRET,
+
+                        grant_type:
+                            "refresh_token"
+                    }
+                }
+            );
+
+
+            /**
+             * Store the new access token.
+             */
+            cachedAccessToken =
+                response.data.access_token;
+
+
+            /**
+             * Zoho normally returns expires_in.
+             *
+             * If it is not returned, use 1 hour as a fallback.
+             */
+            const expiresIn =
+                Number(response.data.expires_in) ||
+                3600;
+
+
+            /**
+             * Refresh the token slightly before
+             * the actual expiry time.
+             */
+            tokenExpiresAt =
+                Date.now() +
+                (expiresIn * 1000) -
+                TOKEN_EXPIRY_BUFFER;
+
+
+            console.log(
+                "Zoho access token cached."
+            );
+
+
+            return cachedAccessToken;
+
+        } catch (err) {
+
+            console.error(
+                "Failed to generate Zoho access token:",
+                err.response?.data ||
+                err.message
+            );
+
+            throw err;
+
+        } finally {
+
+            /**
+             * Clear the promise so a future request
+             * can generate a new token if necessary.
+             */
+            tokenRequestPromise = null;
+        }
+
+    })();
+
+
+    return tokenRequestPromise;
 }
 
 
 /**
- * Download a file from a Zoho Creator record.
+ * ============================================================
+ * CLEAR ACCESS TOKEN
+ * ============================================================
  *
- * @param {string} recordId  - The Zoho Creator record ID
- * @param {string} fieldName - The file-upload field containing the file
- *
- * @returns {Promise<Object>} Axios response containing the file stream
+ * Used when Zoho tells us that the current token is invalid
+ * or expired.
  */
-async function downloadFile(recordId, fieldName) {
+function clearAccessToken() {
 
-    // Generate a valid Zoho OAuth access token
-    const token = await getAccessToken();
+    cachedAccessToken = null;
+    tokenExpiresAt = 0;
+
+}
+
+
+/**
+ * ============================================================
+ * WAIT / BACKOFF
+ * ============================================================
+ *
+ * Used when Zoho responds with HTTP 429 (Too Many Requests).
+ */
+function wait(ms) {
+
+    return new Promise(resolve => {
+        setTimeout(resolve, ms);
+    });
+
+}
+
+
+/**
+ * ============================================================
+ * DOWNLOAD FILE
+ * ============================================================
+ *
+ * Downloads an image or PDF from a Zoho Creator record.
+ *
+ * The access token is reused instead of generating a new
+ * token for every file.
+ */
+async function downloadFile(
+    recordId,
+    fieldName,
+    retryCount = 0
+) {
+
+    const token =
+        await getAccessToken();
+
 
     /**
-     * Construct the Zoho Creator file-download endpoint.
-     *
-     * Expected structure:
-     *
-     * https://www.zohoapis.com/creator/v2.1/data/
-     * {owner}/{app}/report/{report}/{recordId}/{fieldName}/download
-     *
-     * trim() is used on environment variables and parameters
-     * to prevent accidental spaces from breaking the URL.
+     * Construct Zoho Creator file-download URL.
      */
     const url =
         `https://www.zohoapis.com/creator/v2.1/data/` +
@@ -76,33 +220,129 @@ async function downloadFile(recordId, fieldName) {
         `${(recordId || "").toString().trim()}/` +
         `${(fieldName || "").trim()}/download`;
 
-    // Log the URL for debugging purposes
-    console.log("Zoho file download URL:", url);
 
-    /**
-     * Request the file from Zoho Creator.
-     *
-     * responseType: "stream" is important because the file
-     * should be returned as a stream rather than loaded entirely
-     * into server memory.
-     */
-    return axios.get(url, {
-        headers: {
-            // Authenticate the request using the Zoho OAuth access token
-            Authorization: `Zoho-oauthtoken ${token}`
-        },
+    try {
 
-        // Return the file as a readable stream
-        responseType: "stream"
-    });
+        console.log(
+            `Downloading Zoho file: ${recordId} / ${fieldName}`
+        );
+
+
+        const response = await axios.get(
+            url,
+            {
+                headers: {
+                    Authorization:
+                        `Zoho-oauthtoken ${token}`
+                },
+
+                responseType: "stream",
+
+                /**
+                 * Do not keep the connection waiting forever.
+                 */
+                timeout: 30000
+            }
+        );
+
+
+        return response;
+
+
+    } catch (err) {
+
+        const status =
+            err.response?.status;
+
+
+        /**
+         * ====================================================
+         * TOKEN EXPIRED / INVALID
+         * ====================================================
+         *
+         * If Zoho rejects the token, clear the cached token
+         * and retry once with a newly generated token.
+         */
+        if (
+            (status === 401 || status === 403) &&
+            retryCount < 1
+        ) {
+
+            console.log(
+                "Zoho access token expired. Refreshing..."
+            );
+
+
+            clearAccessToken();
+
+
+            return downloadFile(
+                recordId,
+                fieldName,
+                retryCount + 1
+            );
+        }
+
+
+        /**
+         * ====================================================
+         * THROTTLE / RATE LIMIT
+         * ====================================================
+         *
+         * HTTP 429 means Zoho is asking us to slow down.
+         *
+         * Retry using exponential backoff.
+         */
+        if (
+            status === 429 &&
+            retryCount < 3
+        ) {
+
+            const delay =
+                Math.pow(2, retryCount) * 1000;
+
+
+            console.warn(
+                `Zoho throttle detected. ` +
+                `Retrying in ${delay / 1000} seconds...`
+            );
+
+
+            await wait(delay);
+
+
+            return downloadFile(
+                recordId,
+                fieldName,
+                retryCount + 1
+            );
+        }
+
+
+        /**
+         * Log other errors.
+         */
+        console.error(
+            "Zoho file download failed:",
+            err.response?.data ||
+            err.message
+        );
+
+
+        throw err;
+    }
 }
 
 
 /**
- * Export the functions so they can be used by other files
- * in the application.
+ * ============================================================
+ * EXPORTS
+ * ============================================================
  */
+
 module.exports = {
     getAccessToken,
-    downloadFile
+    downloadFile,
+    clearAccessToken
 };
+
