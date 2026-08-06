@@ -21,7 +21,7 @@
  */
 
 const CASE_STUDIES_API =
-    "/api/case-studies";
+    "https://website-api-m3wi.onrender.com/api/case-studies";
 
 
 /**
