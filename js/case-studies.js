@@ -106,31 +106,57 @@ document.addEventListener(
  */
 async function getCaseStudies() {
 
-    const response =
-        await fetch(
-            CASE_STUDIES_API
-        );
+    // Check session cache first
+    const cached = sessionStorage.getItem("ea_case_studies");
 
+    if (cached) {
 
-    if (!response.ok) {
+        const data = JSON.parse(cached);
 
-        throw new Error(
-            "Unable to retrieve case studies."
-        );
+        if (!window.allCaseStudiesData) {
+            window.allCaseStudiesData = new Map();
+        }
 
+        data.forEach(cs => {
+            window.allCaseStudiesData.set(cs.id, cs);
+        });
+
+        return data;
     }
 
+    // Fetch from Render API
+    const response = await fetch(CASE_STUDIES_API);
+
+    if (!response.ok) {
+        throw new Error("Unable to retrieve case studies.");
+    }
 
     const data = await response.json();
 
-    // Cache globally for modal usage
+    // Save to session storage
+    try {
+
+        sessionStorage.setItem(
+            "ea_case_studies",
+            JSON.stringify(data)
+        );
+
+    } catch (err) {
+
+        console.warn("Unable to cache case studies.", err);
+
+    }
+
+    // Rebuild the lookup Map
     if (!window.allCaseStudiesData) {
         window.allCaseStudiesData = new Map();
     }
-    data.forEach(cs => window.allCaseStudiesData.set(cs.id, cs));
+
+    data.forEach(cs => {
+        window.allCaseStudiesData.set(cs.id, cs);
+    });
 
     return data;
-
 }
 
 
@@ -697,7 +723,7 @@ function renderIndustries(groupedCaseStudies, container) {
         const el = document.createElement("div");
         el.className = "idc-card";
         el.innerHTML = `
-            <div class="idc-card-img" style="background-image:url('${escapeHtml(caseStudy.image || '')}')">
+            <div class="idc-card-img" style="background-image:url('${escapeHtml(`${CASE_STUDIES_API}/${caseStudy.id}/image` || '')}')">
                 <div class="idc-card-img-overlay"></div>
             </div>
             <div class="idc-card-body">
@@ -794,7 +820,7 @@ function createCaseStudyCard(
     card.innerHTML = `
 
         <div class="case-study-image-wrapper">
-            <img src="${escapeHtml(caseStudy.image)}" alt="${escapeHtml(caseStudy.title)}" class="case-study-image" loading="lazy">
+            <img src="${escapeHtml(`${CASE_STUDIES_API}/${caseStudy.id}/image`)}" alt="${escapeHtml(caseStudy.title)}" class="case-study-image" loading="lazy">
         </div>
 
         <div class="case-study-content">
@@ -1071,7 +1097,7 @@ function renderFullCaseStudy(
     if (image) {
 
         image.src =
-            caseStudy.image;
+            `${CASE_STUDIES_API}/${caseStudy.id}/image`;
 
         image.alt =
             caseStudy.title ||
@@ -1131,7 +1157,7 @@ function renderFullCaseStudy(
     if (pdf) {
 
         pdf.src =
-            caseStudy.pdf;
+            pdf.src = `${CASE_STUDIES_API}/${caseStudy.id}/pdf`;
 
     }
 
@@ -1443,9 +1469,10 @@ function openCaseStudyModal(id) {
     const pdfFrame = document.getElementById("cs-pdf-frame");
 
     // Hide the PDF viewer toolbar where supported
-    pdfFrame.src = `${cs.pdf}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`;
+    const pdfUrl = `${CASE_STUDIES_API}/${cs.id}/pdf`;
+    pdfFrame.src = `${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`;
+    document.getElementById("cs-open-tab").href = pdfUrl;
 
-    document.getElementById("cs-open-tab").href = cs.pdf;
 
     document.getElementById("cs-fullscreen").onclick = function () {
 
