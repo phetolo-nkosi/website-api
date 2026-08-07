@@ -13391,20 +13391,20 @@ body.cs-page-body {
   align-items: stretch;
   height: 100%;
   background: #ffffff;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #cbd5e1;
   border-radius: 20px;
   padding: 16px;
   gap: 24px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05), 0 0 10px rgba(13, 179, 158, 0.02);
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   position: relative;
 }
 
 .case-study-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.1);
-  border-color: #cbd5e1;
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px -10px rgba(13, 179, 158, 0.15), 0 0 20px rgba(13, 179, 158, 0.08);
+  border-color: rgba(13, 179, 158, 0.3);
 }
 
 /* =========================================================
@@ -13418,7 +13418,7 @@ body.cs-page-body {
   flex-shrink: 0;
   z-index: 1;
   border-radius: 12px;
-
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.1);
 }
 
 .case-study-image {
@@ -13426,14 +13426,13 @@ body.cs-page-body {
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+  transition: transform 0.8s cubic-bezier(0.2, 1, 0.3, 1), filter 0.8s ease;
 }
 
 .case-study-card:hover .case-study-image {
-  transform: scale(1.03);
+  transform: scale(1.08);
+  filter: brightness(1.05) contrast(1.05);
 }
-
-
 
 /* =========================================================
    CARD CONTENT
@@ -13453,41 +13452,57 @@ body.cs-page-body {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .case-study-tag {
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: 0.7rem;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 0.35rem 0.85rem;
+  letter-spacing: 0.08em;
+  padding: 0.4rem 1rem;
   border-radius: 50px;
-  border: none;
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
 }
 
 .case-study-tag:nth-child(1) {
-  background: #e6f7f4;
+  background: rgba(13, 179, 158, 0.08);
   color: #0db39e;
+  border-color: rgba(13, 179, 158, 0.2);
 }
 
 .case-study-tag:nth-child(2) {
-  background: #f1f5f9;
+  background: rgba(71, 85, 105, 0.05);
   color: #475569;
+  border-color: rgba(71, 85, 105, 0.15);
+}
+
+.case-study-card:hover .case-study-tag:nth-child(1) {
+  background: rgba(13, 179, 158, 0.15);
+}
+
+.case-study-card:hover .case-study-tag:nth-child(2) {
+  background: rgba(71, 85, 105, 0.1);
 }
 
 .case-study-title {
   margin: 0 0 0.5rem;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   line-height: 1.3;
   color: #0f172a;
   font-weight: 800;
+  transition: color 0.3s ease;
+}
+
+.case-study-card:hover .case-study-title {
+  color: #0db39e;
 }
 
 .case-study-description {
-  margin: 0 0 0.75rem;
-  font-size: 0.85rem;
-  line-height: 1.5;
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
   color: #475569;
   flex: 1;
   display: -webkit-box;
@@ -13498,24 +13513,45 @@ body.cs-page-body {
 
 .case-study-stats-row {
   display: flex;
-  gap: 10px;
-  margin-bottom: 0.75rem;
+  gap: 12px;
+  margin-bottom: 1.25rem;
 }
 
 .cs-stat-box {
   flex: 1;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-top: 3px solid #0db39e;
-  border-radius: 8px;
-  padding: 0.6rem 0.4rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 10px;
+  padding: 0.75rem 0.5rem;
   text-align: center;
-  font-weight: 700;
-  font-size: 0.8rem;
+  font-weight: 800;
+  font-size: 0.85rem;
   color: #0f172a;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.cs-stat-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 3px;
+  background: linear-gradient(90deg, #0db39e, #14b8a6);
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.case-study-card:hover .cs-stat-box {
+  background: #ffffff;
+  border-color: rgba(13, 179, 158, 0.3);
+  box-shadow: 0 4px 12px rgba(13, 179, 158, 0.08);
+}
+
+.case-study-card:hover .cs-stat-box::before {
+  opacity: 1;
 }
 
 /* =========================================================
@@ -13527,39 +13563,43 @@ body.cs-page-body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: none;
-  padding-top: 0;
+  border-top: 1px dashed #e2e8f0;
+  padding-top: 1rem;
 }
 
 .case-study-author {
-  font-size: 0.9rem;
-  color: #64748b;
+  font-size: 0.85rem;
+  color: #94a3b8;
   font-weight: 600;
-  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .case-study-link {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 20px;
+  padding: 8px 18px;
   border-radius: 50px;
-  background: #0db39e;
-  color: #ffffff;
+  background: #f1f5f9;
+  color: #0f172a;
   text-decoration: none;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
-  transition: opacity 0.3s ease;
+  transition: all 0.3s ease;
   border: none;
   cursor: pointer;
 }
 
-.case-study-link:hover {
+.case-study-card:hover .case-study-link {
   background: #0db39e;
   color: #ffffff;
-  opacity: 0.9;
-  transform: none;
-  box-shadow: none;
+  box-shadow: 0 4px 15px rgba(13, 179, 158, 0.3);
+  transform: translateX(4px);
+}
+
+.case-study-link:hover {
+  filter: brightness(1.1);
 }
 
 /* Responsive Unified Dark Card */
@@ -13615,11 +13655,54 @@ body.cs-page-body {
    LOADING / ERROR
    ========================================================= */
 
-.case-studies-loading,
+.case-studies-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
+  gap: 16px;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  animation: pulseOpacity 1.5s infinite;
+}
+
+.case-studies-loading[hidden],
+.case-studies-error[hidden] {
+  display: none !important;
+}
+
+.case-studies-loading::before {
+  content: '';
+  display: block;
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(13, 179, 158, 0.15);
+  border-top-color: #0db39e;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulseOpacity {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
 .case-studies-error {
   padding: 40px 0;
-
   font-size: 15px;
+  color: #ef4444;
+  text-align: center;
+  background: rgba(239, 68, 68, 0.05);
+  border-radius: 12px;
+  border: 1px dashed rgba(239, 68, 68, 0.3);
 }
 
 
@@ -13776,17 +13859,44 @@ body.cs-page-body {
 
 /* ── Section Titles ── */
 .cs-section-label-row {
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  align-items: center;
+  text-align: center;
+}
+
+.cs-section-label-row .section-label {
+  display: inline-block;
+  background: none;
+  color: var(--brand-teal);
+  padding: 0;
+  border-radius: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.cs-section-label-row .section-label::before {
+  display: none;
 }
 
 .cs-section-title {
-  font-size: 2rem;
+  font-size: 2.75rem;
   font-weight: 800;
   color: #0f172a;
   margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.cs-section-description {
+  font-size: 1.05rem;
+  color: #475569;
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0.5rem 0 0 0;
 }
 
 /* ── Hero Search Bar ── */
@@ -13830,9 +13940,9 @@ body.cs-page-body {
 
 /* ── Featured Section ── */
 .cs-featured-section {
-  padding: 6rem 0;
-  background: #ffffff;
-  border-bottom: 1px solid #e2e8f0;
+  padding: 7rem 0 5rem;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
 }
 
 .cs-featured-grid {
@@ -13956,8 +14066,8 @@ body.cs-page-body {
 
 /* ── All Section & Filters ── */
 .cs-all-section {
-  padding: 6rem 0;
-  background: #ffffff;
+  padding: 5rem 0 8rem;
+  background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
 }
 
 /* ── Directory Layout ── */
@@ -13968,52 +14078,85 @@ body.cs-page-body {
 .cs-sidebar-filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 2rem;
-  margin-bottom: 3rem;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 4rem;
+  padding: 1.2rem 2rem;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 24px;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.05), 0 0 15px rgba(13, 179, 158, 0.04);
+  position: sticky;
+  top: 90px;
+  z-index: 50;
 }
 
 .cs-filter-header {
-  display: none;
+  display: flex;
+  align-items: center;
+  margin-right: auto;
+}
+
+.cs-filter-header h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.cs-filter-header h3::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: var(--brand-teal);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--brand-teal);
 }
 
 .cs-filter-group {
-  flex: 1;
-  min-width: 200px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .cs-filter-title {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 0.8rem;
-  margin-top: 0;
+  display: none;
 }
 
 .cs-filter-select {
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  border: 1.5px solid #cbd5e1;
-  background: #fff;
-  color: #0f172a;
-  font-size: 1rem;
+  padding: 0.7rem 2.8rem 0.7rem 1.4rem;
+  border-radius: 50px;
+  border: 1.5px solid rgba(203, 213, 225, 0.6);
+  background: #ffffff;
+  color: #334155;
+  font-size: 0.95rem;
   font-family: inherit;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%230db39e' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 1rem center;
+  background-position: right 1.2rem center;
   background-size: 1rem;
-  width: 100%;
+}
+
+.cs-filter-select:hover {
+  border-color: rgba(13, 179, 158, 0.4);
+  box-shadow: 0 4px 15px rgba(13, 179, 158, 0.1);
+  color: #0f172a;
 }
 
 .cs-filter-select:focus {
   outline: none;
   border-color: var(--brand-teal);
-  box-shadow: 0 0 0 3px rgba(13, 179, 158, 0.1);
+  box-shadow: 0 0 0 4px rgba(13, 179, 158, 0.15);
 }
 
 .cs-directory-content {
@@ -14028,37 +14171,47 @@ body.cs-page-body {
 
 .cs-no-results {
   text-align: center;
-  padding: 4rem 2rem;
-  background: #f8fafc;
-  border-radius: 12px;
-  border: 1px dashed #cbd5e1;
+  padding: 6rem 2rem;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 24px;
+  border: 1px dashed rgba(203, 213, 225, 0.8);
   color: #64748b;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.02);
 }
 
 .cs-no-results svg {
-  margin-bottom: 1rem;
-  color: #94a3b8;
+  margin-bottom: 1.5rem;
+  color: #cbd5e1;
+  width: 64px;
+  height: 64px;
 }
 
 .cs-no-results p {
-  font-size: 1.1rem;
-  margin-bottom: 1.5rem;
+  font-size: 1.15rem;
+  margin-bottom: 2rem;
+  font-weight: 500;
+  color: #475569;
 }
 
 .cs-reset-btn {
-  padding: 0.6rem 1.5rem;
-  background: #fff;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  color: #475569;
-  font-weight: 600;
+  padding: 0.8rem 2rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 50px;
+  color: #ef4444;
+  font-weight: 700;
+  font-size: 0.95rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .cs-reset-btn:hover {
-  background: #f1f5f9;
-  color: #0f172a;
+  background: #ef4444;
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+  transform: translateY(-2px);
 }
 
 /* ── Responsive ── */
@@ -14100,36 +14253,23 @@ CASE STUDY MODAL
 ==================================================*/
 
 .cs-modal-overlay {
-
   position: fixed;
   inset: 0;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
-  padding: 40px;
-
-  background:
-    radial-gradient(circle at top, #0f4d7a55 0%, transparent 45%),
-    rgba(5, 10, 20, .82);
-
-  backdrop-filter: blur(18px);
-
+  padding: 2% 4%;
+  background: radial-gradient(circle at top right, rgba(13, 179, 158, 0.15) 0%, transparent 40%), rgba(5, 10, 20, 0.7);
+  backdrop-filter: blur(20px);
   opacity: 0;
   visibility: hidden;
-
-  transition: .35s ease;
-
+  transition: opacity 0.4s ease, visibility 0.4s;
   z-index: 999999;
-
 }
 
 .cs-modal-overlay.active {
-
   opacity: 1;
   visibility: visible;
-
 }
 
 /*==================================================
@@ -14137,53 +14277,29 @@ MODAL
 ==================================================*/
 
 .cs-pdf-modal {
-
-  width: min(1500px, 96vw);
-  height: min(94vh, 1000px);
-
+  width: 100%;
+  max-width: 1400px;
+  height: 100%;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
-
-  border-radius: 28px;
-
+  border-radius: 24px;
   overflow: hidden;
-
-  background:
-
-    linear-gradient(145deg,
-      rgba(12, 24, 45, .98),
-      rgba(6, 16, 31, .98));
-
-  border: 1px solid rgba(255, 255, 255, .08);
-
-  box-shadow:
-
-    0 40px 120px rgba(0, 0, 0, .45);
-
-  animation: modalOpen .45s cubic-bezier(.2, .8, .2, 1);
-
+  background: linear-gradient(145deg, rgba(15, 23, 42, 0.8), rgba(7, 14, 28, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.7), 0 0 40px rgba(13, 179, 158, 0.1);
+  animation: modalOpen 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 @keyframes modalOpen {
-
   from {
-
-    transform:
-      translateY(40px) scale(.96);
-
+    transform: translateY(30px) scale(0.97);
     opacity: 0;
-
   }
-
   to {
-
-    transform:
-      translateY(0) scale(1);
-
+    transform: translateY(0) scale(1);
     opacity: 1;
-
   }
-
 }
 
 /*==================================================
@@ -14191,15 +14307,12 @@ HEADER
 ==================================================*/
 
 .cs-pdf-toolbar {
-
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  padding: 28px 36px;
-
-  border-bottom: 1px solid rgba(255, 255, 255, .08);
-
+  padding: 24px 32px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .cs-pdf-title {

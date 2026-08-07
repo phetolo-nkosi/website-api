@@ -1490,25 +1490,19 @@ function openCaseStudyModal(id) {
 
                     <div class="cs-pdf-buttons">
 
-                        <a
-                            id="cs-open-tab"
-                            class="cs-pdf-btn"
-                            target="_blank">
-                            Open in New Tab
-                        </a>
-
                         <button
                             id="cs-fullscreen"
-                            class="cs-pdf-btn">
-                            Full Screen
+                            class="cs-pdf-btn"
+                            title="Enter Full Screen">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                            <span>Full Screen</span>
                         </button>
 
                         <button
                             class="cs-pdf-close"
-                            onclick="closeCaseStudyModal()">
-
-                            ✕
-
+                            onclick="closeCaseStudyModal()"
+                            title="Close">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                         </button>
 
                     </div>
@@ -1517,13 +1511,16 @@ function openCaseStudyModal(id) {
 
                 <div class="cs-pdf-container">
 
+                    <!-- Overlay to block right-clicks on the iframe body area, optional but helps enforce read-only -->
+                    <div class="cs-pdf-protect"></div>
                     <iframe
-    id="cs-pdf-frame"
-    class="cs-pdf-frame"
-    loading="lazy"
-    allowfullscreen
-    referrerpolicy="no-referrer">
-</iframe>
+                        id="cs-pdf-frame"
+                        class="cs-pdf-frame"
+                        loading="lazy"
+                        allowfullscreen
+                        referrerpolicy="no-referrer"
+                        oncontextmenu="return false;">
+                    </iframe>
 
                 </div>
 
@@ -1559,10 +1556,9 @@ function openCaseStudyModal(id) {
 
     const pdfFrame = document.getElementById("cs-pdf-frame");
 
-    // Hide the PDF viewer toolbar where supported
+    // Hide the PDF viewer toolbar where supported to prevent downloads
     const pdfUrl = `${CASE_STUDIES_API}/${cs.id}/pdf`;
     pdfFrame.src = `${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`;
-    document.getElementById("cs-open-tab").href = pdfUrl;
 
 
     document.getElementById("cs-fullscreen").onclick = function () {
