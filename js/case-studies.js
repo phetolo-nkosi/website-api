@@ -23,6 +23,12 @@
 const CASE_STUDIES_API =
     "https://website-api-m3wi.onrender.com/api/case-studies";
 
+/**
+ * Session Storage Cache
+ */
+const CACHE_KEY = "ea_case_studies";
+const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
+
 
 /**
  * ============================================================
@@ -104,41 +110,113 @@ document.addEventListener(
  *
  * The Node.js backend handles the Zoho API and caching.
  */
+
+/**
+ * ============================================================
+ * GET ALL CASE STUDIES
+ * ============================================================
+ *
+ * Retrieves case studies from the Render API.
+ *
+ * Uses Session Storage to cache the response for 10 minutes,
+ * reducing unnecessary requests to Render and Zoho.
+ */
 async function getCaseStudies() {
 
-    // Check session cache first
-    const cached = sessionStorage.getItem("ea_case_studies");
+    /**
+     * --------------------------------------------------------
+     * Check Session Storage first
+     * --------------------------------------------------------
+     */
+    const cached = sessionStorage.getItem(CACHE_KEY);
 
     if (cached) {
 
-        const data = JSON.parse(cached);
+        try {
 
-        if (!window.allCaseStudiesData) {
-            window.allCaseStudiesData = new Map();
+            const cache = JSON.parse(cached);
+
+            const age = Date.now() - cache.timestamp;
+
+            /**
+             * Cache still valid
+             */
+            if (age < CACHE_DURATION && Array.isArray(cache.data)) {
+
+                if (!window.allCaseStudiesData) {
+                    window.allCaseStudiesData = new Map();
+                } else {
+                    window.allCaseStudiesData.clear();
+                }
+
+                cache.data.forEach(cs => {
+                    window.allCaseStudiesData.set(cs.id, cs);
+                });
+
+                console.log("Case studies loaded from Session Storage.");
+
+                return cache.data;
+            }
+
+            /**
+             * Cache expired
+             */
+            sessionStorage.removeItem(CACHE_KEY);
+
+        } catch (err) {
+
+            console.warn("Invalid cache. Removing it.");
+
+            sessionStorage.removeItem(CACHE_KEY);
+
         }
 
-        data.forEach(cs => {
-            window.allCaseStudiesData.set(cs.id, cs);
-        });
-
-        return data;
     }
 
-    // Fetch from Render API
+    /**
+     * --------------------------------------------------------
+     * Download fresh data from Render
+     * --------------------------------------------------------
+     */
     const response = await fetch(CASE_STUDIES_API);
 
     if (!response.ok) {
-        throw new Error("Unable to retrieve case studies.");
+
+        throw new Error(
+            `Unable to retrieve case studies. HTTP ${response.status}`
+        );
+
     }
 
     const data = await response.json();
 
-    // Save to session storage
+    if (!Array.isArray(data)) {
+
+        throw new Error(
+            "Unexpected response received from the API."
+        );
+
+    }
+
+    /**
+     * --------------------------------------------------------
+     * Save to Session Storage
+     * --------------------------------------------------------
+     */
     try {
 
         sessionStorage.setItem(
-            "ea_case_studies",
-            JSON.stringify(data)
+
+            CACHE_KEY,
+
+            JSON.stringify({
+
+                timestamp: Date.now(),
+
+                data: data
+
+            })
+
         );
 
     } catch (err) {
@@ -147,19 +225,32 @@ async function getCaseStudies() {
 
     }
 
-    // Rebuild the lookup Map
+    /**
+     * --------------------------------------------------------
+     * Build lookup Map
+     * --------------------------------------------------------
+     */
     if (!window.allCaseStudiesData) {
+
         window.allCaseStudiesData = new Map();
+
+    } else {
+
+        window.allCaseStudiesData.clear();
+
     }
 
     data.forEach(cs => {
+
         window.allCaseStudiesData.set(cs.id, cs);
+
     });
 
+    console.log("Fresh case studies downloaded from Render.");
+
     return data;
+
 }
-
-
 /**
  * ============================================================
  * INDEX PAGE
