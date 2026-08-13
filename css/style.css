@@ -26,6 +26,13 @@ html {
   box-sizing: border-box;
 }
 
+img,
+svg,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
 body {
   font-family: var(--font-sans);
   background-color: var(--bg-dark);
@@ -1031,9 +1038,8 @@ nav {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--brand-teal);
-  background-color: rgba(13, 179, 158, 0.08);
-  border: 1.5px solid rgba(13, 179, 158, 0.15);
+
+  border: 1.5px solid rgba(83, 86, 86, 0.15);
   border-radius: 10px;
   flex-shrink: 0;
   width: 46px;
@@ -1041,11 +1047,7 @@ nav {
   transition: var(--transition-smooth);
 }
 
-.why-us-card:hover .card-icon {
-  background-color: var(--brand-teal);
-  color: #010611;
-  box-shadow: 0 0 15px rgba(13, 179, 158, 0.4);
-}
+
 
 .why-us-card .card-icon svg,
 .why-us-card .card-icon img {
@@ -1137,10 +1139,10 @@ nav {
 .insight-card {
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 1.5rem;
+  border-radius: 14px;
+  padding: 1rem;
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
   align-items: center;
   transition: var(--transition-smooth);
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.02);
@@ -1154,9 +1156,9 @@ nav {
 
 .insight-image-wrapper {
   flex-shrink: 0;
-  width: 200px;
-  height: 140px;
-  border-radius: 10px;
+  width: 130px;
+  height: 100px;
+  border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
@@ -1182,13 +1184,12 @@ nav {
 }
 
 .insight-card-title {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: #0c1322;
-  line-height: 1.35;
-  margin-bottom: 0.5rem;
+  line-height: 1.3;
+  margin-bottom: 0.3rem;
   transition: var(--transition-smooth);
-  /* Truncate at 2 lines for neatness */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -1200,12 +1201,12 @@ nav {
 }
 
 .insight-card-text {
-  font-size: 0.88rem;
+  font-size: 0.8rem;
   color: #475569;
-  line-height: 1.5;
-  margin-bottom: 0.75rem;
+  line-height: 1.45;
+  margin-bottom: 0;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -1662,91 +1663,166 @@ nav {
 
 @media (max-width: 768px) {
 
-  /* Navigation Mobile Toggle */
+  /* ── Show burger, hide desktop nav ── */
   .burger-menu {
     display: flex;
   }
 
+  .header-btn {
+    display: none;
+  }
+
+  /* ── Mobile menu panel ── */
   .nav-list {
     position: fixed;
-    top: 0;
-    right: -100%;
-    width: 280px;
-    height: 100vh;
+    inset: 0;
+    top: 70px;
+    /* below header */
+    left: 0;
+    width: 100%;
+    height: calc(100dvh - 70px);
     background: rgba(4, 9, 24, 0.98);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-left: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
     flex-direction: column;
-    padding: 7rem 2.5rem 2rem;
-    gap: 2rem;
-    transition: var(--transition-smooth);
+    padding: 2rem 1.75rem;
+    gap: 0;
+    overflow-y: auto;
+    /* Slide in from top */
+    transform: translateY(-16px);
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.3s ease,
+      visibility 0.3s ease;
+    z-index: 99000;
   }
 
   .nav-list.active {
-    right: 0;
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
+  }
+
+  /* ── Nav items ── */
+  .nav-list>li {
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .nav-list>li:last-child {
+    border-bottom: none;
   }
 
   .nav-link {
-    font-size: 1.15rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 1rem 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #cbd5e1;
   }
 
-  .header-btn {
+  .nav-link::after {
     display: none;
-    /* Hide header btn on mobile, user can navigate to contact */
+    /* hide underline indicator on mobile */
   }
 
-  /* Mobile Dropdown Menu Accordion */
+  .nav-link.active,
+  .nav-link:hover {
+    color: #ffffff;
+  }
+
+  /* ── Dropdown accordion ── */
   .nav-item-dropdown {
     width: 100%;
   }
 
-  .nav-item-dropdown .dropdown-menu {
-    position: static;
-    transform: none;
-    width: 100%;
-    box-shadow: none;
-    background: rgba(255, 255, 255, 0.02);
-    border: none;
-    border-radius: 8px;
-    padding: 0;
-    margin-top: 0.5rem;
-    max-height: 0;
-    opacity: 0;
-    visibility: hidden;
-    overflow: hidden;
-    pointer-events: none;
-    transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, visibility 0.3s ease;
-  }
-
-  .nav-item-dropdown.open .dropdown-menu {
-    max-height: 350px;
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    padding: 0.5rem 0;
-    border-left: 2px solid var(--brand-teal);
-  }
-
-  .nav-item-dropdown .dropdown-item {
-    padding: 0.6rem 1.5rem !important;
+  /* Chevron on touch toggle */
+  .dropdown-toggle .dropdown-chevron {
+    transition: transform 0.3s ease;
+    font-size: 0.7rem;
+    margin-left: auto;
   }
 
   .nav-item-dropdown.open .dropdown-chevron {
     transform: rotate(180deg);
   }
 
-  /* Mobile Burger Active Animation */
+  /* Disable hover-based dropdown on mobile */
+  .nav-item-dropdown:hover .dropdown-menu {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: none;
+  }
+
+  /* Accordion submenu */
+  .nav-item-dropdown .dropdown-menu {
+    position: static !important;
+    transform: none !important;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    border: none;
+    border-left: 2px solid rgba(13, 179, 158, 0.5);
+    border-radius: 0 8px 8px 0;
+    padding: 0;
+    margin: 0 0 0.75rem 0.5rem;
+    box-shadow: none;
+    backdrop-filter: none;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.3s ease,
+      padding 0.3s ease;
+  }
+
+  .nav-item-dropdown.open .dropdown-menu {
+    max-height: 400px;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    padding: 0.5rem 0;
+  }
+
+  /* Submenu items */
+  .nav-item-dropdown .dropdown-item {
+    padding: 0.7rem 1.25rem !important;
+    font-size: 0.92rem;
+    color: #94a3b8;
+    border-left: none !important;
+  }
+
+  .nav-item-dropdown .dropdown-item:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.04);
+    padding-left: 1.5rem !important;
+  }
+
+  .nav-item-dropdown .dropdown-item::after {
+    display: none;
+  }
+
+  /* ── Burger → X animation ── */
   .burger-menu.active .burger-bar:nth-child(1) {
-    transform: translateY(7px) rotate(45deg);
+    transform: translateY(9px) rotate(45deg);
   }
 
   .burger-menu.active .burger-bar:nth-child(2) {
     opacity: 0;
+    transform: scaleX(0);
   }
 
   .burger-menu.active .burger-bar:nth-child(3) {
-    transform: translateY(-7px) rotate(-45deg);
+    transform: translateY(-9px) rotate(-45deg);
   }
 
   .hero-section {
@@ -3548,8 +3624,7 @@ nav {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: rgba(13, 179, 158, 0.1);
-  color: var(--brand-teal);
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3837,8 +3912,6 @@ nav {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--brand-teal);
-  background: rgba(13, 179, 158, 0.1);
   border-radius: 50%;
   width: 44px;
   height: 44px;
@@ -4660,10 +4733,6 @@ nav {
   color: #475569;
   line-height: 1.5;
   margin-bottom: 0.6rem;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 /* Card Stats Row */
@@ -7309,7 +7378,7 @@ nav {
   height: 56px;
   border-radius: 50%;
   background-color: rgba(13, 179, 158, 0.1);
-  color: var(--brand-teal);
+  color: #12B886;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -8019,7 +8088,7 @@ nav {
   width: 44px;
   height: 44px;
   border-radius: 8px;
-  background-color: rgba(13, 179, 158, 0.1);
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -8192,11 +8261,11 @@ nav {
   width: 48px;
   height: 48px;
   border-radius: 10px;
-  background-color: rgba(13, 179, 158, 0.1);
+
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--brand-teal);
+  color: #12B886;
   margin-bottom: 1.5rem;
   transition: var(--transition-smooth);
 }
@@ -9725,10 +9794,6 @@ RESPONSIVE
   color: #475569;
   line-height: 1.5;
   margin-bottom: 0.75rem;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 .stats {
@@ -13212,10 +13277,6 @@ body.cs-page-body {
   color: #94a3b8;
   margin: 0 0 2rem;
   flex: 1;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 .idc-card-footer {
@@ -13377,48 +13438,37 @@ body.cs-page-body {
 
 .case-studies-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
 }
 
 /* =========================================================
-   CASE STUDY CARD
+   CASE STUDY CARD — Light Minimal Overlap Design
    ========================================================= */
 
 .case-study-card {
   display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  height: 100%;
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
-  border-radius: 20px;
-  padding: 16px;
-  gap: 24px;
-  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.05), 0 0 10px rgba(13, 179, 158, 0.02);
-  overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  flex-direction: column;
+  background: transparent;
   position: relative;
-}
-
-.case-study-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 20px 40px -10px rgba(13, 179, 158, 0.15), 0 0 20px rgba(13, 179, 158, 0.08);
-  border-color: rgba(13, 179, 158, 0.3);
+  padding-bottom: 12px;
 }
 
 /* =========================================================
-   CARD IMAGE
+   CARD IMAGE 
    ========================================================= */
 
 .case-study-image-wrapper {
-  width: 40%;
+  width: 92%;
+  height: 170px;
   position: relative;
   overflow: hidden;
   flex-shrink: 0;
+  border-radius: 16px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+  margin-left: auto;
+  /* Aligns to the right */
   z-index: 1;
-  border-radius: 12px;
-  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.1);
 }
 
 .case-study-image {
@@ -13426,73 +13476,83 @@ body.cs-page-body {
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.8s cubic-bezier(0.2, 1, 0.3, 1), filter 0.8s ease;
+  transition: transform 0.8s cubic-bezier(0.2, 1, 0.3, 1);
 }
 
 .case-study-card:hover .case-study-image {
   transform: scale(1.08);
-  filter: brightness(1.05) contrast(1.05);
 }
 
 /* =========================================================
-   CARD CONTENT
+   CARD CONTENT (Overlapping Box)
    ========================================================= */
 
 .case-study-content {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.25rem 1.1rem;
+  width: 92%;
+  margin-top: -50px;
+  /* The overlap effect */
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
-  flex: 1;
-  padding: 0;
-  background: transparent;
-  z-index: 2;
-  position: relative;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.case-study-card:hover .case-study-content {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px -12px rgba(13, 179, 158, 0.2);
+  border-color: rgba(13, 179, 158, 0.3);
 }
 
 .case-study-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 8px;
   margin-bottom: 0.75rem;
 }
 
 .case-study-tag {
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  padding: 0.4rem 1rem;
-  border-radius: 50px;
-  border: 1px solid transparent;
+  letter-spacing: 0.1em;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
   transition: all 0.3s ease;
+  line-height: 1;
 }
 
 .case-study-tag:nth-child(1) {
-  background: rgba(13, 179, 158, 0.08);
-  color: #0db39e;
-  border-color: rgba(13, 179, 158, 0.2);
+  background: #0f172a;
+  color: #ffffff;
 }
 
 .case-study-tag:nth-child(2) {
-  background: rgba(71, 85, 105, 0.05);
+  background: #f1f5f9;
   color: #475569;
-  border-color: rgba(71, 85, 105, 0.15);
+  border: 1px solid #e2e8f0;
 }
 
 .case-study-card:hover .case-study-tag:nth-child(1) {
-  background: rgba(13, 179, 158, 0.15);
-}
-
-.case-study-card:hover .case-study-tag:nth-child(2) {
-  background: rgba(71, 85, 105, 0.1);
+  background: #0db39e;
 }
 
 .case-study-title {
   margin: 0 0 0.5rem;
-  font-size: 1.3rem;
-  line-height: 1.3;
+  font-size: 0.95rem;
+  line-height: 1.35;
   color: #0f172a;
   font-weight: 800;
   transition: color 0.3s ease;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .case-study-card:hover .case-study-title {
@@ -13500,58 +13560,20 @@ body.cs-page-body {
 }
 
 .case-study-description {
-  margin: 0 0 1rem;
-  font-size: 0.9rem;
-  line-height: 1.6;
-  color: #475569;
+  margin: 0 0 0.75rem;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: #64748b;
   flex: 1;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
+/* Hide stats row for compact cards */
 .case-study-stats-row {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 1.25rem;
-}
-
-.cs-stat-box {
-  flex: 1;
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  border-radius: 10px;
-  padding: 0.75rem 0.5rem;
-  text-align: center;
-  font-weight: 800;
-  font-size: 0.85rem;
-  color: #0f172a;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.cs-stat-box::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 3px;
-  background: linear-gradient(90deg, #0db39e, #14b8a6);
-  opacity: 0.6;
-  transition: opacity 0.3s ease;
-}
-
-.case-study-card:hover .cs-stat-box {
-  background: #ffffff;
-  border-color: rgba(13, 179, 158, 0.3);
-  box-shadow: 0 4px 12px rgba(13, 179, 158, 0.08);
-}
-
-.case-study-card:hover .cs-stat-box::before {
-  opacity: 1;
+  display: none;
 }
 
 /* =========================================================
@@ -13563,58 +13585,49 @@ body.cs-page-body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px dashed #e2e8f0;
-  padding-top: 1rem;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 0.8rem;
 }
 
 .case-study-author {
-  font-size: 0.85rem;
+  font-size: 0.7rem;
   color: #94a3b8;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
 }
 
 .case-study-link {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 18px;
-  border-radius: 50px;
-  background: #f1f5f9;
+  font-size: 0.75rem;
+  font-weight: 800;
   color: #0f172a;
   text-decoration: none;
-  font-size: 13px;
-  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   transition: all 0.3s ease;
+  background: none;
   border: none;
+  padding: 0;
   cursor: pointer;
+  gap: 4px;
 }
 
 .case-study-card:hover .case-study-link {
-  background: #0db39e;
-  color: #ffffff;
-  box-shadow: 0 4px 15px rgba(13, 179, 158, 0.3);
-  transform: translateX(4px);
+  color: #0db39e;
 }
 
-.case-study-link:hover {
-  filter: brightness(1.1);
+/* Responsive */
+@media (max-width: 1100px) {
+  .case-studies-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-/* Responsive Unified Dark Card */
-@media (max-width: 900px) {
-  .case-study-card {
-    flex-direction: column;
-  }
-
-  .case-study-image-wrapper {
-    width: 100%;
-    height: 200px;
-  }
-
-  .case-study-image-wrapper::after {
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 50%, rgba(11, 21, 38, 0.9) 100%);
+@media (max-width: 600px) {
+  .case-studies-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -13687,12 +13700,21 @@ body.cs-page-body {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes pulseOpacity {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
 }
 
 .case-studies-error {
@@ -13852,9 +13874,7 @@ body.cs-page-body {
 .cs-hero-blob--2 {
   width: 300px;
   height: 300px;
-  background: #3b82f6;
-  bottom: -100px;
-  right: 20%;
+  background: rgba(13, 179, 158, 0.3);
 }
 
 /* ── Section Titles ── */
@@ -13940,7 +13960,7 @@ body.cs-page-body {
 
 /* ── Featured Section ── */
 .cs-featured-section {
-  padding: 7rem 0 5rem;
+  padding: 4rem 0 3.5rem;
   background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
   border-bottom: 1px solid rgba(0, 0, 0, 0.03);
 }
@@ -13948,30 +13968,20 @@ body.cs-page-body {
 .cs-featured-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .cs-featured-card {
   display: flex;
   flex-direction: column;
-  background: #fff;
-  border-radius: 20px;
-  border: 1px solid #e2e8f0;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-  transition: all 0.3s ease;
-  min-height: 440px;
-}
-
-.cs-featured-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
-  border-color: rgba(13, 179, 158, 0.3);
+  background: transparent;
+  position: relative;
+  padding-bottom: 15px;
 }
 
 .cs-featured-card-img {
-  width: 100%;
-  height: 250px;
+  width: 92%;
+  height: 220px;
   background-size: cover;
   background-position: center;
   position: relative;
@@ -13985,11 +13995,10 @@ body.cs-page-body {
 }
 
 .cs-featured-card-body {
-  padding: 3rem;
+  padding: 1.4rem 1.5rem 1.3rem;
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   position: relative;
   z-index: 2;
 }
@@ -14020,18 +14029,26 @@ body.cs-page-body {
 }
 
 .cs-featured-card-title {
-  font-size: 1.8rem;
+  font-size: 0.95rem;
   font-weight: 800;
   color: #0f172a;
-  line-height: 1.2;
-  margin: 0 0 1rem;
+  line-height: 1.3;
+  margin: 0 0 0.4rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .cs-featured-card-desc {
-  font-size: 1.05rem;
-  line-height: 1.6;
-  color: #475569;
-  margin: 0 0 2rem;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: #64748b;
+  margin: 0 0 0.8rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .cs-featured-card-footer {
@@ -14165,8 +14182,8 @@ body.cs-page-body {
 
 .cs-all-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
 }
 
 .cs-no-results {
@@ -14178,7 +14195,7 @@ body.cs-page-body {
   border-radius: 24px;
   border: 1px dashed rgba(203, 213, 225, 0.8);
   color: #64748b;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
 }
 
 .cs-no-results svg {
@@ -14215,7 +14232,7 @@ body.cs-page-body {
 }
 
 /* ── Responsive ── */
-@media (max-width: 1024px) {
+@media (max-width: 1100px) {
   .cs-all-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -14244,6 +14261,14 @@ body.cs-page-body {
   }
 
   .cs-all-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+
+  .cs-all-grid,
+  .cs-featured-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -14252,18 +14277,23 @@ body.cs-page-body {
 CASE STUDY MODAL
 ==================================================*/
 
+/* ============================================================
+   PDF VIEWER MODAL — Clean Redesign
+============================================================ */
+
 .cs-modal-overlay {
   position: fixed;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2% 4%;
-  background: radial-gradient(circle at top right, rgba(13, 179, 158, 0.15) 0%, transparent 40%), rgba(5, 10, 20, 0.7);
-  backdrop-filter: blur(20px);
+  padding: 20px;
+  background: rgba(2, 6, 18, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.4s ease, visibility 0.4s;
+  transition: opacity 0.35s ease, visibility 0.35s;
   z-index: 999999;
 }
 
@@ -14272,213 +14302,231 @@ CASE STUDY MODAL
   visibility: visible;
 }
 
-/*==================================================
-MODAL
-==================================================*/
-
+/* ==== Modal Shell ==== */
 .cs-pdf-modal {
   width: 100%;
-  max-width: 1400px;
-  height: 100%;
-  max-height: 90vh;
+  max-width: 1100px;
+  height: min(92vh, 900px);
   display: flex;
   flex-direction: column;
-  border-radius: 24px;
+  border-radius: 20px;
   overflow: hidden;
-  background: linear-gradient(145deg, rgba(15, 23, 42, 0.8), rgba(7, 14, 28, 0.95));
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.7), 0 0 40px rgba(13, 179, 158, 0.1);
-  animation: modalOpen 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 0 0 1px rgba(13, 179, 158, 0.12),
+    0 32px 80px rgba(0, 0, 0, 0.6);
+  animation: cs-modal-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-@keyframes modalOpen {
+@keyframes cs-modal-in {
   from {
-    transform: translateY(30px) scale(0.97);
+    transform: translateY(24px) scale(0.98);
     opacity: 0;
   }
+
   to {
     transform: translateY(0) scale(1);
     opacity: 1;
   }
 }
 
-/*==================================================
-HEADER
-==================================================*/
-
+/* ==== Toolbar ==== */
 .cs-pdf-toolbar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 24px 32px;
-  background: rgba(255, 255, 255, 0.03);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 20px;
+  height: 64px;
+  flex-shrink: 0;
+  background: #0f172a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 
+/* Brand dot + title */
 .cs-pdf-title {
-
-  color: #fff;
-
-  font-size: 28px;
-
-  font-weight: 700;
-
-  line-height: 1.2;
-
-  max-width: 70%;
-
-}
-
-.cs-pdf-buttons {
-
   display: flex;
   align-items: center;
-  gap: 12px;
-
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
 }
 
-.cs-pdf-btn {
+.cs-pdf-title::before {
+  content: '';
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #0db39e;
+  flex-shrink: 0;
+}
 
+/* Toolbar button group */
+.cs-pdf-buttons {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-shrink: 0;
+}
 
-  padding: 12px 22px;
-
-  border-radius: 999px;
-
-  background: var(--brand-teal);
-
-  color: var(--bg-dark);
-
-  text-decoration: none;
-
-  font-size: 15px;
-
+/* Icon action buttons (fullscreen etc.) */
+.cs-pdf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  color: #cbd5e1;
+  font-size: 13px;
   font-weight: 600;
-
-  transition: .3s;
-
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  white-space: nowrap;
 }
 
 .cs-pdf-btn:hover {
-
-  background: var(--brand-teal-hover);
-
-  transform: translateY(-2px);
-
+  background: rgba(13, 179, 158, 0.15);
+  border-color: rgba(13, 179, 158, 0.4);
+  color: #0db39e;
 }
 
+.cs-pdf-btn svg {
+  flex-shrink: 0;
+}
+
+/* Close button */
 .cs-pdf-close {
-
-  width: 50px;
-  height: 50px;
-
-  border: none;
-
-  border-radius: 50%;
-
-  background: rgba(255, 255, 255, .08);
-
-  color: #fff;
-
-  font-size: 22px;
-
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+  color: #94a3b8;
   cursor: pointer;
-
-  transition: .3s;
-
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  flex-shrink: 0;
 }
 
 .cs-pdf-close:hover {
-
-  background: #ef4444;
-
-  transform: rotate(90deg);
-
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
+  transform: none;
 }
 
-/*==================================================
-BODY
-==================================================*/
-
+/* ==== PDF Container ==== */
 .cs-pdf-container {
-
   flex: 1;
-
-  padding: 32px;
-
-  background:
-
-    linear-gradient(180deg,
-      rgba(255, 255, 255, .02),
-      rgba(255, 255, 255, .04));
-
+  overflow: hidden;
+  position: relative;
+  background: #1e293b;
+  display: flex;
+  align-items: stretch;
+  padding: 16px;
 }
 
-/* Floating PDF */
+.cs-pdf-protect {
+  position: absolute;
+  inset: 16px;
+  z-index: 1;
+  pointer-events: none;
+}
 
-.cs-pdf-container iframe {
-
+.cs-pdf-frame {
   width: 100%;
   height: 100%;
-
   border: none;
-
-  border-radius: 20px;
-
+  border-radius: 12px;
   background: #fff;
-
-  box-shadow:
-
-    0 25px 80px rgba(0, 0, 0, .45);
-
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  display: block;
+  position: relative;
+  z-index: 0;
 }
 
-/*==================================================
-RESPONSIVE
-==================================================*/
+/* ==== Responsive ==== */
 
-@media(max-width:900px) {
-
+/* Tablet */
+@media (max-width: 900px) {
   .cs-modal-overlay {
-
-    padding: 0;
-
+    padding: 12px;
   }
 
   .cs-pdf-modal {
-
-    width: 100%;
-    height: 100%;
-
-    border-radius: 0;
-
+    height: calc(100dvh - 24px);
+    max-height: none;
+    border-radius: 16px;
   }
 
   .cs-pdf-toolbar {
-
-    flex-direction: column;
-    align-items: flex-start;
-
-    gap: 18px;
-
+    padding: 0 16px;
+    height: 56px;
   }
 
   .cs-pdf-title {
+    font-size: 14px;
+  }
 
-    font-size: 22px;
+  .cs-pdf-btn span {
+    display: none;
+    /* icon only on smaller viewports */
+  }
 
-    max-width: 100%;
-
+  .cs-pdf-btn {
+    padding: 7px 10px;
   }
 
   .cs-pdf-container {
+    padding: 12px;
+  }
+}
 
-    padding: 15px;
-
+/* Mobile */
+@media (max-width: 600px) {
+  .cs-modal-overlay {
+    padding: 0;
+    align-items: flex-end;
   }
 
+  .cs-pdf-modal {
+    width: 100%;
+    height: 100dvh;
+    max-height: none;
+    border-radius: 0;
+    border: none;
+  }
+
+  .cs-pdf-toolbar {
+    height: 52px;
+    padding: 0 12px;
+    border-radius: 0;
+  }
+
+  .cs-pdf-container {
+    padding: 8px;
+  }
+
+  .cs-pdf-frame {
+    border-radius: 8px;
+  }
+
+  #cs-fullscreen {
+    display: none;
+    /* already fullscreen on mobile */
+  }
 }
 
 /* ============================================================
@@ -14486,52 +14534,75 @@ RESPONSIVE
 ============================================================ */
 
 /* Horizontal Overflow & Global Resets */
-html, body {
+html,
+body {
   max-width: 100vw;
   overflow-x: hidden !important;
 }
 
-img, video, canvas, svg, iframe {
+img,
+video,
+canvas,
+svg,
+iframe {
   max-width: 100%;
   height: auto;
 }
 
 /* Fluid Typography */
-h1, .hero-title, .cs-hero-title {
+h1,
+.hero-title,
+.cs-hero-title {
   font-size: clamp(2.5rem, 5vw + 1rem, 4.5rem) !important;
   line-height: 1.1 !important;
 }
 
-h2, .section-title {
+h2,
+.section-title {
   font-size: clamp(2rem, 4vw, 3.5rem) !important;
   line-height: 1.2 !important;
 }
 
-h3, .card-title, .cs-featured-card-title {
+h3,
+.card-title,
+.cs-featured-card-title {
   font-size: clamp(1.5rem, 2.5vw, 2rem) !important;
 }
 
-p, .body-text, .hero-subtitle, .cs-hero-subtitle, .cs-featured-card-desc {
+p,
+.body-text,
+.hero-subtitle,
+.cs-hero-subtitle,
+.cs-featured-card-desc {
   font-size: clamp(1rem, 1.5vw, 1.15rem) !important;
 }
 
 /* Forms and Inputs */
-input, select, textarea, button {
+input,
+select,
+textarea,
+button {
   max-width: 100%;
 }
 
-form .form-group, .form-row {
+form .form-group,
+.form-row {
   width: 100%;
 }
 
-.btn, .cs-pdf-btn, .cs-reset-btn, .zoho-submit-btn {
+.btn,
+.cs-pdf-btn,
+.cs-reset-btn,
+.zoho-submit-btn {
   max-width: 100%;
   white-space: normal;
   text-align: center;
 }
 
 /* Modals */
-.cs-pdf-modal, .modal-content, .zoho-modal-inner {
+.cs-pdf-modal,
+.modal-content,
+.zoho-modal-inner {
   max-width: 95% !important;
   max-height: 90vh !important;
   overflow-y: auto !important;
@@ -14550,6 +14621,7 @@ form .form-group, .form-row {
   z-index: 1000;
   padding: 0;
 }
+
 .burger-bar {
   width: 100%;
   height: 3px;
@@ -14557,12 +14629,15 @@ form .form-group, .form-row {
   border-radius: 3px;
   transition: all 0.3s ease;
 }
+
 .burger-menu.active .burger-bar:nth-child(1) {
   transform: translateY(9px) rotate(45deg);
 }
+
 .burger-menu.active .burger-bar:nth-child(2) {
   opacity: 0;
 }
+
 .burger-menu.active .burger-bar:nth-child(3) {
   transform: translateY(-9px) rotate(-45deg);
 }
@@ -14580,17 +14655,25 @@ form .form-group, .form-row {
    L — 1200px–1439px
 ============================================================ */
 @media (max-width: 1439px) {
+
   /* Grids */
-  .grid-4-col { grid-template-columns: repeat(3, 1fr) !important; }
+  .grid-4-col {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
 }
 
 /* ============================================================
    M — 768px–1199px
 ============================================================ */
 @media (max-width: 1199px) {
+
   /* Grids */
-  .grid-4-col, .grid-3-col, .transformation-grid { grid-template-columns: repeat(2, 1fr) !important; }
-  
+  .grid-4-col,
+  .grid-3-col,
+  .transformation-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
   .category-pillars-grid {
     grid-template-columns: repeat(2, 1fr) !important;
   }
@@ -14605,53 +14688,21 @@ form .form-group, .form-row {
    S — 480px–767px
 ============================================================ */
 @media (max-width: 767px) {
+
   /* Layout & Spacing */
   .container {
     padding-left: 1.5rem !important;
     padding-right: 1.5rem !important;
   }
-  
+
   section {
     padding: clamp(3rem, 6vw, 4rem) 0 !important;
   }
 
   /* Navigation & Header (Burger Menu) */
   .header-container {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: space-between;
-  }
-  
-  .nav-list {
-    display: none;
-    flex-direction: column;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    width: 100%;
-    background: rgba(2, 6, 18, 0.98);
-    backdrop-filter: blur(16px);
-    padding: 2rem;
-    gap: 1.5rem !important;
-    text-align: center;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
-  .nav-list.active {
-    display: flex !important;
-  }
-
-  .nav-item-dropdown .dropdown-menu {
-    position: static;
-    display: none;
-    background: transparent;
-    box-shadow: none;
-    padding: 0;
-    margin-top: 1rem;
-    border: none;
-  }
-
-  .nav-item-dropdown.open .dropdown-menu {
-    display: block;
   }
 
   .burger-menu {
@@ -14662,37 +14713,53 @@ form .form-group, .form-row {
     display: none !important;
   }
 
+  /* Nav list is handled by the @media (max-width: 768px) block above;
+     override only specifics for very small screens */
+  .nav-list {
+    padding: 1.5rem 1.25rem !important;
+    gap: 0 !important;
+  }
+
   /* Hero Section */
-  .hero-section, .cs-hero-section {
+  .hero-section,
+  .cs-hero-section {
     padding-top: 120px !important;
     text-align: center;
   }
-  
-  .hero-content, .cs-hero-content {
+
+  .hero-content,
+  .cs-hero-content {
     align-items: center !important;
   }
-  
+
   .hero-buttons {
     flex-direction: column;
     width: 100%;
   }
 
   /* Grids */
-  .grid-4-col, .grid-3-col, .grid-2-col, .cs-all-grid, .cs-featured-grid, .category-pillars-grid, .transformation-grid {
+  .grid-4-col,
+  .grid-3-col,
+  .grid-2-col,
+  .cs-all-grid,
+  .cs-featured-grid,
+  .category-pillars-grid,
+  .transformation-grid {
     grid-template-columns: 1fr !important;
     gap: 1.5rem !important;
   }
 
   /* Footers */
-  .footer-grid, .footer-content {
+  .footer-grid,
+  .footer-content {
     grid-template-columns: 1fr !important;
     text-align: center;
   }
-  
+
   .footer-socials {
     justify-content: center !important;
   }
-  
+
   .footer-bottom {
     flex-direction: column;
     gap: 1rem;
@@ -14704,44 +14771,96 @@ form .form-group, .form-row {
     flex-direction: column;
     align-items: stretch !important;
   }
+
+  /* Mobile PDF Viewer Fullscreen */
+  .cs-pdf-modal {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    display: flex;
+    flex-direction: column;
+    padding: 0 !important;
+    top: 0 !important;
+    left: 0 !important;
+    transform: none !important;
+  }
+
+  .cs-pdf-container {
+    flex: 1;
+    height: auto !important;
+  }
+
+  .cs-pdf-frame {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .cs-pdf-toolbar {
+    padding: 12px 16px !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    background: rgba(2, 6, 18, 0.95);
+    backdrop-filter: blur(8px);
+    z-index: 10;
+  }
+
+  .cs-pdf-title {
+    font-size: 16px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 60%;
+  }
+
+  .cs-pdf-buttons {
+    width: auto !important;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+  }
+
+  #cs-fullscreen {
+    display: none !important;
+    /* Hide fullscreen button on mobile since it's already full screen */
+  }
+
+  .cs-pdf-close {
+    width: 44px !important;
+    height: 44px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+  }
 }
 
 /* ============================================================
    XS — Below 480px
 ============================================================ */
 @media (max-width: 479px) {
+
   /* Smaller paddings */
   .container {
     padding-left: 1rem !important;
     padding-right: 1rem !important;
   }
-  
+
   /* Buttons */
-  .btn, .cs-pdf-btn, .zoho-submit-btn {
+  .btn,
+  .zoho-submit-btn {
     width: 100% !important;
     padding: 12px 20px !important;
     justify-content: center;
   }
-  
+
   /* Typography */
-  h1, .hero-title, .cs-hero-title {
+  h1,
+  .hero-title,
+  .cs-hero-title {
     font-size: clamp(2rem, 8vw, 2.5rem) !important;
-  }
-  
-  /* Modals */
-  .cs-pdf-toolbar {
-    padding: 16px !important;
-    flex-direction: column;
-    gap: 12px;
-  }
-  
-  .cs-pdf-title {
-    font-size: 18px !important;
-  }
-  
-  .cs-pdf-buttons {
-    flex-wrap: wrap;
-    justify-content: center;
-    width: 100%;
   }
 }

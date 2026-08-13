@@ -3,26 +3,82 @@ document.addEventListener('DOMContentLoaded', () => {
   const burgerMenu = document.getElementById('burger-menu');
   const navList = document.getElementById('nav-list');
 
+  // Create backdrop overlay
+  let navBackdrop = document.getElementById('nav-backdrop');
+  if (!navBackdrop) {
+    navBackdrop = document.createElement('div');
+    navBackdrop.id = 'nav-backdrop';
+    navBackdrop.style.cssText = `
+      position: fixed; inset: 0; top: 70px;
+      background: rgba(0,0,0,0.45);
+      z-index: 98999;
+      opacity: 0; visibility: hidden; pointer-events: none;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    `;
+    document.body.appendChild(navBackdrop);
+  }
+
+  function openMobileNav() {
+    burgerMenu.classList.add('active');
+    navList.classList.add('active');
+    navBackdrop.style.opacity = '1';
+    navBackdrop.style.visibility = 'visible';
+    navBackdrop.style.pointerEvents = 'auto';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMobileNav() {
+    burgerMenu.classList.remove('active');
+    navList.classList.remove('active');
+    navBackdrop.style.opacity = '0';
+    navBackdrop.style.visibility = 'hidden';
+    navBackdrop.style.pointerEvents = 'none';
+    document.body.style.overflow = '';
+    // Close all open submenus
+    document.querySelectorAll('.nav-item-dropdown.open').forEach(el => el.classList.remove('open'));
+  }
+
   if (burgerMenu && navList) {
     burgerMenu.addEventListener('click', () => {
-      burgerMenu.classList.toggle('active');
-      navList.classList.toggle('active');
+      if (navList.classList.contains('active')) {
+        closeMobileNav();
+      } else {
+        openMobileNav();
+      }
     });
 
-    // Close menu when a link is clicked
-    document.querySelectorAll('.nav-link, .dropdown-item').forEach(link => {
-      link.addEventListener('click', (e) => {
-        if (link.classList.contains('dropdown-toggle') && window.innerWidth <= 768) {
+    // Backdrop click closes menu
+    navBackdrop.addEventListener('click', closeMobileNav);
+
+    // Submenu accordion on mobile — toggle open class on parent li
+    document.querySelectorAll('.nav-item-dropdown .dropdown-toggle').forEach(toggle => {
+      toggle.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768) {
           e.preventDefault();
-          const dropdownParent = link.closest('.nav-item-dropdown');
-          if (dropdownParent) {
-            dropdownParent.classList.toggle('open');
-          }
-        } else {
-          burgerMenu.classList.remove('active');
-          navList.classList.remove('active');
+          const parent = toggle.closest('.nav-item-dropdown');
+          // Close any other open dropdowns
+          document.querySelectorAll('.nav-item-dropdown.open').forEach(el => {
+            if (el !== parent) el.classList.remove('open');
+          });
+          parent.classList.toggle('open');
         }
       });
+    });
+
+    // Close menu when a non-toggle link is clicked
+    document.querySelectorAll('.nav-link:not(.dropdown-toggle), .dropdown-item').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          closeMobileNav();
+        }
+      });
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && navList.classList.contains('active')) {
+        closeMobileNav();
+      }
     });
   }
 

@@ -827,7 +827,7 @@ function renderIndustries(groupedCaseStudies, container) {
                 <div class="idc-card-footer">
                     <span class="idc-card-date">${formatDate(caseStudy.date)}</span>
                     <button type="button" class="case-study-link" onclick="openCaseStudyModal('${encodeURIComponent(caseStudy.id)}')">
-                    Read case study &rarr;
+                    Read case study
                 </button>
                 </div>
             </div>
@@ -935,7 +935,7 @@ function createCaseStudyCard(
             <div class="case-study-footer">
                 <span class="case-study-author">Edge Analytics</span>
                 <button type="button" class="case-study-link" onclick="openCaseStudyModal('${encodeURIComponent(caseStudy.id)}')">
-                    View Case Study &rarr;
+                    View Case Study
                 </button>
             </div>
         </div>
@@ -1558,7 +1558,9 @@ function openCaseStudyModal(id) {
 
     // Hide the PDF viewer toolbar where supported to prevent downloads
     const pdfUrl = `${CASE_STUDIES_API}/${cs.id}/pdf`;
-    pdfFrame.src = `${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH`;
+    const isMobile = window.innerWidth <= 767;
+    const viewParam = isMobile ? "view=Fit" : "view=FitH";
+    pdfFrame.src = `${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0&${viewParam}`;
 
 
     document.getElementById("cs-fullscreen").onclick = function () {
