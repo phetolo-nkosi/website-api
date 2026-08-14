@@ -53,14 +53,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Submenu accordion on mobile — toggle open class on parent li
     document.querySelectorAll('.nav-item-dropdown .dropdown-toggle').forEach(toggle => {
       toggle.addEventListener('click', (e) => {
-        if (window.innerWidth <= 768) {
+        if (window.innerWidth <= 992 || (navList && navList.classList.contains('active'))) {
           e.preventDefault();
           const parent = toggle.closest('.nav-item-dropdown');
-          // Close any other open dropdowns
-          document.querySelectorAll('.nav-item-dropdown.open').forEach(el => {
-            if (el !== parent) el.classList.remove('open');
-          });
-          parent.classList.toggle('open');
+          if (parent) {
+            // Close any other open dropdowns
+            document.querySelectorAll('.nav-item-dropdown.open').forEach(el => {
+              if (el !== parent) el.classList.remove('open');
+            });
+            parent.classList.toggle('open');
+          }
         }
       });
     });
@@ -68,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Close menu when a non-toggle link is clicked
     document.querySelectorAll('.nav-link:not(.dropdown-toggle), .dropdown-item').forEach(link => {
       link.addEventListener('click', () => {
-        if (window.innerWidth <= 768) {
+        if (window.innerWidth <= 992) {
           closeMobileNav();
         }
       });

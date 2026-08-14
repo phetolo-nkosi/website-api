@@ -1,5 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
+/* ── Font Awesome icon global color & wrapper borders ── */
+.card-icon i,
+.card-icon-badge i,
+.outcome-icon-wrapper i,
+.transformation-card-icon i,
+.about-service-icon i,
+.value-icon-wrapper i,
+.challenges-cta-icon-wrapper i,
+.office-location-indicator i,
+.contact-card-icon-wrapper i,
+.cs-stat-card-icon i,
+.contact-social-btn i,
+.social-btn i {
+  color: var(--brand-teal);
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.card-icon,
+.card-icon-badge,
+.outcome-icon-wrapper,
+.transformation-card-icon,
+.about-service-icon,
+.value-icon-wrapper,
+.challenges-cta-icon-wrapper,
+.contact-card-icon-wrapper,
+.cs-stat-card-icon {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
 :root {
   --bg-dark: #020612;
   --bg-gradient: radial-gradient(circle at top right, #09132d, #020612 60%);
@@ -77,7 +107,7 @@ header {
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 100;
+  z-index: 99999;
   background: rgba(2, 6, 18, 0.75);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -238,15 +268,17 @@ nav {
   transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
 }
 
-.nav-item-dropdown:hover .dropdown-menu {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transform: translateX(-50%) translateY(0);
-}
+@media (min-width: 769px) {
+  .nav-item-dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
 
-.nav-item-dropdown:hover .dropdown-chevron {
-  transform: rotate(180deg);
+  .nav-item-dropdown:hover .dropdown-chevron {
+    transform: rotate(180deg);
+  }
 }
 
 .dropdown-item {
@@ -1661,7 +1693,7 @@ nav {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 992px) {
 
   /* ── Show burger, hide desktop nav ── */
   .burger-menu {
@@ -1754,43 +1786,40 @@ nav {
     transform: rotate(180deg);
   }
 
-  /* Disable hover-based dropdown on mobile */
+  /* Disable hover-based dropdown transform on mobile */
   .nav-item-dropdown:hover .dropdown-menu {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transform: none;
+    transform: none !important;
   }
 
   /* Accordion submenu */
   .nav-item-dropdown .dropdown-menu {
     position: static !important;
     transform: none !important;
-    width: 100%;
-    background: rgba(255, 255, 255, 0.03);
-    border: none;
-    border-left: 2px solid rgba(13, 179, 158, 0.5);
-    border-radius: 0 8px 8px 0;
-    padding: 0;
-    margin: 0 0 0.75rem 0.5rem;
-    box-shadow: none;
-    backdrop-filter: none;
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-      opacity 0.3s ease,
-      padding 0.3s ease;
+    left: auto !important;
+    top: auto !important;
+    width: 100% !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: none !important;
+    border-left: 2px solid var(--brand-teal) !important;
+    border-radius: 0 8px 8px 0 !important;
+    padding: 0 !important;
+    margin: 0.5rem 0 0.75rem 0.5rem !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
   }
 
   .nav-item-dropdown.open .dropdown-menu {
-    max-height: 400px;
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    padding: 0.5rem 0;
+    display: flex !important;
+    flex-direction: column !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    padding: 0.5rem 0 !important;
+    transform: none !important;
   }
 
   /* Submenu items */
@@ -7386,12 +7415,7 @@ nav {
   transition: var(--transition-smooth);
 }
 
-.outcome-col:hover .outcome-icon-wrapper {
-  background-color: var(--brand-teal);
-  color: #ffffff;
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 10px 20px rgba(13, 179, 158, 0.2);
-}
+
 
 .outcome-col-title {
   font-size: 1.35rem;
@@ -8270,11 +8294,7 @@ nav {
   transition: var(--transition-smooth);
 }
 
-.value-card:hover .value-icon-wrapper {
-  background-color: var(--brand-teal);
-  color: #0c1322;
-  box-shadow: 0 0 15px rgba(13, 179, 158, 0.4);
-}
+
 
 .value-card-title {
   font-size: 1.25rem;
@@ -8395,12 +8415,12 @@ nav {
   width: 100%;
   height: 100%;
   border: none;
-  filter: grayscale(1) invert(0.9) contrast(1.2) opacity(0.85);
+  filter: none;
   transition: var(--transition-smooth);
 }
 
 .office-card:hover .office-map-iframe {
-  filter: grayscale(0.5) invert(0.85) contrast(1.1) opacity(0.95);
+  filter: none;
 }
 
 .office-contact {
@@ -13299,18 +13319,18 @@ body.cs-page-body {
   gap: 0.5rem;
   font-size: 0.9rem;
   font-weight: 700;
-  color: var(--brand-teal);
+  color: #ffffff;
   text-decoration: none;
   padding: 0.65rem 1.3rem;
-  border: 1.5px solid rgba(13, 179, 158, 0.4);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
   border-radius: 50px;
   transition: all 0.25s ease;
 }
 
 .idc-card-link:hover {
-  background: var(--brand-teal);
-  color: #ffffff;
-  border-color: var(--brand-teal);
+  background: #ffffff;
+  color: #0b1526;
+  border-color: #ffffff;
   gap: 0.75rem;
 }
 
@@ -13406,13 +13426,44 @@ body.cs-page-body {
     display: none;
   }
 
+  /* Stack card vertically */
   .idc-card {
     flex-direction: column;
+    /* Override absolute positioning so content is not clipped */
+    position: relative !important;
+    inset: unset !important;
+    width: 100%;
+    height: auto !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Fade-in animation still works via opacity */
+  .idc-card.idc-entering {
+    opacity: 0 !important;
+    transform: translateY(12px) !important;
+  }
+
+  .idc-card.idc-leaving {
+    opacity: 0 !important;
+    transform: translateY(-12px) !important;
+    pointer-events: none;
+    position: absolute !important;
+    inset: 0 !important;
+  }
+
+  /* Viewport: let height grow naturally with content */
+  .idc-viewport {
+    position: relative;
+    overflow: visible;
+    min-height: unset;
+    height: auto;
   }
 
   .idc-card-img {
     width: 100%;
-    min-height: 220px;
+    min-height: 200px;
+    flex-shrink: 0;
     position: relative;
   }
 
@@ -13423,11 +13474,31 @@ body.cs-page-body {
   }
 
   .idc-card-body {
-    padding: 2rem;
+    padding: 1.75rem 1.5rem 2rem;
+    flex: unset;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .idc-card-title {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .idc-card-desc {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    flex: unset;
+  }
+
+  .idc-card-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
   }
 
   .idc-nav {
-    padding: 1rem 2rem;
+    padding: 1rem 1.5rem;
   }
 }
 
@@ -13616,6 +13687,26 @@ body.cs-page-body {
 
 .case-study-card:hover .case-study-link {
   color: #0db39e;
+}
+
+/* "Read case study" inside the dark industry insights card */
+.idc-card .case-study-link {
+  color: #ffffff;
+  background: transparent;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50px;
+  padding: 0.6rem 1.3rem;
+  font-size: 0.85rem;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 700;
+  transition: all 0.25s ease;
+}
+
+.idc-card .case-study-link:hover {
+  background: #ffffff;
+  color: #0b1526;
+  border-color: #ffffff;
 }
 
 /* Responsive */
