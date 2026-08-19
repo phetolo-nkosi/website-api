@@ -441,20 +441,43 @@
       </div>
 
 
-      <!-- Loading State -->
-      <div id="latest-case-studies-loading" class="case-studies-loading">
-        Loading latest Insights...
-      </div>
+      <!-- Slider Container with Left/Right Navigation & Track -->
+      <div class="case-studies-slider-outer">
+
+        <!-- Loading State -->
+        <div id="latest-case-studies-loading" class="case-studies-loading">
+          Loading latest Insights...
+        </div>
 
 
-      <!-- Error State -->
-      <div id="latest-case-studies-error" class="case-studies-error" hidden>
-        Unable to load insights at this time.
-      </div>
+        <!-- Error State -->
+        <div id="latest-case-studies-error" class="case-studies-error" hidden>
+          Unable to load insights at this time.
+        </div>
 
 
-      <!-- Case Study Cards -->
-      <div id="latest-case-studies-grid" class="case-studies-grid">
+        <!-- Slider Track Wrapper -->
+        <div class="case-studies-track-wrapper">
+          <button class="cs-nav-btn cs-nav-prev" id="cs-slider-prev" aria-label="Previous case studies" title="Previous">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+
+          <!-- Case Study Cards Track (Single Horizontal Line) -->
+          <div id="latest-case-studies-grid" class="case-studies-grid case-studies-slider-track">
+          </div>
+
+          <button class="cs-nav-btn cs-nav-next" id="cs-slider-next" aria-label="Next case studies" title="Next">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Slider Pagination Dots -->
+        <div class="cs-slider-pagination" id="cs-slider-pagination"></div>
+
       </div>
 
 

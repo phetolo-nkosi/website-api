@@ -319,19 +319,24 @@ async function loadLatestCaseStudies() {
 
 
         /**
-         * Only display the latest four.
+         * There will always be four case studies on the index page.
          */
         const latestFour =
             caseStudies.slice(0, 4);
 
 
         /**
-         * Render cards.
+         * Display the four latest case studies in the horizontal slider.
          */
         renderCaseStudyCards(
             latestFour,
             grid
         );
+
+        /**
+         * Initialize horizontal slider navigation and swipe/drag controls.
+         */
+        initCaseStudiesSlider();
 
 
     } catch (err) {
@@ -355,6 +360,155 @@ async function loadLatestCaseStudies() {
 
     }
 
+}
+
+
+/**
+ * ============================================================
+ * CASE STUDIES HORIZONTAL SLIDER CONTROLLER
+ * ============================================================
+ */
+function initCaseStudiesSlider() {
+    const track = document.getElementById("latest-case-studies-grid");
+    const prevBtn = document.getElementById("cs-slider-prev");
+    const nextBtn = document.getElementById("cs-slider-next");
+    const dotsContainer = document.getElementById("cs-slider-pagination");
+
+    if (!track) return;
+
+    const cards = Array.from(track.querySelectorAll(".case-study-card"));
+    if (cards.length === 0) return;
+
+    // Helper to calculate scroll step (one card width + gap)
+    function getScrollStep() {
+        const firstCard = track.querySelector(".case-study-card");
+        if (firstCard) {
+            const style = window.getComputedStyle(track);
+            const gap = parseFloat(style.gap) || 24;
+            return firstCard.offsetWidth + gap;
+        }
+        return 380;
+    }
+
+    // Build 2 pagination dots — one per "page" of 2 visible cards.
+    // The section always shows exactly 4 latest case studies, so
+    // page 0 = cards 1–2, page 1 = cards 3–4.
+    const PAGE_COUNT = 2;
+
+    if (dotsContainer) {
+        dotsContainer.innerHTML = "";
+        for (let pageIdx = 0; pageIdx < PAGE_COUNT; pageIdx++) {
+            const dot = document.createElement("button");
+            dot.className = "cs-slider-dot" + (pageIdx === 0 ? " active" : "");
+            dot.setAttribute("aria-label", `Go to page ${pageIdx + 1}`);
+            dot.addEventListener("click", () => {
+                const step = getScrollStep();
+                // Jump by 2 card-widths to land at the start of each page
+                track.scrollTo({
+                    left: pageIdx * step * 2,
+                    behavior: "smooth"
+                });
+            });
+            dotsContainer.appendChild(dot);
+        }
+    }
+
+    function updateSliderState() {
+        const scrollLeft = track.scrollLeft;
+        const maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
+
+        if (prevBtn) {
+            prevBtn.disabled = scrollLeft <= 8;
+        }
+        if (nextBtn) {
+            nextBtn.disabled = scrollLeft >= maxScroll - 8 || maxScroll === 0;
+        }
+
+        // Determine active page dot: page 1 when scrolled past the halfway point
+        if (dotsContainer) {
+            const activePage = maxScroll > 0 && scrollLeft > maxScroll / 2 ? 1 : 0;
+            const dots = dotsContainer.querySelectorAll(".cs-slider-dot");
+            dots.forEach((dot, idx) => {
+                dot.classList.toggle("active", idx === activePage);
+            });
+        }
+    }
+
+    if (prevBtn) {
+        prevBtn.onclick = () => {
+            const step = getScrollStep();
+            track.scrollBy({
+                left: -step,
+                behavior: "smooth"
+            });
+        };
+    }
+
+    if (nextBtn) {
+        nextBtn.onclick = () => {
+            const step = getScrollStep();
+            track.scrollBy({
+                left: step,
+                behavior: "smooth"
+            });
+        };
+    }
+
+    // Smooth scroll event handling
+    let scrollRaf;
+    track.addEventListener("scroll", () => {
+        if (scrollRaf) cancelAnimationFrame(scrollRaf);
+        scrollRaf = requestAnimationFrame(updateSliderState);
+    }, { passive: true });
+
+    // Drag-to-scroll support for desktop mouse interaction
+    let isDown = false;
+    let startX = 0;
+    let scrollStart = 0;
+    let hasMoved = false;
+
+    track.addEventListener("mousedown", (e) => {
+        if (e.button !== 0 || e.target.closest("button") || e.target.closest("a")) return;
+        isDown = true;
+        hasMoved = false;
+        track.classList.add("is-dragging");
+        startX = e.pageX - track.offsetLeft;
+        scrollStart = track.scrollLeft;
+    });
+
+    window.addEventListener("mouseup", () => {
+        if (isDown) {
+            isDown = false;
+            track.classList.remove("is-dragging");
+            setTimeout(() => { hasMoved = false; }, 50);
+        }
+    });
+
+    track.addEventListener("mousemove", (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - track.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        if (Math.abs(walk) > 6) {
+            hasMoved = true;
+        }
+        track.scrollLeft = scrollStart - walk;
+    });
+
+    track.addEventListener("click", (e) => {
+        if (hasMoved) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }, true);
+
+    // Initial state update
+    updateSliderState();
+
+    // Responsive update on resize
+    window.addEventListener("resize", () => {
+        updateSliderState();
+    });
 }
 
 
@@ -586,8 +740,10 @@ async function loadCaseStudiesPage() {
 
         if (featuredGrid) {
             const featured = allCaseStudies.slice(0, 2);
-            featured.forEach(cs => {
-                featuredGrid.appendChild(createCaseStudyCard(cs));
+            featured.forEach((cs, idx) => {
+                featuredGrid.appendChild(
+                    createFeaturedCard(cs, idx === 0)
+                );
             });
         }
 
@@ -881,6 +1037,60 @@ function renderIndustries(groupedCaseStudies, container) {
     // Initial render
     showCard();
 
+}
+
+
+/**
+ * ============================================================
+ * CREATE FEATURED CARD (Case Studies Page — Latest 2)
+ * ============================================================
+ *
+ * Renders a full-bleed editorial card with dark overlay,
+ * pill tags, and a CTA link. isPrimary = true for the larger
+ * left card, false for the compact right card.
+ */
+function createFeaturedCard(caseStudy) {
+
+    const card = document.createElement("article");
+    card.className = "cs-feat-card";
+
+    const imgUrl = `${CASE_STUDIES_API}/${caseStudy.id}/image`;
+
+    card.innerHTML = `
+        <div class="cs-feat-img-wrapper">
+            <img src="${escapeHtml(imgUrl)}" alt="${escapeHtml(caseStudy.title)}" class="cs-feat-img" loading="lazy" onerror="this.src='images/istockphoto-1344939844-612x612.jpg'">
+        </div>
+
+        <div class="cs-feat-card-body">
+            <div class="cs-feat-card-tags">
+                <span class="cs-feat-tag cs-feat-tag--industry">${escapeHtml(caseStudy.industry || "Industry")}</span>
+                ${caseStudy.service ? `<span class="cs-feat-tag cs-feat-tag--service">${escapeHtml(caseStudy.service)}</span>` : ""}
+            </div>
+
+            <h3 class="cs-feat-card-title">${escapeHtml(caseStudy.title)}</h3>
+            <p class="cs-feat-card-desc">${escapeHtml(caseStudy.description || "")}</p>
+
+            <div class="cs-feat-card-footer">
+                <span class="cs-feat-card-brand">EDGE ANALYTICS</span>
+                <button
+                    type="button"
+                    class="cs-feat-card-link"
+                    onclick="openCaseStudyModal('${encodeURIComponent(caseStudy.id)}')"
+                >
+                    VIEW CASE STUDY
+                </button>
+            </div>
+        </div>
+    `;
+
+    // Make the entire card click open the modal as well when clicking outside button
+    card.addEventListener("click", (e) => {
+        if (!e.target.closest("button")) {
+            openCaseStudyModal(encodeURIComponent(caseStudy.id));
+        }
+    });
+
+    return card;
 }
 
 

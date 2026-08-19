@@ -13504,25 +13504,69 @@ body.cs-page-body {
 
 
 /* =========================================================
-   CASE STUDY GRID (used on index page)
+   CASE STUDY SLIDER (used on index page)
    ========================================================= */
 
-.case-studies-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+.case-studies-slider-outer {
+  position: relative;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.case-studies-track-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+/* Horizontal sliding track — always in the SAME line */
+.case-studies-grid,
+.case-studies-slider-track {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
   gap: 1.5rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  padding: 1.5rem 0.5rem 2.25rem 0.5rem;
+  width: 100%;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  cursor: grab;
+}
+
+.case-studies-grid::-webkit-scrollbar,
+.case-studies-slider-track::-webkit-scrollbar {
+  display: none;
+}
+
+.case-studies-grid.is-dragging,
+.case-studies-slider-track.is-dragging {
+  cursor: grabbing;
+  user-select: none;
+  scroll-snap-type: none;
+  scroll-behavior: auto;
 }
 
 /* =========================================================
-   CASE STUDY CARD — Light Minimal Overlap Design
+   CASE STUDY CARD — Light Minimal Overlap Design (Slider Item)
    ========================================================= */
 
 .case-study-card {
+  flex: 0 0 calc((100% - 2 * 1.5rem) / 3);
+  min-width: 320px;
+  max-width: 400px;
+  scroll-snap-align: start;
   display: flex;
   flex-direction: column;
   background: transparent;
   position: relative;
   padding-bottom: 12px;
+  box-sizing: border-box;
 }
 
 /* =========================================================
@@ -13531,14 +13575,13 @@ body.cs-page-body {
 
 .case-study-image-wrapper {
   width: 92%;
-  height: 170px;
+  height: 180px;
   position: relative;
   overflow: hidden;
   flex-shrink: 0;
   border-radius: 16px;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
   margin-left: auto;
-  /* Aligns to the right */
   z-index: 1;
 }
 
@@ -13565,12 +13608,12 @@ body.cs-page-body {
   padding: 1.25rem 1.1rem;
   width: 92%;
   margin-top: -50px;
-  /* The overlap effect */
   position: relative;
   z-index: 2;
   box-shadow: 0 15px 35px -10px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
+  flex: 1;
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
@@ -13709,16 +13752,117 @@ body.cs-page-body {
   border-color: #ffffff;
 }
 
-/* Responsive */
-@media (max-width: 1100px) {
-  .case-studies-grid {
-    grid-template-columns: repeat(2, 1fr);
+/* =========================================================
+   SLIDER NAVIGATION CONTROLS & PAGINATION
+   ========================================================= */
+
+.cs-nav-btn {
+  position: absolute;
+  top: calc(50% - 12px);
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #0b1526;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+}
+
+.cs-nav-prev {
+  left: -22px;
+}
+
+.cs-nav-next {
+  right: -22px;
+}
+
+.cs-nav-btn:hover:not(:disabled) {
+  background: var(--brand-teal);
+  border-color: var(--brand-teal);
+  color: #ffffff;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 10px 28px rgba(13, 179, 158, 0.4);
+}
+
+.cs-nav-btn:active:not(:disabled) {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.cs-nav-btn:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.cs-slider-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 0.5rem;
+}
+
+.cs-slider-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #cbd5e1;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cs-slider-dot:hover {
+  background: #94a3b8;
+}
+
+.cs-slider-dot.active {
+  width: 26px;
+  border-radius: 20px;
+  background: var(--brand-teal);
+}
+
+/* Responsive card sizing — ALWAYS maintains single-line horizontal sliding */
+@media (max-width: 1024px) {
+  .case-study-card {
+    flex: 0 0 calc((100% - 1.5rem) / 2);
+    min-width: 300px;
   }
 }
 
-@media (max-width: 600px) {
-  .case-studies-grid {
-    grid-template-columns: 1fr;
+@media (max-width: 768px) {
+  .cs-nav-prev {
+    left: -10px;
+  }
+
+  .cs-nav-next {
+    right: -10px;
+  }
+
+  .cs-nav-btn {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 640px) {
+  .case-study-card {
+    flex: 0 0 85%;
+    min-width: 270px;
+  }
+
+  .case-study-image-wrapper {
+    height: 160px;
   }
 }
 
@@ -13823,31 +13967,11 @@ body.cs-page-body {
    RESPONSIVE
    ========================================================= */
 
-@media (max-width: 1100px) {
-
-  .case-studies-grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
-  }
-
-}
-
-
 @media (max-width: 650px) {
 
   .latest-case-studies,
   .industry-case-studies {
     padding: 60px 0;
-  }
-
-
-  .case-studies-grid {
-    grid-template-columns: 1fr;
-  }
-
-
-  .case-study-image-wrapper {
-    height: 230px;
   }
 
 }
@@ -14050,126 +14174,189 @@ body.cs-page-body {
 }
 
 /* ── Featured Section ── */
+/* =========================================================
+   FEATURED SECTION — Clean White Split Card Design (Matches Mockup)
+   ========================================================= */
+
 .cs-featured-section {
-  padding: 4rem 0 3.5rem;
-  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+  padding: 5.5rem 0 5rem;
+  background: #ffffff;
 }
 
+.cs-featured-section .cs-section-label-row {
+  margin-bottom: 3.5rem;
+  text-align: center;
+}
+
+.cs-featured-section .cs-section-title {
+  color: #0c1322;
+  font-size: 2.85rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  margin-bottom: 1rem;
+}
+
+.cs-featured-section .cs-section-description {
+  color: #475569;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+/* 2-column equal card grid */
 .cs-featured-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
+  gap: 2.25rem;
+  align-items: stretch;
 }
 
-.cs-featured-card {
+/* Base Card Container */
+.cs-feat-card {
+  position: relative;
+  background: #f8fafc;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 24px;
+  padding: 1.25rem 1.25rem 0 1.25rem;
+  box-shadow: 0 12px 35px rgba(15, 23, 42, 0.05);
   display: flex;
   flex-direction: column;
-  background: transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.35s ease;
+}
+
+.cs-feat-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 24px 50px rgba(15, 23, 42, 0.12);
+  border-color: rgba(13, 179, 158, 0.4);
+}
+
+/* Top Image Wrapper */
+.cs-feat-img-wrapper {
   position: relative;
-  padding-bottom: 15px;
+  width: 100%;
+  height: 240px;
+  border-radius: 18px;
+  overflow: hidden;
+  background-color: #0c1322;
 }
 
-.cs-featured-card-img {
-  width: 92%;
-  height: 220px;
-  background-size: cover;
-  background-position: center;
-  position: relative;
-  flex-shrink: 0;
+.cs-feat-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.cs-featured-card-img-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(0deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%);
+.cs-feat-card:hover .cs-feat-img {
+  transform: scale(1.06);
 }
 
-.cs-featured-card-body {
-  padding: 1.4rem 1.5rem 1.3rem;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+/* Overlapping White Body */
+.cs-feat-card-body {
+  background: #ffffff;
+  border-radius: 18px;
+  margin: -50px 8px 1.25rem 8px;
+  padding: 2rem 2.25rem 1.75rem 2.25rem;
   position: relative;
   z-index: 2;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
-.cs-featured-card-tags {
+/* Pill Tags */
+.cs-feat-card-tags {
   display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
   flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
 }
 
 .cs-feat-tag {
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 0.3rem 0.8rem;
-  border-radius: 50px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  background: rgba(13, 179, 158, 0.1);
-  color: var(--brand-teal);
-  border: none;
+  padding: 0.32rem 0.85rem;
+  border-radius: 6px;
+}
+
+.cs-feat-tag--industry {
+  background-color: #0c1322;
+  color: #ffffff;
+  border: 1px solid #0c1322;
 }
 
 .cs-feat-tag--service {
-  background: #f1f5f9;
-  color: #64748b;
-  border: none;
+  background-color: transparent;
+  color: #475569;
+  border: 1px solid #cbd5e1;
 }
 
-.cs-featured-card-title {
-  font-size: 0.95rem;
+/* Card Title */
+.cs-feat-card-title {
+  font-size: 1.6rem;
   font-weight: 800;
-  color: #0f172a;
-  line-height: 1.3;
-  margin: 0 0 0.4rem;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  color: #0c1322;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  margin: 0 0 1.25rem;
 }
 
-.cs-featured-card-desc {
-  font-size: 0.82rem;
-  line-height: 1.5;
+/* Card Description */
+.cs-feat-card-desc {
+  font-size: 0.95rem;
   color: #64748b;
-  margin: 0 0 0.8rem;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  line-height: 1.6;
+  margin: 0 0 2.25rem;
+  flex-grow: 1;
 }
 
-.cs-featured-card-footer {
+/* Card Footer */
+.cs-feat-card-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: auto;
-  border-top: none;
-  padding-top: 0;
+  padding-top: 1.15rem;
+  border-top: 1px solid #f1f5f9;
+  gap: 1rem;
 }
 
-.cs-featured-card-date {
-  font-size: 0.9rem;
-  color: #64748b;
-  font-weight: 500;
-}
-
-.cs-featured-card-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.95rem;
+.cs-feat-card-brand {
+  font-size: 0.78rem;
   font-weight: 700;
-  color: var(--brand-teal);
-  text-decoration: none;
-  transition: gap 0.2s ease;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+  text-transform: uppercase;
 }
 
-.cs-featured-card-link:hover {
-  gap: 0.75rem;
+.cs-feat-card-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #0c1322;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.cs-feat-card:hover .cs-feat-card-link {
+  color: var(--brand-teal);
+  transform: translateX(2px);
 }
 
 /* ── All Section & Filters ── */
@@ -14349,6 +14536,7 @@ body.cs-page-body {
 
   .cs-featured-grid {
     grid-template-columns: 1fr;
+    gap: 2rem;
   }
 
   .cs-all-grid {
