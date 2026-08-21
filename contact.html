@@ -357,6 +357,17 @@
                   box-shadow: 0 0 0 3px rgba(0, 180, 216, .12);
                 }
 
+                .crmWebToEntityForm .zcwf_col_fld_slt[multiple] {
+                  min-height: 105px;
+                  padding: 8px 12px !important;
+                }
+
+                .crmWebToEntityForm .zcwf_col_fld_slt[multiple] option {
+                  padding: 6px 10px;
+                  border-radius: 6px;
+                  margin-bottom: 2px;
+                }
+
                 /* Submit / Reset buttons row */
                 .crmWebToEntityForm .zcwf_row:last-child .zcwf_col_fld {
                   display: flex;
@@ -438,20 +449,37 @@
 
               <form id='webform4593956000025832002' name='WebForm4593956000025832002' accept-charset='UTF-8'>
                 <input type='text' style='display:none;' name='xnQsjsdp'
-                  value='8a290b5de08b92ee4bdc9a85064685d5305a11b679a8e6402427d178db5edfd9'>
+                  value='2c3b277232df2f66f3d06ccafe73062ea1fa1c3b7f7fbe65c18c776a7352d4b3'>
                 <input type='hidden' name='zc_gad' id='zc_gad' value=''>
                 <input type='text' style='display:none;' name='xmIwtLD'
-                  value='afd14d2b2a2a3bc04f8a058a59e62999f1f49e5ae36c76cbe69eae47241528fb63fe2a0cd1372ceba74487d3c475c8f8'>
+                  value='00105b2a5ccc9929999c9c949fc7d9ab98b42294035a4d4128be91e410850610feb39337f4407bcb45195bbce6464119'>
                 <input type='text' style='display:none;' name='actionType' value='Q3VzdG9tTW9kdWxlMTc='>
                 <input type='text' style='display:none;' name='returnURL' value='null'>
                 <!-- Do not remove this code. -->
+
+                <!-- Title -->
+                <div class='zcwf_row'>
+                  <div class='zcwf_col_lab'><label for='COBJ17CF13'>Title <span style='color:red;'>*</span></label></div>
+                  <div class='zcwf_col_fld'>
+                    <select class='zcwf_col_fld_slt' role='combobox' aria-expanded='false' aria-haspopup='listbox'
+                      id='COBJ17CF13' onChange='addAriaSelected4593956000025832002()' aria-required='true'
+                      aria-label='Title' name='COBJ17CF13'>
+                      <option value='-None-'>Select title...</option>
+                      <option value='Dr.'>Dr.</option>
+                      <option value='Mr.'>Mr.</option>
+                      <option value='Mrs.'>Mrs.</option>
+                      <option value='Ms.'>Ms.</option>
+                    </select>
+                    <div class='zcwf_col_help'></div>
+                  </div>
+                </div>
 
                 <!-- First Name -->
                 <div class='zcwf_row'>
                   <div class='zcwf_col_lab'><label for='NAME'>First Name <span style='color:red;'>*</span></label></div>
                   <div class='zcwf_col_fld'>
                     <input type='text' id='NAME' aria-required='true' aria-label='First Name' name='NAME'
-                      maxlength='120' placeholder='e.g. John'>
+                      aria-valuemax='120' maxlength='120' placeholder='e.g. John'>
                     <div class='zcwf_col_help'></div>
                   </div>
                 </div>
@@ -462,7 +490,7 @@
                   </div>
                   <div class='zcwf_col_fld'>
                     <input type='text' id='COBJ17CF8' aria-required='true' aria-label='Last Name' name='COBJ17CF8'
-                      maxlength='255' placeholder='e.g. Doe'>
+                      aria-valuemax='255' maxlength='255' placeholder='e.g. Doe'>
                     <div class='zcwf_col_help'></div>
                   </div>
                 </div>
@@ -473,7 +501,7 @@
                         style='color:red;'>*</span></label></div>
                   <div class='zcwf_col_fld'>
                     <input type='text' id='COBJ17CF11' aria-required='true' aria-label='Phone Number' name='COBJ17CF11'
-                      maxlength='30' placeholder='+27 (0) 11 000 0000'>
+                      aria-valuemax='30' maxlength='30' placeholder='+27 (0) 11 000 0000'>
                     <div class='zcwf_col_help'></div>
                   </div>
                 </div>
@@ -483,31 +511,51 @@
                   <div class='zcwf_col_lab'><label for='Email'>Email <span style='color:red;'>*</span></label></div>
                   <div class='zcwf_col_fld'>
                     <input type='text' ftype='email' autocomplete='false' id='Email' aria-required='true'
-                      aria-label='Email' name='Email' maxlength='100' placeholder='john@company.com'>
+                      aria-label='Email' name='Email' aria-valuemax='100' maxlength='100' placeholder='john@company.com'>
                     <div class='zcwf_col_help'></div>
                   </div>
                 </div>
 
-                <!-- Area of Interest -->
+                <!-- Organization/Company -->
                 <div class='zcwf_row'>
-                  <div class='zcwf_col_lab'><label for='COBJ17CF9'>Area of Interest <span
+                  <div class='zcwf_col_lab'><label for='COBJ17CF12'>Organization/Company <span
+                        style='color:red;'>*</span></label></div>
+                  <div class='zcwf_col_fld'>
+                    <input type='text' id='COBJ17CF12' aria-required='true' aria-label='Organization/Company' name='COBJ17CF12'
+                      aria-valuemax='255' maxlength='255' placeholder='e.g. Acme Corporation'>
+                    <div class='zcwf_col_help'></div>
+                  </div>
+                </div>
+
+                <!-- Area of Interest(s) -->
+                <div class='zcwf_row'>
+                  <div class='zcwf_col_lab'><label for='COBJ17CF14'>Area of Interest(s) <span
                         style='color:red;'>*</span></label></div>
                   <div class='zcwf_col_fld'>
                     <select class='zcwf_col_fld_slt' role='combobox' aria-expanded='false' aria-haspopup='listbox'
-                      id='COBJ17CF9' onChange='addAriaSelected4593956000025832002()' aria-required='true'
-                      aria-label='Area of Interest' name='COBJ17CF9'>
-                      <option value='-None-'>Select service focus...</option>
-                      <option value='Digital Services'>Digital services</option>
-                      <option value='Risk Management'>Risk management</option>
-                      <option value='Advisory Services'>Advisory services</option>
-                      <option value='Managed Services'>Managed services</option>
+                      id='COBJ17CF14' onChange='addAriaSelected4593956000025832002()' aria-required='true'
+                      aria-label='Area of Interest(s)' name='COBJ17CF14' multiple size='4'>
+                      <option value='Digital Services'>Digital Services</option>
+                      <option value='Risk Management'>Risk Management</option>
+                      <option value='Advisory Services'>Advisory Services</option>
+                      <option value='Managed Services'>Managed Services</option>
                     </select>
+                    <div class='zcwf_col_help' style='font-size: 11.5px; color: #718096; margin-top: 5px;'>Hold Ctrl (or Cmd) to select multiple areas</div>
+                  </div>
+                </div>
+
+                <!-- Comment -->
+                <div class='zcwf_row'>
+                  <div class='zcwf_col_lab'><label for='COBJ17CF15'>Comment</label></div>
+                  <div class='zcwf_col_fld'>
+                    <textarea id='COBJ17CF15' aria-required='false' aria-label='Comment' name='COBJ17CF15'
+                      placeholder='Tell us about your project, requirements, or questions...' rows='4'></textarea>
                     <div class='zcwf_col_help'></div>
                   </div>
                 </div>
 
-                <!-- Honeypot -->
-                <input type='text' style='display:none;' name='aG9uZXlwb3Q' value=''>
+                <!-- Honeypot & Analytics trigger -->
+                <input type='text' type='hidden' style='display: none;' name='aG9uZXlwb3Q' value=''>
 
                 <!-- Buttons -->
                 <div class='zcwf_row'>
@@ -525,34 +573,62 @@
                     var optionElem = event.target;
                     var prev = optionElem.querySelector('[aria-selected=true]');
                     if (prev) prev.removeAttribute('aria-selected');
-                    optionElem.querySelectorAll('option')[optionElem.selectedIndex].ariaSelected = 'true';
+                    if (optionElem.selectedIndex >= 0 && optionElem.querySelectorAll('option')[optionElem.selectedIndex]) {
+                      optionElem.querySelectorAll('option')[optionElem.selectedIndex].ariaSelected = 'true';
+                    }
                   }
+
                   function validateEmail4593956000025832002() {
                     var form = document.forms['WebForm4593956000025832002'];
                     var emailFld = form.querySelectorAll('[ftype=email]');
-                    for (var i = 0; i < emailFld.length; i++) {
+                    var i;
+                    for (i = 0; i < emailFld.length; i++) {
                       var v = emailFld[i].value;
                       if ((v.replace(/^\s+|\s+$/g, '')).length != 0) {
                         var at = v.indexOf('@'), dot = v.lastIndexOf('.');
-                        if (at < 1 || dot < at + 2 || dot + 2 >= v.length) { alert('Please enter a valid email address.'); emailFld[i].focus(); return false; }
+                        if (at < 1 || dot < at + 2 || dot + 2 >= v.length) {
+                          alert('Please enter a valid email address.');
+                          emailFld[i].focus();
+                          return false;
+                        }
                       }
                     }
                     return true;
                   }
+
                   function checkMandatory4593956000025832002(isAjax) {
-                    var mnd = ['NAME', 'Email', 'COBJ17CF8', 'COBJ17CF9', 'COBJ17CF11'];
-                    var lbl = ['First Name', 'Email', 'Last Name', 'Area of Interest', 'Phone Number'];
+                    var mnd = ['NAME', 'Email', 'COBJ17CF8', 'COBJ17CF11', 'COBJ17CF12', 'COBJ17CF13', 'COBJ17CF14'];
+                    var lbl = ['First Name', 'Email', 'Last Name', 'Phone Number', 'Organization/Company', 'Title', 'Area of Interest(s)'];
                     for (var i = 0; i < mnd.length; i++) {
                       var fld = document.forms['WebForm4593956000025832002'][mnd[i]];
                       if (fld) {
                         if (((fld.value).replace(/^\s+|\s+$/g, '')).length == 0) {
-                          if (fld.type == 'file') { alert('Please select a file to upload.'); fld.focus(); return false; }
-                          alert(lbl[i] + ' cannot be empty.'); fld.focus(); return false;
+                          if (fld.type == 'file') {
+                            alert('Please select a file to upload.');
+                            fld.focus();
+                            return false;
+                          }
+                          alert(lbl[i] + ' cannot be empty.');
+                          fld.focus();
+                          return false;
                         } else if (fld.nodeName == 'SELECT') {
-                          if (fld.options[fld.selectedIndex].value == '-None-') { alert(lbl[i] + ' cannot be none.'); fld.focus(); return false; }
+                          if (fld.options[fld.selectedIndex] && fld.options[fld.selectedIndex].value == '-None-') {
+                            alert(lbl[i] + ' cannot be none.');
+                            fld.focus();
+                            return false;
+                          }
                         } else if (fld.type == 'checkbox') {
-                          if (!fld.checked) { alert('Please accept ' + lbl[i]); fld.focus(); return false; }
+                          if (!fld.checked) {
+                            alert('Please accept ' + lbl[i]);
+                            fld.focus();
+                            return false;
+                          }
                         }
+                        try {
+                          if (fieldObj.name == 'Last Name') {
+                            name = fieldObj.value;
+                          }
+                        } catch (e) {}
                       }
                     }
                     if (!validateEmail4593956000025832002()) return false;
@@ -560,16 +636,25 @@
                     if (urlparams.has('service') && urlparams.get('service') === 'smarturl') {
                       var wf = document.getElementById('webform4593956000025832002');
                       var sf = document.createElement('input');
-                      sf.setAttribute('type', 'hidden'); sf.setAttribute('value', urlparams.get('service')); sf.setAttribute('name', 'service'); wf.appendChild(sf);
+                      sf.setAttribute('type', 'hidden');
+                      sf.setAttribute('value', urlparams.get('service'));
+                      sf.setAttribute('name', 'service');
+                      wf.appendChild(sf);
                     }
                     document.querySelector('.crmWebToEntityForm .formsubmit').setAttribute('disabled', true);
                   }
+
                   function captchaFailedHandling4593956000025832002(msg) {
                     var el = document.getElementById('captchaErr4593956000025832002');
-                    el.innerHTML = msg; el.style.visibility = 'visible';
-                    var cf = document.getElementById('captchaField4593956000025832002'); cf.focus();
-                    setTimeout(function () { el.style.visibility = 'hidden'; }, 5000);
+                    if (el) {
+                      el.innerHTML = msg;
+                      el.style.visibility = 'visible';
+                      var cf = document.getElementById('captchaField4593956000025832002');
+                      if (cf) cf.focus();
+                      setTimeout(function () { el.style.visibility = 'hidden'; }, 5000);
+                    }
                   }
+
                   document.getElementById('webform4593956000025832002').addEventListener('submit', function (e) {
                     var ok = checkMandatory4593956000025832002(true);
                     e.preventDefault();
@@ -577,7 +662,10 @@
                       if (typeof _wfa_track !== 'undefined' && _wfa_track.wfa_submit) _wfa_track.wfa_submit(e);
                       var fd = new FormData(this);
                       fetch('https://crm.zoho.com/crm/WebForm', { method: 'POST', body: fd, cache: 'no-cache' })
-                        .then(function (r) { var ct = r.headers.get('Content-Type'); return ct.includes('application/json') ? r.json() : r.text(); })
+                        .then(function (r) {
+                          var ct = r.headers.get('Content-Type');
+                          return (ct && ct.includes('application/json')) ? r.json() : r.text();
+                        })
                         .then(function (data) {
                           if (typeof data === 'object') {
                             if (data.actionsubmit === 'Splash Message') {
@@ -585,11 +673,28 @@
                                 captchaFailedHandling4593956000025832002(data.actionvalue);
                               } else {
                                 if (typeof reloadImg4593956000025832002 !== 'undefined') reloadImg4593956000025832002();
-                                document.getElementById('wf_splash_info').innerText = data.actionvalue;
+                                var splashinfodom = document.getElementById('wf_splash_info');
+                                if (splashinfodom) splashinfodom.innerText = data.actionvalue;
                                 var sp = document.getElementById('wf_splash');
-                                document.getElementById('webform4593956000025832002').reset.click();
-                                sp.style.display = '';
-                                setTimeout(function () { sp.style.display = 'none'; }, 5000);
+                                if (splashinfodom) {
+                                  document.getElementById('webform4593956000025832002').reset();
+                                  if (sp) sp.style.display = '';
+                                  setTimeout(function () { if (sp) sp.style.display = 'none'; }, 5000);
+                                }
+                                var formWrapper = document.getElementById('contact-form');
+                                var successPanel = document.getElementById('contact-success-panel');
+                                if (formWrapper && successPanel) {
+                                  var emailInput = document.getElementById('Email');
+                                  if (emailInput && document.getElementById('success-email-display')) {
+                                    document.getElementById('success-email-display').textContent = emailInput.value || 'your email';
+                                  }
+                                  var randomRef = 'EA-' + Math.floor(1000 + Math.random() * 9000) + '-' + String.fromCharCode(65 + Math.floor(Math.random() * 26));
+                                  if (document.getElementById('ref-num')) {
+                                    document.getElementById('ref-num').textContent = randomRef;
+                                  }
+                                  formWrapper.style.display = 'none';
+                                  successPanel.style.display = 'block';
+                                }
                                 if (typeof _wfa_track != 'undefined' && _wfa_track.wfa_post_submit) _wfa_track.wfa_post_submit(e);
                               }
                             } else if (data.actionsubmit === 'redirect_url' || data.actionsubmit === 'parent_redirect') {
@@ -599,6 +704,8 @@
                               }
                               if (data.actionsubmit === 'redirect_url') window.location.assign(data.redirectUrl);
                               else parent.window.location = data.redirectUrl;
+                            } else if (data.actionsubmit === 'parent_redirect') {
+                              parent.window.location = data.redirectUrl;
                             } else if (data.actionsubmit === 'add_hash') {
                               document.location.hash = data.hash;
                             } else if (data.actionsubmit === 'error_msg') {
@@ -621,20 +728,57 @@
                           }
                           var fd2 = document.querySelector('.crmWebToEntityForm .formsubmit');
                           if (fd2) fd2.removeAttribute('disabled');
-                        }).catch(function () { alert('An error occurred. Please try again.'); });
+                        }).catch(function () {
+                          alert('An error occurred. Please try again.');
+                          var fd2 = document.querySelector('.crmWebToEntityForm .formsubmit');
+                          if (fd2) fd2.removeAttribute('disabled');
+                        });
                     }
                   });
+
+                  if (typeof _wfa_fstprtcken == 'undefined') { _wfa_fstprtcken = {}; }
+                  _wfa_fstprtcken[4593956000025832002] = true;
+
                   function tooltipShow4593956000025832002(el) {
                     var tip = el.nextElementSibling;
-                    if (tip.style.display === 'none') {
+                    if (tip && tip.style.display === 'none') {
                       document.querySelectorAll('.zcwf_tooltip_over').forEach(function (t) { t.style.display = 'none'; });
                       tip.style.display = 'block';
-                    } else { tip.style.display = 'none'; }
+                    } else if (tip) {
+                      tip.style.display = 'none';
+                    }
                   }
+
+                  // Preselect Area of Interest based on URL ?service= parameter
+                  (function() {
+                    var urlParams = new URLSearchParams(window.location.search);
+                    var sParam = urlParams.get('service');
+                    if (sParam) {
+                      var selectEl = document.getElementById('COBJ17CF14');
+                      if (selectEl) {
+                        var map = {
+                          'digital': 'Digital Services',
+                          'risk': 'Risk Management',
+                          'advisory': 'Advisory Services',
+                          'managed': 'Managed Services'
+                        };
+                        var targetVal = map[sParam.toLowerCase()];
+                        if (targetVal) {
+                          for (var j = 0; j < selectEl.options.length; j++) {
+                            if (selectEl.options[j].value === targetVal) {
+                              selectEl.options[j].selected = true;
+                              break;
+                            }
+                          }
+                        }
+                      }
+                    }
+                  })();
                 </script>
+                <input name='wFaTrisJS' type='hidden' value='true'>
                 <!-- Do not remove this --- Analytics Tracking code starts -->
                 <script id='wf_anal'
-                  src='https://crm.zohopublic.com/crm/WebFormAnalyticsServeServlet?rid=5c0e2e184efc20a1ad4c75a3da52c5e56c98a1bb6d7ce9636f14f054338988329f9acc1ad50e5fd9c6c168f9793ff5a0gid8c23a442f2de08d76b9cae9402941069c8b4766236f5dc09cbe822d8eec01cb7gid0ea6faee4bcc4d9a11ce1bf420979fd553b5ee9c95f652272404789b20760d56gid8817338b03fca49bcd8a2c74ca844929e68e9b2bfbcb5c94c1f6c6b176cac70f&tw=ec2d70ed1637a84f8cfbb1b915aa1ec788a125ab2c0f88d020786b37e9d70814'></script>
+                  src='https://crm.zohopublic.com/crm/WebFormAnalyticsServeServlet?rid=acdbecc6bd344db7aa76bc584f52c8cf6d23a7a105793b91b9c91866cb34515c6f1c19056be763d1899746371fe12303gid0213e62abd1aa058523420f1e416fdd6ecfb91cd1c934cad50b3e1a6d7112b55gid875ad5df555671f54e2e9dd97d27e9dd7367438cf6da6f6dbcaf854aec58ef27gid28e5e73b52e5262af6ddfc82488bd6e4cfdc4424f6c6e2970aa9fbd1c6a60c2c&tw=641451a853bd7d2ce65d71a4dd699645fedd7f1471583bc1b9ba29f6770421d7&version=v2'></script>
                 <!-- Do not remove this --- Analytics Tracking code ends. -->
               </form>
             </div>
