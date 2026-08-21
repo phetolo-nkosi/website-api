@@ -368,6 +368,151 @@
                   margin-bottom: 2px;
                 }
 
+                /* ── Custom Multi-Select Dropdown ── */
+                .custom-multiselect {
+                  position: relative;
+                  width: 100%;
+                }
+
+                .multiselect-trigger {
+                  width: 100%;
+                  background: #f8f9fc;
+                  border: 1.5px solid #dde3ee;
+                  border-radius: 10px;
+                  padding: 12px 16px;
+                  font-size: 14px;
+                  color: #1a1a2e;
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  cursor: pointer;
+                  transition: border-color .2s, box-shadow .2s, background .2s;
+                  text-align: left;
+                  gap: 10px;
+                  font-family: inherit;
+                }
+
+                .multiselect-trigger:focus,
+                .custom-multiselect.open .multiselect-trigger {
+                  border-color: #00b4d8;
+                  background: #fff;
+                  box-shadow: 0 0 0 3px rgba(0, 180, 216, .12);
+                  outline: none;
+                }
+
+                .multiselect-placeholder {
+                  flex: 1;
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  color: #64748b;
+                  font-weight: 500;
+                }
+
+                .multiselect-placeholder.has-value {
+                  color: #1a1a2e;
+                  font-weight: 600;
+                }
+
+                .multiselect-arrow {
+                  flex-shrink: 0;
+                  transition: transform .25s ease, color .2s;
+                  color: #64748b;
+                }
+
+                .custom-multiselect.open .multiselect-arrow {
+                  transform: rotate(180deg);
+                  color: #00b4d8;
+                }
+
+                .multiselect-dropdown {
+                  position: absolute;
+                  top: calc(100% + 6px);
+                  left: 0;
+                  right: 0;
+                  background: #ffffff;
+                  border: 1.5px solid #dde3ee;
+                  border-radius: 12px;
+                  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+                  padding: 8px;
+                  z-index: 100;
+                  display: none;
+                  flex-direction: column;
+                  gap: 4px;
+                }
+
+                .custom-multiselect.open .multiselect-dropdown {
+                  display: flex;
+                  animation: msDropdownFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+                }
+
+                @keyframes msDropdownFadeIn {
+                  from { opacity: 0; transform: translateY(-6px); }
+                  to { opacity: 1; transform: translateY(0); }
+                }
+
+                .multiselect-option {
+                  display: flex !important;
+                  flex-direction: row !important;
+                  align-items: center !important;
+                  gap: 10px;
+                  padding: 9px 12px;
+                  border-radius: 8px;
+                  cursor: pointer;
+                  transition: background .15s ease;
+                  font-size: 14px;
+                  color: #1e293b;
+                  font-weight: 500;
+                  user-select: none;
+                  margin: 0 !important;
+                  width: 100%;
+                }
+
+                .multiselect-option:hover {
+                  background: #f1f5f9;
+                }
+
+                .multiselect-checkbox {
+                  position: absolute;
+                  opacity: 0;
+                  pointer-events: none;
+                }
+
+                .custom-checkbox-box {
+                  width: 18px;
+                  height: 18px;
+                  border: 2px solid #cbd5e1;
+                  border-radius: 5px;
+                  display: inline-flex;
+                  align-items: center;
+                  justify-content: center;
+                  transition: all .2s;
+                  background: #fff;
+                  flex-shrink: 0;
+                  position: relative;
+                }
+
+                .multiselect-checkbox:checked + .custom-checkbox-box {
+                  background: #00b4d8;
+                  border-color: #00b4d8;
+                }
+
+                .multiselect-checkbox:checked + .custom-checkbox-box::after {
+                  content: '';
+                  display: block;
+                  width: 4px;
+                  height: 8px;
+                  border: solid #ffffff;
+                  border-width: 0 2px 2px 0;
+                  transform: rotate(45deg) translate(-0.5px, -1px);
+                }
+
+                .option-text {
+                  font-size: 14px;
+                  color: #1e293b;
+                  font-weight: 500;
+                }
+
                 /* Submit / Reset buttons row */
                 .crmWebToEntityForm .zcwf_row:last-child .zcwf_col_fld {
                   display: flex;
@@ -532,15 +677,50 @@
                   <div class='zcwf_col_lab'><label for='COBJ17CF14'>Area of Interest(s) <span
                         style='color:red;'>*</span></label></div>
                   <div class='zcwf_col_fld'>
-                    <select class='zcwf_col_fld_slt' role='combobox' aria-expanded='false' aria-haspopup='listbox'
-                      id='COBJ17CF14' onChange='addAriaSelected4593956000025832002()' aria-required='true'
-                      aria-label='Area of Interest(s)' name='COBJ17CF14' multiple size='4'>
+                    <!-- Underlying native multi-select submitted to Zoho CRM -->
+                    <select id='COBJ17CF14' name='COBJ17CF14' multiple style='display:none;' aria-required='true'
+                      aria-label='Area of Interest(s)'>
                       <option value='Digital Services'>Digital Services</option>
                       <option value='Risk Management'>Risk Management</option>
                       <option value='Advisory Services'>Advisory Services</option>
                       <option value='Managed Services'>Managed Services</option>
                     </select>
-                    <div class='zcwf_col_help' style='font-size: 11.5px; color: #718096; margin-top: 5px;'>Hold Ctrl (or Cmd) to select multiple areas</div>
+
+                    <!-- Custom Interactive Multi-Select Dropdown UI -->
+                    <div class='custom-multiselect' id='custom-multiselect-container'>
+                      <button type='button' class='multiselect-trigger' id='multiselect-trigger' aria-haspopup='listbox'
+                        aria-expanded='false'>
+                        <span class='multiselect-placeholder' id='multiselect-display'>Select area(s) of interest...</span>
+                        <svg class='multiselect-arrow' width='16' height='16' viewBox='0 0 24 24' fill='none'
+                          stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'>
+                          <polyline points='6 9 12 15 18 9'></polyline>
+                        </svg>
+                      </button>
+
+                      <div class='multiselect-dropdown' id='multiselect-dropdown'>
+                        <label class='multiselect-option'>
+                          <input type='checkbox' value='Digital Services' class='multiselect-checkbox'>
+                          <span class='custom-checkbox-box'></span>
+                          <span class='option-text'>Digital Services</span>
+                        </label>
+                        <label class='multiselect-option'>
+                          <input type='checkbox' value='Risk Management' class='multiselect-checkbox'>
+                          <span class='custom-checkbox-box'></span>
+                          <span class='option-text'>Risk Management</span>
+                        </label>
+                        <label class='multiselect-option'>
+                          <input type='checkbox' value='Advisory Services' class='multiselect-checkbox'>
+                          <span class='custom-checkbox-box'></span>
+                          <span class='option-text'>Advisory Services</span>
+                        </label>
+                        <label class='multiselect-option'>
+                          <input type='checkbox' value='Managed Services' class='multiselect-checkbox'>
+                          <span class='custom-checkbox-box'></span>
+                          <span class='option-text'>Managed Services</span>
+                        </label>
+                      </div>
+                    </div>
+                    <div class='zcwf_col_help'></div>
                   </div>
                 </div>
 
@@ -597,43 +777,58 @@
                   }
 
                   function checkMandatory4593956000025832002(isAjax) {
-                    var mnd = ['NAME', 'Email', 'COBJ17CF8', 'COBJ17CF11', 'COBJ17CF12', 'COBJ17CF13', 'COBJ17CF14'];
-                    var lbl = ['First Name', 'Email', 'Last Name', 'Phone Number', 'Organization/Company', 'Title', 'Area of Interest(s)'];
-                    for (var i = 0; i < mnd.length; i++) {
-                      var fld = document.forms['WebForm4593956000025832002'][mnd[i]];
-                      if (fld) {
-                        if (((fld.value).replace(/^\s+|\s+$/g, '')).length == 0) {
-                          if (fld.type == 'file') {
+                    var mndFileds = ['NAME', 'Email', 'COBJ17CF8', 'COBJ17CF11', 'COBJ17CF12', 'COBJ17CF13'];
+                    var fldLangVal = ['First Name', 'Email', 'Last Name', 'Phone Number', 'Organization/Company', 'Title'];
+                    for (var i = 0; i < mndFileds.length; i++) {
+                      var fieldObj = document.forms['WebForm4593956000025832002'][mndFileds[i]];
+                      if (fieldObj) {
+                        var val = (fieldObj.value || '').replace(/^\s+|\s+$/g, '');
+                        if (val.length === 0) {
+                          if (fieldObj.type === 'file') {
                             alert('Please select a file to upload.');
-                            fld.focus();
+                            fieldObj.focus();
                             return false;
                           }
-                          alert(lbl[i] + ' cannot be empty.');
-                          fld.focus();
+                          alert(fldLangVal[i] + ' cannot be empty.');
+                          fieldObj.focus();
                           return false;
-                        } else if (fld.nodeName == 'SELECT') {
-                          if (fld.options[fld.selectedIndex] && fld.options[fld.selectedIndex].value == '-None-') {
-                            alert(lbl[i] + ' cannot be none.');
-                            fld.focus();
+                        } else if (fieldObj.nodeName === 'SELECT') {
+                          if (fieldObj.options[fieldObj.selectedIndex] && fieldObj.options[fieldObj.selectedIndex].value === '-None-') {
+                            alert(fldLangVal[i] + ' cannot be none.');
+                            fieldObj.focus();
                             return false;
                           }
-                        } else if (fld.type == 'checkbox') {
-                          if (!fld.checked) {
-                            alert('Please accept ' + lbl[i]);
-                            fld.focus();
+                        } else if (fieldObj.type === 'checkbox') {
+                          if (!fieldObj.checked) {
+                            alert('Please accept ' + fldLangVal[i]);
+                            fieldObj.focus();
                             return false;
                           }
                         }
-                        try {
-                          if (fieldObj.name == 'Last Name') {
-                            name = fieldObj.value;
-                          }
-                        } catch (e) {}
                       }
                     }
+
+                    // Validate Multi-select Area of Interest(s)
+                    var selectEl = document.getElementById('COBJ17CF14');
+                    var hasSelected = false;
+                    if (selectEl) {
+                      for (var s = 0; s < selectEl.options.length; s++) {
+                        if (selectEl.options[s].selected) {
+                          hasSelected = true;
+                          break;
+                        }
+                      }
+                    }
+                    if (!hasSelected) {
+                      alert('Area of Interest(s) cannot be empty.');
+                      var trigger = document.getElementById('multiselect-trigger');
+                      if (trigger) trigger.focus();
+                      return false;
+                    }
+
                     if (!validateEmail4593956000025832002()) return false;
                     var urlparams = new URLSearchParams(window.location.search);
-                    if (urlparams.has('service') && urlparams.get('service') === 'smarturl') {
+                    if (urlparams.has('service') && (urlparams.get('service') === 'smarturl')) {
                       var wf = document.getElementById('webform4593956000025832002');
                       var sf = document.createElement('input');
                       sf.setAttribute('type', 'hidden');
@@ -641,7 +836,7 @@
                       sf.setAttribute('name', 'service');
                       wf.appendChild(sf);
                     }
-                    document.querySelector('.crmWebToEntityForm .formsubmit').setAttribute('disabled', true);
+                    return true;
                   }
 
                   function captchaFailedHandling4593956000025832002(msg) {
@@ -656,84 +851,97 @@
                   }
 
                   document.getElementById('webform4593956000025832002').addEventListener('submit', function (e) {
-                    var ok = checkMandatory4593956000025832002(true);
                     e.preventDefault();
-                    if (ok === undefined || ok) {
-                      if (typeof _wfa_track !== 'undefined' && _wfa_track.wfa_submit) _wfa_track.wfa_submit(e);
-                      var fd = new FormData(this);
-                      fetch('https://crm.zoho.com/crm/WebForm', { method: 'POST', body: fd, cache: 'no-cache' })
-                        .then(function (r) {
-                          var ct = r.headers.get('Content-Type');
-                          return (ct && ct.includes('application/json')) ? r.json() : r.text();
-                        })
-                        .then(function (data) {
-                          if (typeof data === 'object') {
-                            if (data.actionsubmit === 'Splash Message') {
-                              if (data.invalidCaptcha && data.invalidCaptcha === 'true') {
-                                captchaFailedHandling4593956000025832002(data.actionvalue);
-                              } else {
-                                if (typeof reloadImg4593956000025832002 !== 'undefined') reloadImg4593956000025832002();
-                                var splashinfodom = document.getElementById('wf_splash_info');
-                                if (splashinfodom) splashinfodom.innerText = data.actionvalue;
-                                var sp = document.getElementById('wf_splash');
-                                if (splashinfodom) {
-                                  document.getElementById('webform4593956000025832002').reset();
-                                  if (sp) sp.style.display = '';
-                                  setTimeout(function () { if (sp) sp.style.display = 'none'; }, 5000);
-                                }
-                                var formWrapper = document.getElementById('contact-form');
-                                var successPanel = document.getElementById('contact-success-panel');
-                                if (formWrapper && successPanel) {
-                                  var emailInput = document.getElementById('Email');
-                                  if (emailInput && document.getElementById('success-email-display')) {
-                                    document.getElementById('success-email-display').textContent = emailInput.value || 'your email';
-                                  }
-                                  var randomRef = 'EA-' + Math.floor(1000 + Math.random() * 9000) + '-' + String.fromCharCode(65 + Math.floor(Math.random() * 26));
-                                  if (document.getElementById('ref-num')) {
-                                    document.getElementById('ref-num').textContent = randomRef;
-                                  }
-                                  formWrapper.style.display = 'none';
-                                  successPanel.style.display = 'block';
-                                }
-                                if (typeof _wfa_track != 'undefined' && _wfa_track.wfa_post_submit) _wfa_track.wfa_post_submit(e);
-                              }
-                            } else if (data.actionsubmit === 'redirect_url' || data.actionsubmit === 'parent_redirect') {
-                              if (data.success) {
-                                if (typeof _wfa_track !== 'undefined' && _wfa_track.wfa_post_submit) _wfa_track.wfa_post_submit(e);
-                                if (typeof historyBack4593956000025832002 !== 'undefined') window.addEventListener('focus', historyBack4593956000025832002);
-                              }
-                              if (data.actionsubmit === 'redirect_url') window.location.assign(data.redirectUrl);
-                              else parent.window.location = data.redirectUrl;
-                            } else if (data.actionsubmit === 'parent_redirect') {
-                              parent.window.location = data.redirectUrl;
-                            } else if (data.actionsubmit === 'add_hash') {
-                              document.location.hash = data.hash;
-                            } else if (data.actionsubmit === 'error_msg') {
-                              alert(data.message);
-                            } else if (data.invalidCaptcha && data.invalidCaptcha === 'true') {
-                              captchaFailedHandling4593956000025832002(data.actionvalue);
-                              if (data.extraAction === 'parent_signal') window.parent.postMessage('checkCaptchaError', '*');
-                            } else if (data.actionsubmit === 'captcha_error') {
-                              alert(data.message);
-                              if (data.extraAction === 'parent_signal') window.parent.postMessage('checkCaptchaError', '*');
-                            } else if (data.actionsubmit === 'thankyou_page') {
-                              if (typeof _wfa_track !== 'undefined' && _wfa_track.wfa_post_submit) {
-                                _wfa_track.wfa_post_submit(e);
-                                if (typeof historyBack4593956000025832002 !== 'undefined') window.addEventListener('focus', historyBack4593956000025832002);
-                              }
-                              window.location.assign(data.redirectUrl);
-                            }
-                          } else {
-                            document.write(data);
-                          }
-                          var fd2 = document.querySelector('.crmWebToEntityForm .formsubmit');
-                          if (fd2) fd2.removeAttribute('disabled');
-                        }).catch(function () {
-                          alert('An error occurred. Please try again.');
-                          var fd2 = document.querySelector('.crmWebToEntityForm .formsubmit');
-                          if (fd2) fd2.removeAttribute('disabled');
-                        });
+                    var ismandatory = checkMandatory4593956000025832002(true);
+                    if (ismandatory === false) {
+                      return;
                     }
+                    var formSubmitBtn = document.querySelector('.crmWebToEntityForm .formsubmit');
+                    if (formSubmitBtn) {
+                      formSubmitBtn.setAttribute('disabled', 'true');
+                      formSubmitBtn.value = 'Submitting...';
+                    }
+                    if (typeof _wfa_track !== 'undefined' && _wfa_track.wfa_submit) {
+                      _wfa_track.wfa_submit(e);
+                    }
+                    var formData = new FormData(this);
+                    fetch('https://crm.zoho.com/crm/WebForm', { method: 'POST', body: formData, cache: 'no-cache' })
+                      .then(function (r) {
+                        var ct = r.headers.get('Content-Type');
+                        return (ct && ct.includes('application/json')) ? r.json() : r.text();
+                      })
+                      .then(function (data) {
+                        if (formSubmitBtn) {
+                          formSubmitBtn.removeAttribute('disabled');
+                          formSubmitBtn.value = 'Submit Inquiry';
+                        }
+                        if (typeof data === 'object') {
+                          if (data.actionsubmit === 'Splash Message') {
+                            if (data.invalidCaptcha && data.invalidCaptcha === 'true') {
+                              captchaFailedHandling4593956000025832002(data.actionvalue);
+                            } else {
+                              if (typeof reloadImg4593956000025832002 !== 'undefined') reloadImg4593956000025832002();
+                              var splashinfodom = document.getElementById('wf_splash_info');
+                              if (splashinfodom) splashinfodom.innerText = data.actionvalue;
+                              var sp = document.getElementById('wf_splash');
+                              if (splashinfodom && sp) {
+                                document.getElementById('webform4593956000025832002').reset();
+                                sp.style.display = '';
+                                setTimeout(function () { if (sp) sp.style.display = 'none'; }, 5000);
+                              }
+                              var formWrapper = document.getElementById('contact-form');
+                              var successPanel = document.getElementById('contact-success-panel');
+                              if (formWrapper && successPanel) {
+                                var emailInput = document.getElementById('Email');
+                                if (emailInput && document.getElementById('success-email-display')) {
+                                  document.getElementById('success-email-display').textContent = emailInput.value || 'your email';
+                                }
+                                var randomRef = 'EA-' + Math.floor(1000 + Math.random() * 9000) + '-' + String.fromCharCode(65 + Math.floor(Math.random() * 26));
+                                if (document.getElementById('ref-num')) {
+                                  document.getElementById('ref-num').textContent = randomRef;
+                                }
+                                formWrapper.style.display = 'none';
+                                successPanel.style.display = 'block';
+                              }
+                              if (typeof _wfa_track != 'undefined' && _wfa_track.wfa_post_submit) _wfa_track.wfa_post_submit(e);
+                            }
+                          } else if (data.actionsubmit === 'redirect_url' || data.actionsubmit === 'parent_redirect') {
+                            if (data.success) {
+                              if (typeof _wfa_track !== 'undefined' && _wfa_track.wfa_post_submit) _wfa_track.wfa_post_submit(e);
+                              if (typeof historyBack4593956000025832002 !== 'undefined') window.addEventListener('focus', historyBack4593956000025832002);
+                            }
+                            if (data.actionsubmit === 'redirect_url') window.location.assign(data.redirectUrl);
+                            else parent.window.location = data.redirectUrl;
+                          } else if (data.actionsubmit === 'parent_redirect') {
+                            parent.window.location = data.redirectUrl;
+                          } else if (data.actionsubmit === 'add_hash') {
+                            document.location.hash = data.hash;
+                          } else if (data.actionsubmit === 'error_msg') {
+                            alert(data.message);
+                          } else if (data.invalidCaptcha && data.invalidCaptcha === 'true') {
+                            captchaFailedHandling4593956000025832002(data.actionvalue);
+                            if (data.extraAction === 'parent_signal') window.parent.postMessage('checkCaptchaError', '*');
+                          } else if (data.actionsubmit === 'captcha_error') {
+                            alert(data.message);
+                            if (data.extraAction === 'parent_signal') window.parent.postMessage('checkCaptchaError', '*');
+                          } else if (data.actionsubmit === 'thankyou_page') {
+                            if (typeof _wfa_track !== 'undefined' && _wfa_track.wfa_post_submit) {
+                              _wfa_track.wfa_post_submit(e);
+                              if (typeof historyBack4593956000025832002 !== 'undefined') window.addEventListener('focus', historyBack4593956000025832002);
+                            }
+                            window.location.assign(data.redirectUrl);
+                          }
+                        } else {
+                          document.write(data);
+                        }
+                      })
+                      .catch(function (error) {
+                        if (formSubmitBtn) {
+                          formSubmitBtn.removeAttribute('disabled');
+                          formSubmitBtn.value = 'Submit Inquiry';
+                        }
+                        alert('An error occurred. Please try again.');
+                      });
                   });
 
                   if (typeof _wfa_fstprtcken == 'undefined') { _wfa_fstprtcken = {}; }
@@ -749,29 +957,92 @@
                     }
                   }
 
-                  // Preselect Area of Interest based on URL ?service= parameter
-                  (function() {
+                  // Multi-select dropdown controller
+                  (function setupMultiSelect() {
+                    var container = document.getElementById('custom-multiselect-container');
+                    var trigger = document.getElementById('multiselect-trigger');
+                    var display = document.getElementById('multiselect-display');
+                    var dropdown = document.getElementById('multiselect-dropdown');
+                    var selectEl = document.getElementById('COBJ17CF14');
+                    if (!container || !trigger || !display || !dropdown || !selectEl) return;
+
+                    var checkboxes = dropdown.querySelectorAll('.multiselect-checkbox');
+
+                    function updateMultiSelectState() {
+                      var selectedVals = [];
+                      checkboxes.forEach(function(cb) {
+                        var opt = Array.from(selectEl.options).find(function(o) { return o.value === cb.value; });
+                        if (opt) {
+                          opt.selected = cb.checked;
+                        }
+                        if (cb.checked) {
+                          selectedVals.push(cb.value);
+                        }
+                      });
+
+                      if (selectedVals.length === 0) {
+                        display.textContent = 'Select area(s) of interest...';
+                        display.classList.remove('has-value');
+                      } else {
+                        display.textContent = selectedVals.join(', ');
+                        display.classList.add('has-value');
+                      }
+                    }
+
+                    trigger.addEventListener('click', function(e) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      var isOpen = container.classList.toggle('open');
+                      trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                    });
+
+                    checkboxes.forEach(function(cb) {
+                      cb.addEventListener('change', function() {
+                        updateMultiSelectState();
+                      });
+                    });
+
+                    dropdown.addEventListener('click', function(e) {
+                      e.stopPropagation();
+                    });
+
+                    document.addEventListener('click', function(e) {
+                      if (!container.contains(e.target)) {
+                        container.classList.remove('open');
+                        trigger.setAttribute('aria-expanded', 'false');
+                      }
+                    });
+
+                    // Preselect based on URL parameter ?service=
                     var urlParams = new URLSearchParams(window.location.search);
                     var sParam = urlParams.get('service');
                     if (sParam) {
-                      var selectEl = document.getElementById('COBJ17CF14');
-                      if (selectEl) {
-                        var map = {
-                          'digital': 'Digital Services',
-                          'risk': 'Risk Management',
-                          'advisory': 'Advisory Services',
-                          'managed': 'Managed Services'
-                        };
-                        var targetVal = map[sParam.toLowerCase()];
-                        if (targetVal) {
-                          for (var j = 0; j < selectEl.options.length; j++) {
-                            if (selectEl.options[j].value === targetVal) {
-                              selectEl.options[j].selected = true;
-                              break;
-                            }
+                      var map = {
+                        'digital': 'Digital Services',
+                        'risk': 'Risk Management',
+                        'advisory': 'Advisory Services',
+                        'managed': 'Managed Services'
+                      };
+                      var targetVal = map[sParam.toLowerCase()];
+                      if (targetVal) {
+                        checkboxes.forEach(function(cb) {
+                          if (cb.value === targetVal) {
+                            cb.checked = true;
                           }
-                        }
+                        });
+                        updateMultiSelectState();
                       }
+                    }
+
+                    // Handle form reset
+                    var formEl = document.getElementById('webform4593956000025832002');
+                    if (formEl) {
+                      formEl.addEventListener('reset', function() {
+                        setTimeout(function() {
+                          checkboxes.forEach(function(cb) { cb.checked = false; });
+                          updateMultiSelectState();
+                        }, 10);
+                      });
                     }
                   })();
                 </script>
