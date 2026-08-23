@@ -863,10 +863,6 @@
                       if (emailInput && document.getElementById('success-email-display')) {
                         document.getElementById('success-email-display').textContent = emailInput.value.trim() || 'your email';
                       }
-                      var randomRef = 'EA-' + Math.floor(1000 + Math.random() * 9000) + '-' + String.fromCharCode(65 + Math.floor(Math.random() * 26));
-                      if (document.getElementById('ref-num')) {
-                        document.getElementById('ref-num').textContent = randomRef;
-                      }
                       formWrapper.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
                       formWrapper.style.opacity = '0';
                       formWrapper.style.transform = 'translateY(15px)';
@@ -1048,9 +1044,7 @@
                 Thank you for reaching out. Your message has been logged successfully.
               </p>
               <div class="success-details">
-                <p><strong>Reference Number:</strong> <span id="ref-num">EA-9284-X</span></p>
-                <p>A strategic consultant will contact you at <strong id="success-email-display">your email</strong>
-                  within the next 24 business hours.</p>
+                <p>A strategic consultant will be in contact with you at <strong id="success-email-display">your email</strong>.</p>
               </div>
               <button class="btn btn-teal btn-success-back" id="btn-success-back" onclick="window.location.href='index.html'">
                 Return to Home
